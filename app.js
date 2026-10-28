@@ -68,8 +68,9 @@
   function show(id) {
     if (id === "reset") {
       reset();
-      location.replace(location.pathname + "#welcome");
-      location.reload();
+      // Load the page again without a hash. Changing only the hash and then
+      // reloading can reload "#reset" again in some browsers and loop.
+      location.replace(location.pathname + location.search);
       return;
     }
     if (SCREENS.indexOf(id) === -1) id = "welcome";
