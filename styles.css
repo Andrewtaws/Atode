@@ -456,3 +456,46 @@ h1 {
 .contact-primary { background: var(--selected-bg); border-color: var(--line-strong); font-weight: 600; }
 
 .noscript { padding: 24px; }
+
+/* Add a worry: dashboard and entry type */
+
+.lead { font-size: 16px; line-height: 1.45; color: var(--ink-heading); }
+.lead p + p { margin-top: 23px; }
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  width: 100%;
+  padding: 16px;
+  border: 1px solid var(--action-line);
+  border-radius: 4px;
+}
+.panel-tall { min-height: 240px; padding-top: 32px; }
+
+.schedule { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+.schedule-label { font-size: 16px; font-weight: 400; line-height: normal; color: var(--ink-heading); }
+.panel-label { align-self: stretch; }
+.schedule-time {
+  font-size: 26px;
+  font-weight: 600;
+  line-height: normal;
+  color: var(--ink-heading);
+  font-variant-numeric: tabular-nums;
+}
+.schedule-status { font-size: 15px; line-height: 1.45; color: #555555; }
+
+/* Figma has 12px here; raised to 14px for the minimum text size. */
+.early-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 24px;
+  font-size: 14px;
+  line-height: 22px;
+  letter-spacing: 0.2px;
+  color: var(--ink-heading);
+}
+.early-link span { text-decoration: underline; text-underline-offset: 2px; }
