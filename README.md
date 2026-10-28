@@ -11,7 +11,15 @@ This repo holds a coded prototype for user testing (Falmouth MA UX Design, GDO71
 5. Ticket and "back to your day" refocus
 6. Help (999, NHS 111 option 2, Samaritans 116 123, SHOUT 85258)
 
-A final "You're all set" screen marks the end of the prototype and has a **Start again** button so a moderator can reset between participants.
+It also covers the **Add a worry** flow (Figma section "Add a worry", node 41:1499), which onboarding now leads into:
+
+7. Home: worry time, reminder status, "Park a new worry", "Review worries early"
+8. Add your worry: Quick add or Detailed entry
+9. Quick add: same topic tiles and words as onboarding, then the same ticket screen
+
+Worry time ("Review worries early") and Detailed entry aren't designed yet, so they open a "Not in this prototype yet" screen.
+
+Once onboarding is done, opening the app again goes straight to Home. To reset a device between participants, open the address with `#reset` on the end.
 
 ## Run it
 
@@ -21,11 +29,11 @@ No build step. Open `index.html` in a browser, or serve the folder:
 python3 -m http.server 8000
 ```
 
-then go to http://localhost:8000. Each screen has its own address (`#welcome`, `#how`, `#time`, `#worry`, `#ticket`, `#help`, `#done`), so you can jump straight to one.
+then go to http://localhost:8000. Each screen has its own address (`#welcome`, `#how`, `#time`, `#worry`, `#ticket`, `#help`, `#home`, `#add`, `#quick`), so you can jump straight to one.
 
 ## Privacy
 
-Everything stays in the browser's local storage on the tester's own device. Nothing is sent to a server. "Start again" deletes it.
+Everything stays in the browser's local storage on the tester's own device. Nothing is sent to a server. Opening `#reset` deletes it.
 
 ## Accessibility
 

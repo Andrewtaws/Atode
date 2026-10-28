@@ -1,16 +1,16 @@
-// Atode onboarding prototype.
+// Atode prototype: onboarding and add a worry.
 // Everything stays on this device (localStorage). Nothing is sent anywhere.
 
 (function () {
   "use strict";
 
-  var STORE_KEY = "atode.onboarding.v1";
-  var SCREENS = ["welcome", "how", "time", "worry", "ticket", "help", "done"];
+  var STORE_KEY = "atode.prototype.v2";
+  var SCREENS = ["welcome", "how", "time", "worry", "ticket", "help", "home", "add", "quick", "soon"];
 
   var state = load();
 
   function load() {
-    var fallback = { time: "18:00", reminder: true, worry: null, ticketCount: 0, refocus: null };
+    var fallback = { time: "18:00", reminder: true, worries: [], ticketCount: 0, onboarded: false, current: null, refocus: null };
     try {
       var saved = JSON.parse(localStorage.getItem(STORE_KEY));
       return saved ? Object.assign(fallback, saved) : fallback;
@@ -21,6 +21,10 @@
 
   function save() {
     try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) { /* private mode */ }
+  }
+
+  function reset() {
+    try { localStorage.removeItem(STORE_KEY); } catch (e) { /* ignore */ }
   }
 
   // "18:00" -> "6pm", "19:30" -> "7:30pm"
@@ -42,24 +46,48 @@
     setTimeout(function () { el.textContent = msg; }, 50);
   }
 
+  function currentWorry() {
+    for (var i = 0; i < state.worries.length; i++) {
+      if (state.worries[i].ticket === state.current) return state.worries[i];
+    }
+    return null;
+  }
+
   function renderTime() {
     $all("[data-time-label]").forEach(function (el) { el.textContent = timeLabel(state.time); });
+    $all("[data-time-24]").forEach(function (el) { el.textContent = state.time; });
+    $all("[data-reminder-status]").forEach(function (el) {
+      el.textContent = state.reminder ? "Reminder on" : "Reminder off";
+    });
   }
 
   // Routing: one section per Figma frame, switched by the URL hash so the
   // browser back button works and moderators can deep link to a screen.
+  // #reset clears the device and starts onboarding again (for moderators).
 
   function show(id) {
+    if (id === "reset") {
+      reset();
+      location.replace(location.pathname + "#welcome");
+      location.reload();
+      return;
+    }
     if (SCREENS.indexOf(id) === -1) id = "welcome";
-    if (id === "ticket" && !state.worry) id = "worry";
+    if (id === "ticket" && !currentWorry()) id = state.worries.length ? "home" : "worry";
 
     SCREENS.forEach(function (s) { $("#" + s).hidden = s !== id; });
     var screen = $("#" + id);
     document.title = screen.dataset.title + " · Atode";
 
     if (id === "ticket") renderTicket();
-    if (id === "done") renderDone();
-    if (id === "worry") $("#worry-error").hidden = true;
+    if (id === "home" && !state.onboarded) { state.onboarded = true; save(); }
+    // Leaving the add flow drops any half-finished edit.
+    if (id === "home" || id === "add") {
+      $all(".park-form").forEach(function (f) {
+        if (f.dataset.editing) { delete f.dataset.editing; fillParkForm(f, null); }
+      });
+    }
+    $all("[data-error]", screen).forEach(function (el) { el.hidden = true; });
 
     window.scrollTo(0, 0);
     var h1 = $("h1", screen);
@@ -81,11 +109,11 @@
   $all("[data-back]").forEach(function (btn) {
     btn.addEventListener("click", function () {
       if (visited > 0) history.back();
-      else go("welcome");
+      else go(state.worries.length ? "home" : "welcome");
     });
   });
 
-  // 3. Collection time
+  // Onboarding 3. Collection time
 
   var timeForm = $("#time-form");
   var otherWrap = $("#other-time");
@@ -114,6 +142,7 @@
     if (e.target.name === "time" || e.target === otherInput) syncTimeForm();
     if (e.target.id === "reminder") {
       state.reminder = e.target.checked;
+      renderTime();
       announce(state.reminder ? "Reminder on" : "Reminder off");
     }
   });
@@ -126,83 +155,95 @@
     go("worry");
   });
 
-  // 4. Add first worry
+  // Parking a worry: onboarding step 2 (#worry) and Quick add (#quick)
+  // share the same form behaviour.
 
-  var worryForm = $("#worry-form");
-  var words = $("#words");
-  var worryError = $("#worry-error");
+  function fillParkForm(form, worry) {
+    $all("input[name=topic]", form).forEach(function (r) {
+      r.checked = !!worry && r.value === worry.topic;
+    });
+    $("[data-words]", form).value = worry ? worry.words : "";
+  }
 
-  worryForm.addEventListener("change", function () { worryError.hidden = true; });
+  $all(".park-form").forEach(function (form) {
+    var error = $("[data-error]", form);
 
-  worryForm.addEventListener("submit", function (e) {
-    e.preventDefault();
-    var topicInput = $("input[name=topic]:checked", worryForm);
-    var text = words.value.trim();
-    if (!topicInput && !text) {
-      worryError.hidden = false;
-      $("input[name=topic]", worryForm).focus();
-      return;
-    }
-    var editing = !!state.worry;
-    if (!editing) state.ticketCount += 1;
-    state.worry = {
-      topic: topicInput ? topicInput.value : "Something else",
-      words: text,
-      parkedAt: new Date().toISOString(),
-      ticket: state.ticketCount
-    };
-    save();
-    go("ticket");
+    form.addEventListener("change", function () { error.hidden = true; });
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var topicInput = $("input[name=topic]:checked", form);
+      var text = $("[data-words]", form).value.trim();
+      if (!topicInput && !text) {
+        error.hidden = false;
+        $("input[name=topic]", form).focus();
+        return;
+      }
+      var topic = topicInput ? topicInput.value : "Something else";
+      var editing = form.dataset.editing ? currentWorry() : null;
+
+      if (editing) {
+        editing.topic = topic;
+        editing.words = text;
+      } else {
+        state.ticketCount += 1;
+        state.worries.push({
+          ticket: state.ticketCount,
+          topic: topic,
+          words: text,
+          parkedAt: new Date().toISOString(),
+          source: form.dataset.source
+        });
+        state.current = state.ticketCount;
+      }
+      delete form.dataset.editing;
+      state.refocus = null;
+      save();
+      fillParkForm(form, null);
+      go("ticket");
+    });
   });
 
-  function fillWorryForm() {
-    $all("input[name=topic]", worryForm).forEach(function (r) {
-      r.checked = !!state.worry && r.value === state.worry.topic;
-    });
-    words.value = state.worry ? state.worry.words : "";
-  }
-  fillWorryForm();
-
-  // 5. Ticket
+  // Ticket
 
   function renderTicket() {
-    $("[data-ticket-no]").textContent = state.worry.ticket;
-    $("[data-ticket-topic]").textContent = state.worry.topic;
+    var worry = currentWorry();
+    $("[data-ticket-no]").textContent = worry.ticket;
+    $("[data-ticket-topic]").textContent = worry.topic;
+    $("[data-edit]").setAttribute("href", "#" + worry.source);
     $all("input[name=refocus]").forEach(function (r) { r.checked = r.value === state.refocus; });
   }
 
-  // Edit keeps the worry and goes back to the form with it filled in.
-  $("[data-edit]").addEventListener("click", function () { fillWorryForm(); });
+  // Edit keeps the worry and goes back to the form it came from, filled in.
+  $("[data-edit]").addEventListener("click", function () {
+    var worry = currentWorry();
+    var form = $("#" + worry.source + " .park-form");
+    fillParkForm(form, worry);
+    form.dataset.editing = "true";
+  });
 
   $("[data-undo]").addEventListener("click", function () {
-    state.worry = null;
-    state.ticketCount = Math.max(0, state.ticketCount - 1);
+    var worry = currentWorry();
+    state.worries = state.worries.filter(function (w) { return w !== worry; });
+    if (state.ticketCount === worry.ticket) state.ticketCount -= 1;
+    state.current = null;
     save();
-    fillWorryForm();
-    go("worry");
-    announce("Ticket removed. Nothing is parked.");
+    var form = $("#" + worry.source + " .park-form");
+    fillParkForm(form, null);
+    delete form.dataset.editing;
+    go(worry.source);
+    announce("Ticket removed. Nothing new is parked.");
   });
 
   $("#ticket").addEventListener("change", function (e) {
     if (e.target.name === "refocus") { state.refocus = e.target.value; save(); }
   });
 
-  // End
-
-  function renderDone() {
-    $("[data-done-summary]").textContent = state.worry
-      ? "Atode is holding 1 worry. Collect it at " + timeLabel(state.time) + "."
-      : "Nothing parked yet. Your worry time is " + timeLabel(state.time) + ".";
-  }
-
-  $("[data-restart]").addEventListener("click", function () {
-    try { localStorage.removeItem(STORE_KEY); } catch (e) { /* ignore */ }
-    location.hash = "welcome";
-    location.reload();
-  });
-
-  show(current());
+  // Returning users skip onboarding and land on home.
+  var start = location.hash ? current() : (state.onboarded ? "home" : "welcome");
+  if (!location.hash && start === "home") history.replaceState(null, "", "#home");
+  show(start);
   window.addEventListener("load", function () {
-    if (current() !== "welcome") { var h1 = $("#" + current() + " h1"); if (h1) h1.focus({ preventScroll: true }); }
+    if (start !== "welcome") { var h1 = $("#" + start + " h1"); if (h1) h1.focus({ preventScroll: true }); }
   });
 })();

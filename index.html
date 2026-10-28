@@ -137,14 +137,14 @@
         <a class="help-pill" href="#help">I need help now →</a>
       </header>
       <main class="content">
-        <form id="worry-form" class="form-fill" novalidate>
+        <form id="worry-form" class="form-fill park-form" data-source="worry" novalidate>
           <fieldset class="fieldset">
             <legend class="title-group">
               <span class="step-label">Step 2 of 2</span>
               <h1 tabindex="-1">What’s on your mind right now?</h1>
             </legend>
             <p class="hint" id="worry-hint">Pick the closest one. You can add words if you want to.</p>
-            <p class="error" id="worry-error" hidden>Pick the closest one, or add a few words.</p>
+            <p class="error" id="worry-error" data-error hidden>Pick the closest one, or add a few words.</p>
             <div class="tiles" aria-describedby="worry-hint">
               <label class="tile"><input type="radio" name="topic" value="My work"><span>My work</span></label>
               <label class="tile"><input type="radio" name="topic" value="Money"><span>Money</span></label>
@@ -155,11 +155,11 @@
           </fieldset>
           <div class="words">
             <label for="words">A few words (optional)</label>
-            <textarea id="words" rows="2" maxlength="140" placeholder="Just enough to remember it by"></textarea>
+            <textarea id="words" data-words rows="2" maxlength="140" placeholder="Just enough to remember it by"></textarea>
           </div>
           <div class="push">
             <button type="submit" class="action"><span>Park it till <span data-time-label>6pm</span></span></button>
-            <a class="link skip" href="#done">Nothing right now, skip→</a>
+            <a class="link skip" href="#home">Nothing right now, skip→</a>
           </div>
         </form>
       </main>
@@ -197,7 +197,7 @@
         </fieldset>
         <div class="push">
           <p class="footnote">Next time a worry pops up, open Atode and tap. That's all.</p>
-          <a class="action" href="#done">Done</a>
+          <a class="action" href="#home">Done</a>
         </div>
       </main>
     </section>
@@ -238,19 +238,105 @@
       </main>
     </section>
 
-    <!-- End of onboarding: prototype stops here (not in Figma) -->
-    <section class="screen" id="done" data-title="You're all set" hidden>
+    <!-- Add a worry 1. Dashboard (Figma 41:1788) -->
+    <section class="screen" id="home" data-title="Welcome back" hidden>
+      <header class="app-header">
+        <img class="logo" src="assets/logo.svg" width="67" height="18" alt="Atode">
+      </header>
+      <div class="header-spacer"></div>
+      <main class="content">
+        <h1 tabindex="-1">Welcome back</h1>
+        <div class="lead">
+          <p>Your worry time is <span data-time-label>6pm</span> today.</p>
+          <p>Park a new worry below. Can’t make <span data-time-label>6pm</span>? Pick up your worries now.</p>
+        </div>
+        <div class="panel panel-tall">
+          <a class="action" href="#add">Park a new worry</a>
+        </div>
+        <div class="panel">
+          <div class="schedule">
+            <h2 class="schedule-label">Daily worry time</h2>
+            <p class="schedule-time" data-time-24>18:00</p>
+            <p class="schedule-status" data-reminder-status>Reminder on</p>
+          </div>
+          <a class="early-link" href="#soon">
+            <span>Review worries early</span>
+            <img src="assets/arrow-right-circle.svg" width="16" height="16" alt="">
+          </a>
+        </div>
+      </main>
+    </section>
+
+    <!-- Add a worry 2. Entry Type (Figma 41:1831) -->
+    <section class="screen" id="add" data-title="Add your worry" hidden>
+      <header class="app-header has-help">
+        <img class="logo" src="assets/logo.svg" width="67" height="18" alt="Atode">
+        <a class="help-pill" href="#help">I need help now →</a>
+      </header>
+      <main class="content">
+        <h1 tabindex="-1">Add your worry</h1>
+        <p class="lead">Add your worry now, and let Atode remember it for you.</p>
+        <div class="panel panel-tall">
+          <a class="action" href="#quick">Quick add</a>
+        </div>
+        <div class="panel">
+          <h2 class="schedule-label panel-label">Detailed entry</h2>
+          <a class="action" href="#soon">Add detailed entry</a>
+        </div>
+      </main>
+    </section>
+
+    <!-- Add a worry 3. Quick add (Figma 41:1866) -->
+    <section class="screen" id="quick" data-title="Quick add" hidden>
       <header class="app-header has-help">
         <img class="logo" src="assets/logo.svg" width="67" height="18" alt="Atode">
         <a class="help-pill" href="#help">I need help now →</a>
       </header>
       <div class="header-spacer"></div>
       <main class="content">
-        <h1 tabindex="-1">You're all set</h1>
-        <p class="hint" data-done-summary>We'll see you at 6pm.</p>
+        <form id="quick-form" class="form-fill park-form" data-source="quick" novalidate>
+          <fieldset class="fieldset">
+            <legend class="title-group">
+              <h1 tabindex="-1">Quick add</h1>
+            </legend>
+            <p class="lead" id="quick-hint">Add your worry now, and let Atode remember it for you.</p>
+            <p class="error" data-error hidden>Pick the closest one, or add a few words.</p>
+            <div class="tiles" aria-describedby="quick-hint">
+              <label class="tile"><input type="radio" name="topic" value="My work"><span>My work</span></label>
+              <label class="tile"><input type="radio" name="topic" value="Money"><span>Money</span></label>
+              <label class="tile"><input type="radio" name="topic" value="Someone in my life"><span>Someone in my life</span></label>
+              <label class="tile"><input type="radio" name="topic" value="My health"><span>My health</span></label>
+              <label class="tile tile-wide"><input type="radio" name="topic" value="Something else"><span>Something else</span></label>
+            </div>
+          </fieldset>
+          <div class="words">
+            <label for="quick-words">A few words (optional)</label>
+            <textarea id="quick-words" data-words rows="2" maxlength="140" placeholder="Just enough to remember it by"></textarea>
+          </div>
+          <div class="push">
+            <button type="submit" class="action"><span>Park it till <span data-time-label>6pm</span></span></button>
+          </div>
+        </form>
+      </main>
+    </section>
+
+    <!-- Not designed yet: worry time and detailed entry (not in Figma) -->
+    <section class="screen" id="soon" data-title="Not in this prototype yet" hidden>
+      <header class="app-header has-help">
+        <img class="logo" src="assets/logo.svg" width="67" height="18" alt="Atode">
+        <a class="help-pill" href="#help">I need help now →</a>
+      </header>
+      <div class="header-spacer"></div>
+      <main class="content">
+        <div class="title-group">
+          <button type="button" class="back" data-back>
+            <img src="assets/back.svg" width="24" height="24" alt=""> Back
+          </button>
+          <h1 tabindex="-1">Not in this prototype yet</h1>
+        </div>
+        <p class="hint">This part of Atode is still being designed.</p>
         <div class="push">
-          <p class="footnote">This is the end of the onboarding prototype.</p>
-          <button type="button" class="action" data-restart>Start again</button>
+          <a class="action" href="#home">Back to home</a>
         </div>
       </main>
     </section>
