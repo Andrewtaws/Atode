@@ -9,8 +9,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
-  <link rel="stylesheet" href="tokens.css?v=6">
-  <link rel="stylesheet" href="styles.css?v=6">
+  <link rel="stylesheet" href="tokens.css?v=7">
+  <link rel="stylesheet" href="styles.css?v=7">
 </head>
 <body>
   <div class="phone">
@@ -274,7 +274,7 @@
             <p class="schedule-time" data-time-24>18:00</p>
             <p class="schedule-status" data-reminder-status>Reminder on</p>
           </div>
-          <a class="early-link" href="#soon">
+          <a class="early-link" href="#review">
             <span>Review worries early</span>
             <img src="assets/arrow-right-circle.svg" width="16" height="16" alt="">
           </a>
@@ -340,7 +340,124 @@
       </main>
     </section>
 
-    <!-- Not designed yet: worry time and detailed entry -->
+    <!-- Review worries 1. Review my parked worries (Figma 127:1290) -->
+    <section class="screen" id="review" data-title="Review my parked worries" hidden>
+      <header class="app-header">
+        <img class="logo" src="assets/logo.svg" width="67" height="18" alt="Atode">
+        <a class="help-pill" href="#help">This can't wait</a>
+      </header>
+      <main class="content">
+        <h1 tabindex="-1" class="h1-display">Review my parked worries</h1>
+        <div class="tabs" role="group" aria-label="Show">
+          <button type="button" class="tab" data-tab="today" aria-pressed="true">Today’s notes</button>
+          <button type="button" class="tab" data-tab="passed" aria-pressed="false">Passed worries</button>
+        </div>
+        <div data-panel="today">
+          <p class="lead" data-review-count>You have parked 3 worries today, select one to review and add any comments.</p>
+          <ul class="worry-list" data-list="today"></ul>
+        </div>
+        <div data-panel="passed" hidden>
+          <p class="lead" data-passed-count>Worries you’ve already looked at.</p>
+          <ul class="worry-list" data-list="passed"></ul>
+        </div>
+        <hr class="divider">
+        <a class="early-link" href="#home" data-later>
+          <span>I’ll look at these parked worries tomorrow</span>
+          <img src="assets/arrow-right-circle.svg" width="16" height="16" alt="">
+        </a>
+      </main>
+    </section>
+
+    <!-- Review worries 2. One worry (Figma 127:1327) -->
+    <section class="screen" id="review-item" data-title="Does this still affect you?" hidden>
+      <header class="app-header">
+        <img class="logo" src="assets/logo.svg" width="67" height="18" alt="Atode">
+        <a class="help-pill" href="#help">This can't wait</a>
+      </header>
+      <main class="content content-tight">
+        <div class="title-group">
+          <button type="button" class="back" data-back>
+            <img src="assets/arrow-left.svg" width="20" height="20" alt=""> Back
+          </button>
+          <h1 tabindex="-1" class="h1-display">Review my parked worries</h1>
+        </div>
+        <p class="lead" data-review-count>You have parked 3 worries today, select one to review and add any comments.</p>
+        <div class="panel card">
+          <span class="topic-tag" data-review-topic>Money</span>
+        </div>
+        <div class="panel card worry-words">
+          <p data-review-words>Will the repair cost more than I saved?</p>
+        </div>
+        <h2 class="card-title" id="affect-q">Does this still affect you?</h2>
+        <div class="panel card" role="group" aria-labelledby="affect-q">
+          <button type="button" class="choice" data-affect="no">No</button>
+          <a class="choice" href="#review-act" data-affect="yes">Yes</a>
+          <a class="choice" href="#review">See all</a>
+        </div>
+        <hr class="divider">
+        <a class="early-link" href="#home" data-later>
+          <span>I’ll look at these parked worries tomorrow</span>
+          <img src="assets/arrow-right-circle.svg" width="16" height="16" alt="">
+        </a>
+      </main>
+    </section>
+
+    <!-- Review worries 3. What can be done (Figma 127:1368) -->
+    <section class="screen" id="review-act" data-title="What can be done about this worry?" hidden>
+      <header class="app-header">
+        <img class="logo" src="assets/logo.svg" width="67" height="18" alt="Atode">
+        <a class="help-pill" href="#help">This can't wait</a>
+      </header>
+      <main class="content">
+        <form id="act-form" class="form-fill" novalidate>
+          <div class="title-group">
+            <button type="button" class="back" data-back>
+              <img src="assets/arrow-left.svg" width="20" height="20" alt=""> Back
+            </button>
+            <h1 tabindex="-1" class="h1-display">What can be done about this worry?</h1>
+          </div>
+          <div class="stack-xs">
+            <p class="hint" data-review-position>Worry 2 of 3</p>
+            <p class="body" data-review-words>Will the repair cost more than I saved?</p>
+          </div>
+          <fieldset class="fieldset fieldset-tight">
+            <legend><h2 class="card-title">Does this still affect you?</h2></legend>
+            <p class="error" data-error hidden>Pick the one that fits best.</p>
+            <div class="chips">
+              <label class="chip"><input type="radio" name="outcome" value="action"><span>I can do something</span></label>
+              <label class="chip"><input type="radio" name="outcome" value="letgo"><span>I can’t control this</span></label>
+              <label class="chip"><input type="radio" name="outcome" value="again"><span>Not now, park it again</span></label>
+            </div>
+          </fieldset>
+          <div class="words">
+            <label class="words-label-lg" for="review-note">Add a note:</label>
+            <textarea id="review-note" rows="3" maxlength="280"></textarea>
+          </div>
+          <hr class="divider">
+          <button type="submit" class="btn btn-primary btn-inline">Save my update</button>
+          <a class="early-link" href="#home" data-later>
+            <span>I’ll look at these parked worries tomorrow</span>
+            <img src="assets/arrow-right-circle.svg" width="16" height="16" alt="">
+          </a>
+        </form>
+      </main>
+    </section>
+
+    <!-- Review worries 4. Saved (Figma 127:1407) -->
+    <section class="screen" id="review-done" data-title="This has been updated" hidden>
+      <header class="app-header">
+        <img class="logo" src="assets/logo.svg" width="67" height="18" alt="Atode">
+        <a class="help-pill" href="#help">This can't wait</a>
+      </header>
+      <main class="content">
+        <h1 tabindex="-1" class="h1-display">This has been updated</h1>
+        <div class="lead stack-md" data-done-copy></div>
+        <hr class="divider">
+        <a class="btn btn-primary btn-inline" href="#review" data-done-next>Done</a>
+      </main>
+    </section>
+
+    <!-- Not designed yet: detailed entry -->
     <section class="screen" id="soon" data-title="Not in this prototype yet" hidden>
       <header class="app-header">
         <img class="logo" src="assets/logo.svg" width="67" height="18" alt="Atode">
@@ -363,6 +480,6 @@
   </div>
   <div id="announcer" class="visually-hidden" aria-live="polite"></div>
   <noscript><p class="noscript">Atode needs JavaScript turned on.</p></noscript>
-  <script src="app.js?v=6"></script>
+  <script src="app.js?v=7"></script>
 </body>
 </html>

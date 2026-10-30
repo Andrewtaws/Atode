@@ -6,7 +6,7 @@ The hi-fi version of Atode, kept apart from the wireframe prototype in the repo 
 - Hi-fi prototype: https://andrewtaws.github.io/Atode/hifi/
 - Design system: https://andrewtaws.github.io/Atode/hifi/design-system.html
 
-Onboarding follows the Figma hi-fi frames (node 69:2274), and Home, Add your worry and Quick add follow the hi-fi "Add a worry" frames (node 115:905). Done at the end of onboarding opens Home.
+Onboarding follows the Figma hi-fi frames (node 69:2274), and Home, Add your worry and Quick add follow the hi-fi "Add a worry" frames (node 115:905). Done at the end of onboarding opens Home. "Review worries early" on Home opens the Review worries flow (node 127:1257): pick a parked worry, say whether it still affects you, choose what can be done, add a note, and it moves to Passed worries (or gets parked again).
 
 It saves to its own storage (`atode.hifi.v1`), so testing one version doesn't affect the other. Add `#reset` to the end of the address to clear it between testers.
 

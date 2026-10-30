@@ -5,12 +5,12 @@
   "use strict";
 
   var STORE_KEY = "atode.hifi.v1";
-  var SCREENS = ["welcome", "how", "time", "worry", "ticket", "help", "home", "add", "quick", "soon"];
+  var SCREENS = ["welcome", "how", "time", "worry", "ticket", "help", "home", "add", "quick", "review", "review-item", "review-act", "review-done", "soon"];
 
   var state = load();
 
   function load() {
-    var fallback = { time: "18:00", reminder: true, worries: [], ticketCount: 0, onboarded: false, current: null, refocus: null };
+    var fallback = { time: "18:00", reminder: true, worries: [], ticketCount: 0, onboarded: false, current: null, refocus: null, reviewing: null, lastOutcome: null, tab: "today" };
     try {
       var saved = JSON.parse(localStorage.getItem(STORE_KEY));
       return saved ? Object.assign(fallback, saved) : fallback;
@@ -75,12 +75,17 @@
     }
     if (SCREENS.indexOf(id) === -1) id = "welcome";
     if (id === "ticket" && !currentWorry()) id = state.worries.length ? "home" : "worry";
+    if ((id === "review-item" || id === "review-act") && !reviewingWorry()) id = "review";
+    if (id === "review-done" && !state.lastOutcome) id = "review";
 
     SCREENS.forEach(function (s) { $("#" + s).hidden = s !== id; });
     var screen = $("#" + id);
     document.title = screen.dataset.title + " · Atode";
 
     if (id === "ticket") renderTicket();
+    if (id === "review") renderReview();
+    if (id === "review-item" || id === "review-act") renderReviewItem(screen, id);
+    if (id === "review-done") renderDone();
     if (id === "home" && !state.onboarded) { state.onboarded = true; save(); }
     // Leaving the add flow drops any half-finished edit.
     if (id === "home" || id === "add") {
@@ -239,6 +244,161 @@
   $("#ticket").addEventListener("change", function (e) {
     if (e.target.name === "refocus") { state.refocus = e.target.value; save(); }
   });
+
+  // Review worries: a list of parked worries, then one worry at a time.
+  // A reviewed worry gets an outcome and moves to "Passed worries".
+
+  var OUTCOMES = {
+    faded: "Doesn’t affect me now",
+    action: "I can do something",
+    letgo: "I can’t control this"
+  };
+
+  function parkedWorries() {
+    return state.worries.filter(function (w) { return !w.outcome; });
+  }
+
+  function reviewingWorry() {
+    for (var i = 0; i < state.worries.length; i++) {
+      if (state.worries[i].ticket === state.reviewing && !state.worries[i].outcome) return state.worries[i];
+    }
+    return null;
+  }
+
+  function worryText(w) { return w.words || w.topic; }
+
+  function countText(n) {
+    if (n === 0) return "Nothing is parked right now.";
+    return "You have parked " + n + (n === 1 ? " worry" : " worries") + ", select one to review and add any comments.";
+  }
+
+  function setTab(tab) {
+    state.tab = tab;
+    $all("#review [data-tab]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.tab === tab)); });
+    $all("#review [data-panel]").forEach(function (p) { p.hidden = p.dataset.panel !== tab; });
+  }
+
+  function renderReview() {
+    var parked = parkedWorries();
+    var passed = state.worries.filter(function (w) { return w.outcome; });
+    $all("[data-review-count]").forEach(function (el) { el.textContent = countText(parked.length); });
+    $("[data-passed-count]").textContent = passed.length ? "Worries you’ve already looked at." : "Worries you look at will show here.";
+
+    var today = $("[data-list=today]");
+    today.innerHTML = "";
+    parked.forEach(function (w) {
+      var li = document.createElement("li");
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "worry-item card";
+      btn.textContent = worryText(w);
+      if (w.words) {
+        var meta = document.createElement("span");
+        meta.className = "worry-meta";
+        meta.textContent = w.topic;
+        btn.appendChild(meta);
+      }
+      btn.addEventListener("click", function () {
+        state.reviewing = w.ticket;
+        save();
+        go("review-item");
+      });
+      li.appendChild(btn);
+      today.appendChild(li);
+    });
+
+    var list = $("[data-list=passed]");
+    list.innerHTML = "";
+    passed.forEach(function (w) {
+      var li = document.createElement("li");
+      li.className = "worry-item card";
+      li.appendChild(document.createTextNode(worryText(w)));
+      var meta = document.createElement("span");
+      meta.className = "worry-meta";
+      meta.textContent = OUTCOMES[w.outcome];
+      li.appendChild(meta);
+      if (w.note) {
+        var note = document.createElement("span");
+        note.className = "worry-note";
+        note.textContent = "Note: " + w.note;
+        li.appendChild(note);
+      }
+      list.appendChild(li);
+    });
+    setTab(state.tab || "today");
+  }
+
+  $all("#review [data-tab]").forEach(function (b) {
+    b.addEventListener("click", function () { setTab(b.dataset.tab); save(); });
+  });
+
+  function renderReviewItem(screen, id) {
+    var w = reviewingWorry();
+    var parked = parkedWorries();
+    $all("[data-review-count]", screen).forEach(function (el) { el.textContent = countText(parked.length); });
+    $all("[data-review-words]", screen).forEach(function (el) { el.textContent = w.words || "No words added."; });
+    var topic = $("[data-review-topic]", screen);
+    if (topic) topic.textContent = w.topic;
+    var pos = $("[data-review-position]", screen);
+    if (pos) pos.textContent = "Worry " + (parked.indexOf(w) + 1) + " of " + parked.length;
+    if (id === "review-act") {
+      var form = $("#act-form");
+      $all("input[name=outcome]", form).forEach(function (r) { r.checked = false; });
+      $("#review-note").value = w.note || "";
+    }
+  }
+
+  // "No": it doesn't affect me now, so it has faded.
+  $("[data-affect=no]").addEventListener("click", function () {
+    finishReview("faded", reviewingWorry().note || "");
+  });
+
+  var actForm = $("#act-form");
+  actForm.addEventListener("change", function () { $("[data-error]", actForm).hidden = true; });
+  actForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var picked = $("input[name=outcome]:checked", actForm);
+    if (!picked) {
+      $("[data-error]", actForm).hidden = false;
+      $("input[name=outcome]", actForm).focus();
+      return;
+    }
+    finishReview(picked.value, $("#review-note").value.trim());
+  });
+
+  function finishReview(outcome, note) {
+    var w = reviewingWorry();
+    w.note = note;
+    if (outcome !== "again") {
+      w.outcome = outcome;
+      w.reviewedAt = new Date().toISOString();
+    }
+    state.lastOutcome = outcome;
+    state.reviewing = null;
+    save();
+    go("review-done");
+  }
+
+  var FOCUS = "Want something else to focus on? Take 5 slow breaths · Go for a short walk · Text someone · Put on a song · Get back to what you were doing";
+
+  function renderDone() {
+    var t = timeLabel(state.time);
+    var copy = {
+      letgo: ["Saved.", "You can let this one go for now. Some worries are out of our hands.", "Atode will keep it, so you don’t have to.", FOCUS],
+      action: ["Saved.", "You’ve spotted something you can do. Your note is kept with this worry.", "Pick one small step, and do it when you’re ready.", FOCUS],
+      faded: ["Saved.", "This one doesn’t affect you now. Many worries fade by the time you collect them, and that’s the point.", FOCUS],
+      again: ["Saved.", "It’s parked again. Atode will hold it till " + t + " tomorrow.", FOCUS]
+    }[state.lastOutcome];
+    var box = $("[data-done-copy]");
+    box.innerHTML = "";
+    copy.forEach(function (line) {
+      var p = document.createElement("p");
+      p.textContent = line;
+      box.appendChild(p);
+    });
+    // Done goes back to the list while anything is left to look at.
+    $("[data-done-next]").setAttribute("href", parkedWorries().length && state.lastOutcome !== "again" ? "#review" : "#home");
+  }
 
   // Returning users skip onboarding and land on home.
   var start = location.hash ? current() : (state.onboarded ? "home" : "welcome");

@@ -545,5 +545,116 @@ h1 {
   color: var(--color-text);
 }
 .early-link span { text-decoration: underline; text-underline-offset: 3px; }
+.early-link[data-later] { justify-content: flex-start; }
+
+/* Review worries (Figma 127:1257) */
+
+.content-tight { gap: 14px; }
+.stack-xs > * + * { margin-top: var(--space-2); }
+.stack-md > * + * { margin-top: var(--space-4); }
+
+.divider { width: 100%; height: 1px; margin: 0; border: 0; background: var(--color-border); }
+
+.tabs { display: flex; gap: var(--space-4); }
+.tab {
+  min-height: 24px;
+  padding: 0;
+  background: none;
+  border: 0;
+  font-size: var(--text-md);
+  line-height: 22px;
+  color: var(--color-text-body);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.tab[aria-pressed="true"] { font-weight: var(--weight-semibold); color: var(--color-text); }
+
+.worry-list { list-style: none; margin: var(--space-5) 0 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-5); }
+.worry-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  width: 100%;
+  min-height: 55px;
+  padding: var(--space-4);
+  text-align: left;
+  font-size: var(--text-lg);
+  line-height: 1.45;
+  color: var(--color-text-heading);
+  text-decoration: none;
+  cursor: pointer;
+}
+button.worry-item:active { background: var(--color-surface-warm); }
+.worry-meta { font-size: var(--text-sm); color: var(--color-text-muted); }
+.worry-note { font-size: var(--text-md); color: var(--color-text-body); }
+.empty { font-size: var(--text-lg); color: var(--color-text-body); }
+
+.topic-tag {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--tap-min);
+  padding: var(--space-3) var(--space-5);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  font-size: var(--text-md);
+  color: var(--color-text);
+}
+.worry-words { min-height: 76px; font-size: var(--text-lg); line-height: 1.45; color: var(--color-text-heading); }
+
+.choice {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--tap-min);
+  padding: var(--space-3) var(--space-5);
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-md);
+  color: var(--color-text);
+  text-decoration: none;
+  cursor: pointer;
+}
+.choice:active, .choice[aria-current="true"] {
+  background: var(--color-selected);
+  border-color: var(--color-selected-border);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-heading);
+}
+
+.fieldset-tight { gap: var(--space-3); }
+.fieldset-tight > legend { margin-bottom: var(--space-3); }
+
+.chips { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-3); }
+.chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: var(--tap-min);
+  padding: var(--space-3) var(--space-5);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: var(--text-md);
+  color: var(--color-text);
+  cursor: pointer;
+}
+.chip input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.chip:has(input:checked) {
+  background: var(--color-selected);
+  border: 2px solid var(--color-selected-border);
+  padding: 11px 19px;
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-heading);
+}
+.chip:has(input:checked)::before { content: "✓"; font-weight: var(--weight-bold); }
+.chip:has(input:focus-visible) { outline: 3px solid var(--color-focus); outline-offset: 2px; }
+
+.words-label-lg.words-label-lg { font-size: var(--text-lg); color: var(--color-text-body); }
+
+.btn-inline { width: auto; align-self: flex-start; min-height: var(--tap-min); padding: var(--space-3) var(--space-5); }
 
 .noscript { padding: var(--space-6); }
