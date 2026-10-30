@@ -40,6 +40,7 @@ h1:focus { outline: none; }
 .phone {
   min-height: 100vh;
   min-height: 100dvh;
+  overflow-x: clip;
   background: var(--color-page);
 }
 
@@ -657,5 +658,88 @@ button.worry-item:active { background: var(--color-surface-warm); }
 .words-label-lg.words-label-lg { font-size: var(--text-lg); color: var(--color-text-body); }
 
 .btn-inline { width: auto; align-self: flex-start; min-height: var(--tap-min); padding: var(--space-3) var(--space-5); }
+
+/* Loading screen */
+
+.splash {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-page);
+}
+.splash-mark { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.splash-mark img { display: block; }
+.splash-bar {
+  display: block;
+  width: 48px;
+  height: 4px;
+  border-radius: var(--radius-pill);
+  background: var(--color-primary);
+}
+.splash-out { opacity: 0; pointer-events: none; }
+
+/* Motion: only when the person hasn't asked to reduce motion */
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Logo rises in, the amber bar fills, then the whole screen fades away. */
+  .splash-mark img { animation: splash-logo 600ms var(--ease-out) both; }
+  .splash-bar { transform-origin: left; animation: splash-bar 700ms var(--ease-out) 350ms both; }
+  .splash-out { transition: opacity 400ms ease; }
+  .splash-out .splash-mark { transform: scale(1.04); transition: transform 400ms var(--ease-out); }
+
+  .screen.enter { animation: screen-in var(--motion-page) var(--ease-out) both; }
+  .screen.enter-back { animation: screen-in-back var(--motion-page) var(--ease-out) both; }
+
+  /* The ticket lands a beat after the screen. */
+  #ticket.enter .ticket { animation: ticket-in var(--motion-slow) var(--ease-spring) 80ms both; }
+
+  .btn, .tile, .chip, .option, .choice, .worry-item, .help-pill, .topic-tag {
+    transition:
+      background-color var(--motion-fast) ease,
+      border-color var(--motion-fast) ease,
+      transform var(--motion-fast) var(--ease-out);
+  }
+  .btn:active, .tile:active, .chip:active, .option:active, .choice:active, button.worry-item:active, .help-pill:active {
+    transform: scale(0.98);
+  }
+
+  .tile:has(input:checked)::before,
+  .chip:has(input:checked)::before { animation: tick-in var(--motion-fast) var(--ease-spring) both; }
+
+  .error:not([hidden]) { animation: nudge 300ms var(--ease-out); }
+}
+
+@keyframes splash-logo {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes splash-bar {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+@keyframes screen-in {
+  from { opacity: 0; transform: translateX(var(--motion-distance)); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes screen-in-back {
+  from { opacity: 0; transform: translateX(calc(var(--motion-distance) * -1)); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes ticket-in {
+  from { opacity: 0; transform: translateY(12px) scale(0.96); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes tick-in {
+  from { opacity: 0; transform: scale(0.4); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes nudge {
+  0%, 100% { transform: none; }
+  30% { transform: translateX(-4px); }
+  60% { transform: translateX(3px); }
+}
 
 .noscript { padding: var(--space-6); }
