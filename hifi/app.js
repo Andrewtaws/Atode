@@ -67,6 +67,8 @@
 
   // Screens visited, so a return to the previous one animates as "back".
   var trail = [];
+  var swapTimer = null;
+  var LEAVE_MS = 180; // matches --motion-leave in tokens.css
 
   function show(id) {
     if (id === "reset") {
@@ -86,14 +88,7 @@
     if (back) trail.pop();
     else if (previous !== id) trail.push(id);
 
-    SCREENS.forEach(function (s) { $("#" + s).hidden = s !== id; });
     var screen = $("#" + id);
-    // Page transition: slide in from the right going forward, from the left going back.
-    if (previous && previous !== id) {
-      screen.classList.remove("enter", "enter-back");
-      void screen.offsetWidth; // restart the animation
-      screen.classList.add(back ? "enter-back" : "enter");
-    }
     document.title = screen.dataset.title + " · Atode";
 
     if (id === "ticket") renderTicket();
@@ -109,9 +104,31 @@
     }
     $all("[data-error]", screen).forEach(function (el) { el.hidden = true; });
 
-    window.scrollTo(0, 0);
-    var h1 = $("h1", screen);
-    if (h1 && document.readyState === "complete") h1.focus({ preventScroll: true });
+    // Page transition: the old screen fades out, then the new one eases in
+    // (from the right going forward, from the left going back).
+    var outgoing = previous && previous !== id ? $("#" + previous) : null;
+    clearTimeout(swapTimer);
+    function swap() {
+      SCREENS.forEach(function (s) {
+        var el = $("#" + s);
+        el.hidden = s !== id;
+        el.classList.remove("leave");
+      });
+      if (outgoing) {
+        screen.classList.remove("enter", "enter-back");
+        void screen.offsetWidth; // restart the animation
+        screen.classList.add(back ? "enter-back" : "enter");
+      }
+      window.scrollTo(0, 0);
+      var h1 = $("h1", screen);
+      if (h1 && document.readyState === "complete") h1.focus({ preventScroll: true });
+    }
+    if (outgoing && !outgoing.hidden) {
+      outgoing.classList.add("leave");
+      swapTimer = setTimeout(swap, LEAVE_MS);
+    } else {
+      swap();
+    }
   }
 
   function current() { return location.hash.replace("#", "") || "welcome"; }
