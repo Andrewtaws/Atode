@@ -65,6 +65,9 @@
   // browser back button works and moderators can deep link to a screen.
   // #reset clears the device and starts onboarding again (for moderators).
 
+  // Screens visited, so a return to the previous one animates as "back".
+  var trail = [];
+
   function show(id) {
     if (id === "reset") {
       reset();
@@ -78,8 +81,19 @@
     if ((id === "review-item" || id === "review-act") && !reviewingWorry()) id = "review";
     if (id === "review-done" && !state.lastOutcome) id = "review";
 
+    var previous = trail[trail.length - 1];
+    var back = trail.length > 1 && trail[trail.length - 2] === id;
+    if (back) trail.pop();
+    else if (previous !== id) trail.push(id);
+
     SCREENS.forEach(function (s) { $("#" + s).hidden = s !== id; });
     var screen = $("#" + id);
+    // Page transition: slide in from the right going forward, from the left going back.
+    if (previous && previous !== id) {
+      screen.classList.remove("enter", "enter-back");
+      void screen.offsetWidth; // restart the animation
+      screen.classList.add(back ? "enter-back" : "enter");
+    }
     document.title = screen.dataset.title + " · Atode";
 
     if (id === "ticket") renderTicket();
@@ -404,6 +418,16 @@
   var start = location.hash ? current() : (state.onboarded ? "home" : "welcome");
   if (!location.hash && start === "home") history.replaceState(null, "", "#home");
   show(start);
+  // Loading screen: hold the logo briefly, then fade it away.
+  var splash = $("#splash");
+  if (splash) {
+    var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    setTimeout(function () {
+      splash.classList.add("splash-out");
+      setTimeout(function () { splash.remove(); }, reduce ? 0 : 400);
+    }, reduce ? 600 : 1300);
+  }
+
   window.addEventListener("load", function () {
     if (start !== "welcome") { var h1 = $("#" + start + " h1"); if (h1) h1.focus({ preventScroll: true }); }
   });
