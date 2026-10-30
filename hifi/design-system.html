@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Atode design system</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="tokens.css?v=4">
+  <link rel="stylesheet" href="styles.css?v=4">
+  <style>
+    /* Layout for this reference page only */
+    .ds { max-width: 960px; margin: 0 auto; padding: var(--space-8) var(--space-4) 64px; }
+    .ds > header { margin-bottom: var(--space-8); }
+    .ds > header p { max-width: 640px; margin-top: var(--space-2); }
+    .ds section { margin-top: 48px; }
+    .ds h2.section { font-size: 20px; font-weight: var(--weight-bold); color: var(--color-text-heading); margin-bottom: var(--space-2); }
+    .ds .section-note { max-width: 640px; margin-bottom: var(--space-5); }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--space-3); }
+    .demo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-5); align-items: start; }
+    .swatch { overflow: hidden; }
+    .swatch-chip { height: 64px; border-bottom: 1px solid var(--color-border); }
+    .swatch-meta { padding: 10px var(--space-3); font-size: var(--text-sm); line-height: 1.4; }
+    .swatch-meta code, .ds code { font-family: ui-monospace, Menlo, monospace; font-size: 13px; }
+    .swatch-meta .name { font-weight: var(--weight-semibold); color: var(--color-text-heading); }
+    .swatch-meta .val { color: var(--color-text-muted); }
+    .pass { color: #1d6b36; font-weight: var(--weight-semibold); }
+    .fail { color: var(--color-error); font-weight: var(--weight-semibold); }
+    .demo { padding: var(--space-5); display: flex; flex-direction: column; gap: var(--space-3); }
+    .demo-label { font-size: var(--text-sm); font-weight: var(--weight-semibold); color: var(--color-text-muted); }
+    .type-row { display: flex; align-items: baseline; gap: var(--space-4); padding: var(--space-3) 0; border-bottom: 1px solid var(--color-border); }
+    .type-row .meta { flex: 0 0 150px; font-size: var(--text-sm); color: var(--color-text-muted); }
+    .scale { display: flex; flex-wrap: wrap; gap: var(--space-4); align-items: flex-end; }
+    .scale div { text-align: center; font-size: var(--text-sm); color: var(--color-text-muted); }
+    .scale span { display: block; background: var(--color-primary); margin: 0 auto 6px; }
+    .radius-box { width: 72px; height: 72px; background: var(--color-surface); border: 1px solid var(--color-border-input); margin-bottom: 6px; }
+    .changes li { margin-top: 6px; }
+    .changes { padding-left: 20px; max-width: 720px; }
+  </style>
+</head>
+<body>
+  <main class="ds">
+    <header>
+      <img src="assets/logo.svg" width="100" height="27" alt="Atode">
+      <h1 class="h1-display" style="margin-top: var(--space-4)">Design system</h1>
+      <p class="body">Tokens and components for the Atode hi-fi prototype, taken from the Figma hi-fi onboarding (node 69:2274). Colours live in <code>tokens.css</code>: change one there and this page and the prototype both update. Contrast figures below are worked out live from the current values.</p>
+      <p style="margin-top: var(--space-3)"><a class="link" href="./">Open the prototype</a></p>
+    </header>
+
+    <section>
+      <h2 class="section">Colour roles</h2>
+      <p class="hint section-note">Components only use these roles. Each one points at a palette colour. Text roles show contrast against the page cream and white.</p>
+      <div class="grid" id="roles"></div>
+    </section>
+
+    <section>
+      <h2 class="section">Palette</h2>
+      <p class="hint section-note">The raw colours. Two are changed from Figma for accessibility, see “Changes from Figma” below.</p>
+      <div class="grid" id="palette"></div>
+    </section>
+
+    <section>
+      <h2 class="section">Type</h2>
+      <p class="hint section-note">Inter. Nothing smaller than 14px.</p>
+      <div id="type">
+        <div class="type-row"><span class="meta">Display · 28 bold</span><span class="h1-display" style="font-weight:700;color:var(--color-text-heading);line-height:1.2">Welcome to Atode</span></div>
+        <div class="type-row"><span class="meta">H1 · 26 bold</span><span style="font-size:var(--text-h1);font-weight:700;color:var(--color-text-heading);line-height:1.2">How it works</span></div>
+        <div class="type-row"><span class="meta">H2 · 18 semibold</span><span class="h2">Now, back to your day.</span></div>
+        <div class="type-row"><span class="meta">Large · 16</span><span class="body">Hand one over, and collect it later.</span></div>
+        <div class="type-row"><span class="meta">Body · 15</span><span class="hint">Pick a time most days. Not too close to bed.</span></div>
+        <div class="type-row"><span class="meta">Small · 14 muted</span><span class="small">A technique from cognitive behavioural therapy (CBT).</span></div>
+        <div class="type-row"><span class="meta">Label · 14</span><span class="step-label">Step 1 of 2</span></div>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="section">Space and shape</h2>
+      <p class="hint section-note">Spacing steps, corner radii and shadows.</p>
+      <div class="scale" id="space"></div>
+      <div class="scale" style="margin-top: var(--space-6)">
+        <div><div class="radius-box" style="border-radius:var(--radius-sm)"></div>sm · 12</div>
+        <div><div class="radius-box" style="border-radius:var(--radius-md)"></div>md · 16</div>
+        <div><div class="radius-box" style="border-radius:var(--radius-lg)"></div>lg · 20</div>
+        <div><div class="radius-box" style="border-radius:var(--radius-xl)"></div>xl · 24</div>
+        <div><div class="radius-box card" style="border:1px solid var(--color-border)"></div>card shadow</div>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="section">Components</h2>
+      <p class="hint section-note">The same classes the prototype uses.</p>
+      <div class="demo-grid">
+        <div class="demo card">
+          <p class="demo-label">Buttons · .btn-primary / -secondary / -danger</p>
+          <a class="btn btn-primary" href="#components">Get started</a>
+          <a class="btn btn-secondary" href="#components">Call NHS 111, then choose option 2</a>
+          <a class="btn btn-danger" href="#components">Call 999</a>
+          <button class="link" type="button">Text link</button>
+          <button class="back" type="button"><img src="assets/arrow-left.svg" width="20" height="20" alt=""> Back</button>
+        </div>
+
+        <div class="demo card">
+          <p class="demo-label">Header · .app-header + .help-pill</p>
+          <div class="app-header" style="padding:0;margin:0">
+            <img class="logo" src="assets/logo.svg" width="67" height="18" alt="Atode">
+            <a class="help-pill" href="#components">This can't wait</a>
+          </div>
+          <p class="demo-label" style="margin-top: var(--space-3)">Safety note · .safety</p>
+          <div class="safety">
+            <p class="safety-title"><span class="icon-badge"><img src="assets/alert-circle.svg" width="14" height="14" alt=""></span> Atode isn't for emergencies.</p>
+            <a class="link link-sm" href="#components">If you’re not safe, get help now →</a>
+          </div>
+        </div>
+
+        <div class="demo card">
+          <p class="demo-label">Step card · .step.card</p>
+          <ol class="steps">
+            <li class="step card"><span class="step-num" aria-hidden="true">1</span><div><p class="step-title">Notice it</p><p class="step-text">A worry pops up while you're busy.</p></div></li>
+          </ol>
+          <p class="demo-label" style="margin-top: var(--space-3)">Ticket · .ticket</p>
+          <div class="ticket">
+            <div class="ticket-top"><span class="ticket-no">Ticket No. 1</span><span>My work</span></div>
+            <p class="ticket-when">Collect at 6pm</p>
+            <p class="ticket-note">Atode is holding this one, so you don't have to.</p>
+          </div>
+        </div>
+
+        <div class="demo card">
+          <p class="demo-label">Radio option · .option</p>
+          <div class="options">
+            <label class="option"><input type="radio" name="ds-time" checked><span>Early evening · 6pm</span></label>
+            <label class="option"><input type="radio" name="ds-time"><span>After dinner · 8pm</span></label>
+          </div>
+          <p class="demo-label" style="margin-top: var(--space-3)">Switch · .switch</p>
+          <div class="reminder">
+            <div><label class="reminder-label" for="ds-switch">Remind me at 6pm</label><p class="reminder-note">The reminder never shows your worries.</p></div>
+            <input type="checkbox" role="switch" class="switch" id="ds-switch" checked>
+          </div>
+        </div>
+
+        <div class="demo card">
+          <p class="demo-label">Choice tiles · .tile / .tile-pill</p>
+          <div class="tiles">
+            <label class="tile"><input type="radio" name="ds-topic" checked><span>My work</span></label>
+            <label class="tile"><input type="radio" name="ds-topic"><span>Money</span></label>
+            <label class="tile tile-pill"><input type="radio" name="ds-refocus"><span>A short walk</span></label>
+            <label class="tile tile-pill"><input type="radio" name="ds-refocus" checked><span>5 slow breaths</span></label>
+          </div>
+          <div class="words" style="margin-top: var(--space-3)">
+            <label for="ds-words">A few words (optional)</label>
+            <textarea id="ds-words" rows="2" placeholder="Just enough to remember it by"></textarea>
+          </div>
+        </div>
+
+        <div class="demo card">
+          <p class="demo-label">Illustration slots · .illus-hero / -clock / -thought / -hand</p>
+          <div class="illus illus-hero" style="height:120px">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7a2 2 0 1 1 2 2c-1 0-2 .6-2 1.6V12"/><path d="M12 12 3 18h18l-9-6"/></svg>
+            <img src="assets/illustrations/welcome.png" alt="" onerror="this.remove()">
+          </div>
+          <div class="illus illus-thought">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M7 15a4 4 0 0 1-.6-7.96A5 5 0 0 1 16 6a4.5 4.5 0 0 1 1.5 8.75A3 3 0 0 1 15 15H7Z"/></svg>
+            <img src="assets/illustrations/thought.png" alt="" onerror="this.remove()">
+          </div>
+          <p class="small">Drop a PNG into <code>assets/illustrations/</code> with the same name and it replaces the icon.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="section">Changes from Figma</h2>
+      <p class="hint section-note">Made so every screen meets the project rules: text 14px or larger, 4.5:1 for text, 3:1 for controls.</p>
+      <ul class="changes body">
+        <li>Muted text <code>#7a6e64</code> → <code>#716559</code>. The Figma colour is 4.4:1 on the cream page.</li>
+        <li>Step numbers: white on amber is 2:1, so the numbers are dark brown.</li>
+        <li>Placeholder <code>#c8bea8</code> (1.8:1) → muted text colour.</li>
+        <li>Step label 13px → 14px.</li>
+        <li>Input, radio and switch borders use <code>#8a7e72</code> so the controls are visible (the Figma sand border is 1.3:1).</li>
+        <li>Selected tiles and pills get a tick, so the choice doesn't rely on colour alone.</li>
+      </ul>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      var root = getComputedStyle(document.documentElement);
+      var css = Array.prototype.slice.call(document.styleSheets).filter(function (s) {
+        return s.href && s.href.indexOf("tokens.css") !== -1;
+      })[0];
+      var names = [];
+      try {
+        Array.prototype.forEach.call(css.cssRules, function (rule) {
+          if (rule.selectorText !== ":root") return;
+          for (var i = 0; i < rule.style.length; i++) names.push(rule.style[i]);
+        });
+      } catch (e) { /* file:// can block reading rules */ }
+
+      function hex(v) {
+        v = v.trim();
+        if (v[0] === "#") return v.length === 4 ? "#" + v[1] + v[1] + v[2] + v[2] + v[3] + v[3] : v.toLowerCase();
+        return null;
+      }
+      function lum(h) {
+        var c = [1, 3, 5].map(function (i) {
+          var x = parseInt(h.substr(i, 2), 16) / 255;
+          return x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4);
+        });
+        return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+      }
+      function ratio(a, b) {
+        var x = lum(a), y = lum(b);
+        return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05);
+      }
+      function badge(r, min) {
+        return '<span class="' + (r >= min ? "pass" : "fail") + '">' + r.toFixed(2) + ":1</span>";
+      }
+      function resolve(name) { return hex(root.getPropertyValue(name)) || ""; }
+      function rawRef(name) {
+        var raw = "";
+        Array.prototype.forEach.call(css.cssRules, function (rule) {
+          if (rule.selectorText === ":root") raw = rule.style.getPropertyValue(name).trim();
+        });
+        var m = raw.match(/var\((--[\w-]+)\)/);
+        return m ? m[1] : "";
+      }
+
+      var page = resolve("--color-page"), white = "#ffffff";
+      var roles = document.getElementById("roles"), palette = document.getElementById("palette");
+
+      names.forEach(function (n) {
+        var v = resolve(n);
+        if (!v) return;
+        var isRole = n.indexOf("--color-") === 0;
+        var extra = "";
+        if (isRole && /text|error/.test(n) && n.indexOf("on-") === -1) {
+          extra = "<br>on page " + badge(ratio(v, page), 4.5) + " · on white " + badge(ratio(v, white), 4.5);
+        } else if (n === "--color-text-on-primary") {
+          extra = "<br>on primary " + badge(ratio(v, resolve("--color-primary")), 4.5);
+        } else if (n === "--color-text-on-danger") {
+          extra = "<br>on danger " + badge(ratio(v, resolve("--color-danger")), 4.5);
+        } else if (n === "--color-border-input" || n === "--color-focus") {
+          extra = "<br>on white " + badge(ratio(v, white), 3);
+        }
+        var card = document.createElement("div");
+        card.className = "swatch card";
+        card.innerHTML = '<div class="swatch-chip" style="background:var(' + n + ')"></div>' +
+          '<div class="swatch-meta"><code class="name">' + n + '</code><br><span class="val">' +
+          (isRole ? rawRef(n) + " · " : "") + v + "</span>" + extra + "</div>";
+        (isRole ? roles : palette).appendChild(card);
+      });
+
+      var space = document.getElementById("space");
+      names.filter(function (n) { return /^--space-\d/.test(n); }).forEach(function (n) {
+        var px = parseInt(root.getPropertyValue(n), 10);
+        var d = document.createElement("div");
+        d.innerHTML = '<span style="width:' + px + "px;height:" + px + 'px"></span>' + n.replace("--space-", "space ") + " · " + px;
+        space.appendChild(d);
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,22 +1,5 @@
-/* Atode onboarding prototype
-   Values come from Figma "Onboarding and first worry" (node 41:1311). */
-
-:root {
-  --ink: #1f1f1f;
-  --ink-heading: #292929;
-  --ink-muted: #4d4d4d;
-  --line: #6b6b6b;
-  --line-strong: #3d3d3d;
-  --line-soft: #c4c4c4;
-  --action-bg: #e7e7e7;
-  --action-line: #707070;
-  --selected-bg: #e4e4e4;
-  --ticket-bg: #f4f4f4;
-  --page-bg: #f0f0f0;
-  --white: #ffffff;
-  --gutter: 24px;
-  --font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-}
+/* Atode hi-fi components
+   Uses only the role tokens from tokens.css. Values come from Figma node 69:2274. */
 
 *, *::before, *::after { box-sizing: border-box; }
 
@@ -24,11 +7,11 @@ html { -webkit-text-size-adjust: 100%; }
 
 body {
   margin: 0;
-  background: var(--white);
-  color: var(--ink);
+  background: var(--color-page);
+  color: var(--color-text);
   font-family: var(--font);
-  font-size: 16px;
-  line-height: 1.5;
+  font-size: var(--text-md);
+  line-height: var(--leading-body);
 }
 
 h1, h2, p, ol, fieldset, legend { margin: 0; padding: 0; }
@@ -37,7 +20,7 @@ button, input, textarea { font: inherit; color: inherit; }
 [hidden] { display: none !important; }
 
 :focus-visible {
-  outline: 3px solid var(--ink);
+  outline: 3px solid var(--color-focus);
   outline-offset: 2px;
 }
 h1:focus { outline: none; }
@@ -57,16 +40,18 @@ h1:focus { outline: none; }
 .phone {
   min-height: 100vh;
   min-height: 100dvh;
-  background: var(--white);
+  background: var(--color-page);
 }
 
 @media (min-width: 480px) {
-  body { background: var(--page-bg); padding: 24px 0; }
+  body { padding: var(--space-6) 0; }
   .phone {
     width: 390px;
     min-height: 844px;
     margin: 0 auto;
-    border: 1px solid #d0d0d0;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
   }
 }
 
@@ -77,169 +62,244 @@ h1:focus { outline: none; }
   padding-bottom: env(safe-area-inset-bottom);
 }
 
+/* Header: logo and "This can't wait" */
+
 .app-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  min-height: 32px;
-  padding: calc(8px + env(safe-area-inset-top)) var(--gutter) 6px;
+  gap: var(--space-3);
+  min-height: 46px;
+  padding: calc(var(--space-4) + env(safe-area-inset-top)) var(--gutter) 0;
+  margin-bottom: var(--space-5);
 }
-.app-header.has-help { min-height: 60px; padding-bottom: 16px; }
 .logo { display: block; }
 
-.header-spacer { height: 32px; flex-shrink: 0; }
+.help-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 46px;
+  padding: 13px 14px;
+  background: var(--color-page);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  line-height: 1.3;
+  color: var(--color-text);
+  text-decoration: none;
+  white-space: nowrap;
+}
 
 .content {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  padding: 0 var(--gutter) 24px;
+  gap: var(--space-5);
+  padding: 0 var(--gutter) var(--space-6);
 }
 
-.form-fill { flex: 1; display: flex; flex-direction: column; gap: 20px; }
+.form-fill { flex: 1; display: flex; flex-direction: column; gap: var(--space-4); }
 
 .push {
   margin-top: auto;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: var(--space-4);
 }
 .push.center { align-items: center; }
 
 /* Type */
 
 h1 {
-  font-size: 26px;
-  font-weight: 600;
-  line-height: 1.2;
-  color: var(--ink-heading);
+  font-size: var(--text-h1);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-tight);
+  color: var(--color-text-heading);
 }
-.h1-lg { font-size: 28px; color: var(--ink); }
+.h1-display { font-size: var(--text-display); }
 
-.title-group { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+.h2 {
+  font-size: var(--text-h2);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-snug);
+  color: var(--color-text-heading);
+}
 
+.title-group { display: flex; flex-direction: column; gap: var(--space-2); width: 100%; }
+
+/* Figma has 13px; raised to the 14px minimum. */
 .step-label {
-  font-size: 14px;
-  line-height: 22px;
-  letter-spacing: 0.2px;
-  color: var(--ink-heading);
+  font-size: var(--text-sm);
+  line-height: 20px;
+  color: var(--color-text-muted);
 }
 
-.hint { font-size: 16px; line-height: 1.5; color: var(--ink-muted); }
+.body { font-size: var(--text-lg); line-height: var(--leading-body); color: var(--color-text-body); }
+.hint { font-size: var(--text-md); line-height: var(--leading-body); color: var(--color-text-body); }
+.small { font-size: var(--text-sm); line-height: var(--leading-body); color: var(--color-text-muted); }
 
-.intro { max-width: 308px; font-size: 17px; line-height: 1.5; color: var(--ink); }
-.intro p + p { margin-top: 25.5px; }
-.intro-small { font-size: 15px; }
+.stack-sm > * + * { margin-top: 10px; }
 
 .link {
-  font-size: 16px;
-  line-height: 1.45;
-  color: #0a0a0a;
+  font-size: var(--text-md);
+  font-weight: var(--weight-medium);
+  line-height: var(--leading-body);
+  color: var(--color-text);
   text-decoration: underline;
-  text-underline-offset: 2px;
+  text-underline-offset: 3px;
   background: none;
   border: 0;
   padding: 0;
   cursor: pointer;
 }
-
-.footnote { font-size: 15px; line-height: 1.5; color: var(--ink-muted); text-align: center; }
+.link-sm { font-size: var(--text-sm); }
 
 .error {
-  font-size: 16px;
-  font-weight: 600;
-  color: #b00020;
-  border-left: 4px solid #b00020;
+  font-size: var(--text-md);
+  font-weight: var(--weight-semibold);
+  color: var(--color-error);
+  border-left: 4px solid var(--color-error);
   padding-left: 10px;
 }
 
 /* Buttons */
 
-.action {
+.btn {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
-  min-height: 48px;
-  padding: 12px 20px;
-  background: var(--action-bg);
-  border: 1.5px solid var(--action-line);
-  border-radius: 4px;
-  font-size: 15px;
-  font-weight: 600;
-  line-height: 22px;
-  letter-spacing: 0.2px;
-  color: var(--ink-heading);
+  min-height: var(--button-height);
+  padding: 15px var(--space-4);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  line-height: 1.3;
+  text-align: center;
   text-decoration: none;
   cursor: pointer;
 }
-.action:active { background: #d9d9d9; }
+.btn-primary {
+  background: var(--color-primary);
+  border-color: var(--color-primary-border);
+  color: var(--color-text-on-primary);
+}
+.btn-primary:active { background: var(--color-primary-pressed); }
+.btn-secondary {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text);
+  font-weight: var(--weight-medium);
+}
+.btn-secondary:active { background: var(--color-surface-warm); }
+.btn-danger {
+  background: var(--color-danger);
+  border-color: var(--color-danger);
+  color: var(--color-text-on-danger);
+}
 
 .back {
   display: inline-flex;
-  align-items: flex-end;
-  gap: 4px;
+  align-items: center;
+  gap: 6px;
   align-self: flex-start;
   min-height: 24px;
   padding: 0;
   background: none;
   border: 0;
-  font-size: 15px;
+  font-size: var(--text-md);
+  font-weight: var(--weight-medium);
   line-height: 22px;
-  letter-spacing: 0.2px;
-  color: var(--ink-heading);
+  color: var(--color-text-heading);
   cursor: pointer;
 }
 
-.help-pill {
+/* Surfaces */
+
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+}
+
+/* Illustration slot. The picture comes from assets/illustrations/; if it's
+   missing, the simple icon underneath shows instead. */
+.illus {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 176px;
-  min-height: 36px;
-  padding: 8px;
-  border: 1px solid var(--line);
-  border-radius: 24px;
-  font-size: 14px;
-  line-height: 1.3;
-  color: var(--ink);
-  text-decoration: none;
-  white-space: nowrap;
+  flex-shrink: 0;
+  overflow: hidden;
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-illustration);
+  color: var(--color-primary-border);
 }
+.illus img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.illus-hero {
+  height: 220px;
+  background: var(--color-hero);
+  border: 1px solid var(--color-border-hero);
+  border-radius: var(--radius-xl);
+  box-shadow: none;
+  color: var(--color-text);
+}
+.illus-clock { height: 160px; }
+.illus-thought { height: 100px; }
+.illus-hand { height: 150px; }
 
-/* 1. Welcome */
+/* Safety note */
 
-.emergency {
+.safety {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 10px;
-  background: var(--action-bg);
-  border: 1px solid var(--action-line);
+  gap: var(--space-2);
+  padding: 14px;
+  background: var(--color-surface-warm);
+  border: 1px solid var(--color-border-warm);
+  border-radius: var(--radius-md);
 }
-.emergency-title {
+.safety-title {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 17px;
-  font-weight: 600;
-  line-height: 1.3;
+  gap: 10px;
+  font-size: var(--text-md);
+  font-weight: var(--weight-semibold);
+  line-height: 1.6;
+  color: var(--color-text-heading);
 }
-.emergency .link { color: #000; }
+.icon-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-warm);
+  border-radius: 50%;
+}
 
-/* 2. How it works */
+/* Steps */
 
-.steps { list-style: none; display: flex; flex-direction: column; gap: 16px; }
+.steps { list-style: none; display: flex; flex-direction: column; gap: var(--space-3); }
 .step {
   display: flex;
   align-items: flex-start;
-  gap: 16px;
-  padding: 16px;
-  border: 1px solid var(--line-soft);
-  border-radius: 12px;
+  gap: var(--space-4);
+  padding: var(--space-4);
 }
+/* Figma has white numbers on amber (2:1). Dark text keeps the look and passes. */
 .step-num {
   display: flex;
   align-items: center;
@@ -247,33 +307,35 @@ h1 {
   flex-shrink: 0;
   width: 36px;
   height: 36px;
-  border: 2px solid var(--line-strong);
-  border-radius: 18px;
-  font-size: 16px;
-  font-weight: 600;
+  background: var(--color-primary);
+  border-radius: 50%;
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
   line-height: 1;
+  color: var(--color-text-on-primary);
 }
-.step-title { font-size: 17px; font-weight: 600; line-height: 1.5; }
-.step-text { margin-top: 4px; font-size: 16px; line-height: 1.5; color: var(--ink-muted); }
+.step-title { font-size: var(--text-lg); font-weight: var(--weight-semibold); line-height: var(--leading-body); color: var(--color-text-heading); }
+.step-text { margin-top: 2px; font-size: var(--text-md); line-height: var(--leading-body); color: var(--color-text-body); }
 
-/* 3. Collection time: radio cards and switch */
+/* Radio options (collection time) */
 
-.fieldset { display: flex; flex-direction: column; gap: 20px; }
-.fieldset > legend { margin-bottom: 20px; }
-.fieldset > legend + * { margin-top: 0; }
+.fieldset { display: flex; flex-direction: column; gap: var(--space-4); }
+.fieldset > legend { margin-bottom: var(--space-4); }
 
-.options { display: flex; flex-direction: column; gap: 12px; }
+.options { display: flex; flex-direction: column; gap: 10px; }
 
 .option {
-  position: relative;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 18px 16px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  font-size: 16px;
-  line-height: 1.5;
+  gap: var(--space-3);
+  min-height: 54px;
+  padding: var(--space-4);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-lg);
+  line-height: 22px;
+  color: var(--color-text);
   cursor: pointer;
 }
 .option input {
@@ -283,40 +345,46 @@ h1 {
   width: 14px;
   height: 14px;
   margin: 0;
-  border: 2px solid var(--line);
+  border: 2px solid var(--color-border-input);
   border-radius: 50%;
 }
-.option input:checked { border: 0; background: var(--ink); }
+.option input:checked {
+  border: 4px solid var(--color-text-heading);
+  background: var(--color-surface);
+}
 .option input:focus-visible { outline: none; }
 .option:has(input:checked) {
-  background: var(--selected-bg);
-  border: 2px solid var(--ink);
-  padding: 17px 15px;
-  font-weight: 600;
+  background: var(--color-selected);
+  border: 2px solid var(--color-selected-border);
+  padding: 15px;
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-heading);
 }
-.option:has(input:focus-visible) { outline: 3px solid var(--ink); outline-offset: 2px; }
+.option:has(input:focus-visible) { outline: 3px solid var(--color-focus); outline-offset: 2px; }
 
-.other-time { display: flex; align-items: center; gap: 12px; padding: 0 4px; }
+.other-time { display: flex; align-items: center; gap: var(--space-3); padding: 0 var(--space-1); }
 .other-time input {
-  min-height: 48px;
-  padding: 8px 12px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--white);
-  font-size: 16px;
+  min-height: var(--tap-min);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border-input);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  font-size: var(--text-lg);
 }
+
+/* Reminder row and switch */
 
 .reminder {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 6px;
+  gap: var(--space-3);
   padding: 14px 0;
-  border-top: 1px solid var(--line-soft);
-  border-bottom: 1px solid var(--line-soft);
+  border-top: 1px solid var(--color-border-warm);
+  border-bottom: 1px solid var(--color-border-warm);
 }
-.reminder-label { display: block; font-size: 16px; line-height: 1.5; cursor: pointer; }
-.reminder-note { margin-top: 2px; font-size: 15px; line-height: 1.5; color: var(--ink-muted); }
+.reminder-label { display: block; font-size: var(--text-lg); line-height: var(--leading-body); color: var(--color-text-heading); cursor: pointer; }
+.reminder-note { margin-top: 2px; font-size: var(--text-sm); line-height: var(--leading-body); color: var(--color-text-muted); }
 
 .switch {
   appearance: none;
@@ -326,9 +394,9 @@ h1 {
   width: 52px;
   height: 32px;
   margin: 0;
-  border: 2px solid var(--line);
-  border-radius: 16px;
-  background: var(--white);
+  border: 2px solid var(--color-border-input);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
   cursor: pointer;
 }
 .switch::after {
@@ -339,163 +407,138 @@ h1 {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: var(--line);
+  background: var(--color-border-input);
 }
-.switch:checked { background: var(--ink); border-color: var(--ink); }
-.switch:checked::after { left: 22px; background: var(--white); }
+.switch:checked { background: var(--color-primary); border-color: var(--color-primary-border); }
+.switch:checked::after { left: 22px; background: var(--color-surface); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); }
 @media (prefers-reduced-motion: no-preference) {
   .switch::after { transition: left 0.15s ease; }
 }
 
-/* 4. Add first worry: topic tiles and words */
+/* Choice tiles (topics) and pills (refocus) */
 
-.tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .tile {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 6px;
   min-height: 65px;
   padding: 12px 8px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  font-size: 16px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-lg);
   line-height: 1.3;
   text-align: center;
+  color: var(--color-text);
   cursor: pointer;
 }
 .tile-wide { grid-column: 1 / -1; }
+.tile-pill { min-height: 47px; padding: 12px; }
 .tile input {
   position: absolute;
   opacity: 0;
   width: 1px;
   height: 1px;
 }
+/* A tick as well as colour, so the choice doesn't rely on colour alone. */
 .tile:has(input:checked) {
-  background: var(--selected-bg);
-  border: 2px solid var(--ink);
+  background: var(--color-selected);
+  border: 2px solid var(--color-selected-border);
   padding: 11px 7px;
-  font-weight: 600;
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-heading);
 }
-.tile:has(input:focus-visible) { outline: 3px solid var(--ink); outline-offset: 2px; }
+.tile-pill:has(input:checked) { padding: 11px; }
+.tile:has(input:checked)::before { content: "✓"; font-weight: var(--weight-bold); }
+.tile:has(input:focus-visible) { outline: 3px solid var(--color-focus); outline-offset: 2px; }
 
-#worry .fieldset { gap: 20px; }
+/* Text input */
 
-.words { display: flex; flex-direction: column; gap: 12px; margin-top: 4px; }
-.words label { font-size: 16px; line-height: 1.3; }
+.words { display: flex; flex-direction: column; gap: var(--space-2); }
+.words label { font-size: var(--text-sm); line-height: 1.3; color: var(--color-text-muted); }
 .words textarea {
   width: 100%;
-  min-height: 77px;
-  padding: 12px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--white);
-  font-size: 16px;
+  min-height: 72px;
+  padding: var(--space-4);
+  border: 1px solid var(--color-border-input);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  font-size: var(--text-lg);
   line-height: 1.3;
+  color: var(--color-text-heading);
   resize: vertical;
 }
-.words textarea::placeholder { color: var(--line); opacity: 1; }
+/* Figma #c8bea8 is 1.8:1; muted text keeps the hint readable. */
+.words textarea::placeholder { color: var(--color-text-muted); opacity: 1; }
 
-.skip { align-self: center; font-size: 15px; color: #000; }
+.skip { align-self: center; font-size: var(--text-sm); }
 
-/* 5. Ticket */
+/* Ticket */
 
 .ticket {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding: 20px;
-  background: var(--ticket-bg);
-  border: 2px dashed var(--line);
-  border-radius: 12px;
+  padding: var(--space-5);
+  background: var(--color-surface-warm);
+  border: 2px dashed var(--color-primary);
+  border-radius: var(--radius-md);
 }
 .ticket-top {
   display: flex;
   justify-content: space-between;
-  gap: 12px;
-  font-size: 14px;
-  line-height: 1.5;
-  color: var(--ink-muted);
+  gap: var(--space-3);
+  font-size: var(--text-sm);
+  line-height: 20px;
+  color: var(--color-text-muted);
 }
-.ticket-no { font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
-.ticket-when { font-size: 28px; font-weight: 600; line-height: 1.2; }
-.ticket-note { font-size: 16px; line-height: 1.5; color: var(--ink-muted); }
-.ticket-actions { display: flex; justify-content: space-between; padding-top: 8px; }
-.link-plain {
-  padding: 0;
-  background: none;
-  border: 0;
-  font-size: 16px;
-  line-height: 1.5;
-  color: var(--ink);
-  text-decoration: underline;
-  text-underline-offset: 2px;
-  cursor: pointer;
-}
+.ticket-no { font-weight: var(--weight-semibold); letter-spacing: 1px; text-transform: uppercase; }
+.ticket-when { font-size: var(--text-h1); font-weight: var(--weight-bold); line-height: var(--leading-tight); color: var(--color-text-heading); }
+.ticket-note { font-size: var(--text-md); line-height: var(--leading-body); color: var(--color-text-body); }
+.ticket-actions { display: flex; justify-content: space-between; padding-top: var(--space-2); }
 
-.refocus-title { font-size: 20px; font-weight: 600; line-height: 1.3; margin-bottom: 20px; }
+.footnote { font-size: var(--text-sm); line-height: var(--leading-body); color: var(--color-text-muted); text-align: center; }
 
-/* 6. Help */
+/* Help */
 
 .contact { display: flex; flex-direction: column; gap: 6px; }
-.contact-label { font-size: 15px; font-weight: 600; line-height: 1.5; }
-.contact-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 48px;
-  padding: 15px 16px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  font-size: 16px;
-  line-height: 1.3;
-  text-align: center;
-  color: var(--ink);
-  text-decoration: none;
-}
-.contact-primary { background: var(--selected-bg); border-color: var(--line-strong); font-weight: 600; }
+.contact-label { font-size: var(--text-sm); font-weight: var(--weight-semibold); line-height: 20px; color: var(--color-text-heading); }
 
-.noscript { padding: 24px; }
-
-/* Add a worry: dashboard and entry type */
-
-.lead { font-size: 16px; line-height: 1.45; color: var(--ink-heading); }
-.lead p + p { margin-top: 23px; }
+/* Home and add (no hi-fi frames yet: built from the same parts) */
 
 .panel {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 10px;
-  width: 100%;
-  padding: 16px;
-  border: 1px solid var(--action-line);
-  border-radius: 4px;
+  gap: var(--space-3);
+  padding: var(--space-5);
 }
-.panel-tall { min-height: 240px; padding-top: 32px; }
+.panel-hero { gap: var(--space-4); }
 
-.schedule { display: flex; flex-direction: column; gap: 8px; width: 100%; }
-.schedule-label { font-size: 16px; font-weight: 400; line-height: normal; color: var(--ink-heading); }
-.panel-label { align-self: stretch; }
+.schedule { display: flex; flex-direction: column; gap: var(--space-1); }
+.schedule-label { font-size: var(--text-sm); font-weight: var(--weight-semibold); line-height: 20px; color: var(--color-text-muted); }
 .schedule-time {
-  font-size: 26px;
-  font-weight: 600;
-  line-height: normal;
-  color: var(--ink-heading);
+  font-size: var(--text-h1);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-tight);
+  color: var(--color-text-heading);
   font-variant-numeric: tabular-nums;
 }
-.schedule-status { font-size: 15px; line-height: 1.45; color: #555555; }
+.schedule-status { font-size: var(--text-sm); line-height: var(--leading-body); color: var(--color-text-muted); }
 
-/* Figma has 12px here; raised to 14px for the minimum text size. */
 .early-link {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
+  align-self: flex-start;
   min-height: 24px;
-  font-size: 14px;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
   line-height: 22px;
-  letter-spacing: 0.2px;
-  color: var(--ink-heading);
+  color: var(--color-text);
 }
-.early-link span { text-decoration: underline; text-underline-offset: 2px; }
+.early-link span { text-decoration: underline; text-underline-offset: 3px; }
+
+.noscript { padding: var(--space-6); }
