@@ -9,8 +9,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
-  <link rel="stylesheet" href="tokens.css?v=7">
-  <link rel="stylesheet" href="styles.css?v=7">
+  <link rel="stylesheet" href="tokens.css?v=8">
+  <link rel="stylesheet" href="styles.css?v=8">
 </head>
 <body>
   <div class="phone">
@@ -347,7 +347,12 @@
         <a class="help-pill" href="#help">This can't wait</a>
       </header>
       <main class="content">
-        <h1 tabindex="-1" class="h1-display">Review my parked worries</h1>
+        <div class="title-group">
+          <a class="back" href="#home">
+            <img src="assets/arrow-left.svg" width="20" height="20" alt=""> Back
+          </a>
+          <h1 tabindex="-1" class="h1-display">Review my parked worries</h1>
+        </div>
         <div class="tabs" role="group" aria-label="Show">
           <button type="button" class="tab" data-tab="today" aria-pressed="true">Today’s notes</button>
           <button type="button" class="tab" data-tab="passed" aria-pressed="false">Passed worries</button>
@@ -480,6 +485,6 @@
   </div>
   <div id="announcer" class="visually-hidden" aria-live="polite"></div>
   <noscript><p class="noscript">Atode needs JavaScript turned on.</p></noscript>
-  <script src="app.js?v=7"></script>
+  <script src="app.js?v=8"></script>
 </body>
 </html>

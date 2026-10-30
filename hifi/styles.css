@@ -213,6 +213,7 @@ h1 {
   font-weight: var(--weight-medium);
   line-height: 22px;
   color: var(--color-text-heading);
+  text-decoration: none;
   cursor: pointer;
 }
 
