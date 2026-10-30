@@ -21,6 +21,10 @@ Worry time ("Review worries early") and Detailed entry aren't designed yet, so t
 
 Once onboarding is done, opening the app again goes straight to Home. To reset a device between participants, open the address with `#reset` on the end.
 
+## Hi-fi version
+
+The hi-fidelity design lives separately in [`hifi/`](hifi/) and is served at `/hifi/`. Changes there don't touch the wireframe prototype.
+
 ## Run it
 
 No build step. Open `index.html` in a browser, or serve the folder:

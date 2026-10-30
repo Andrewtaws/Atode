@@ -1,0 +1,102 @@
+/* Atode design tokens
+   Source: Figma "Designs-for-Rapid-Ideation", hi-fi onboarding (node 69:2274).
+
+   Two layers:
+   1. Palette: raw colours, named for what they are. Change a colour here.
+   2. Roles: what each colour is used for. Components only use roles,
+      so a restyle is usually a change to this file alone.
+
+   See design-system.html for every token and component on one page. */
+
+:root {
+  /* 1. Palette */
+  --cream-100: #fff8ee;
+  --cream-200: #f5f0e8;
+  --sand-200: #e8e0d0;
+  --sand-300: #e8d8b8;
+  --sand-500: #8a7e72;   /* not in Figma: input borders need 3:1 */
+  --brown-500: #716559;  /* Figma #7a6e64, darkened to pass 4.5:1 on cream */
+  --brown-600: #5c5347;
+  --brown-800: #3d2c1e;
+  --brown-900: #2c1a0e;
+  --brown-950: #1f1507;
+  --amber-500: #f5a623;
+  --amber-600: #e8941a;
+  --sun-400: #f5c842;
+  --sun-300: #e8d870;
+  --red-700: #b00020;
+  --white: #ffffff;
+
+  /* 2. Roles: surfaces */
+  --color-page: var(--cream-200);
+  --color-surface: var(--white);
+  --color-surface-warm: var(--cream-100);
+  --color-hero: var(--sun-400);
+
+  /* Roles: text */
+  --color-text-heading: var(--brown-950);
+  --color-text: var(--brown-800);
+  --color-text-body: var(--brown-600);
+  --color-text-muted: var(--brown-500);
+  --color-text-on-primary: var(--brown-950);
+  --color-text-on-danger: var(--white);
+  --color-error: var(--red-700);
+
+  /* Roles: lines */
+  --color-border: var(--sand-200);
+  --color-border-warm: var(--sand-300);
+  --color-border-input: var(--sand-500);
+  --color-border-hero: var(--sun-300);
+  --color-border-strong: var(--brown-800);
+
+  /* Roles: actions */
+  --color-primary: var(--amber-500);
+  --color-primary-border: var(--amber-600);
+  --color-primary-pressed: var(--amber-600);
+  --color-danger: var(--brown-900);
+  --color-selected: var(--amber-500);
+  --color-selected-border: var(--amber-600);
+  --color-focus: var(--brown-950);
+
+  /* Type */
+  --font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  --text-display: 28px;  /* welcome h1 */
+  --text-h1: 26px;
+  --text-h2: 18px;
+  --text-lg: 16px;       /* buttons, step titles, tiles */
+  --text-md: 15px;       /* body */
+  --text-sm: 14px;       /* smallest allowed size */
+
+  --leading-tight: 1.2;
+  --leading-snug: 1.35;
+  --leading-body: 1.5;
+
+  /* Space */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --gutter: var(--space-6);
+
+  /* Shape */
+  --radius-sm: 12px;     /* options, tiles, inputs */
+  --radius-md: 16px;     /* buttons, cards */
+  --radius-lg: 20px;     /* illustration boxes */
+  --radius-xl: 24px;     /* hero */
+  --radius-pill: 999px;
+
+  --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.04);
+  --shadow-illustration: 0 4px 16px rgba(0, 0, 0, 0.04);
+
+  /* Sizes */
+  --tap-min: 48px;
+  --button-height: 53px;
+}
