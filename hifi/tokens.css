@@ -100,11 +100,13 @@
   --tap-min: 48px;
   --button-height: 53px;
 
-  /* Motion. Kept short and small; turned off for "reduce motion". */
+  /* Motion. Soft and small. With "reduce motion", screens only fade. */
   --motion-fast: 150ms;     /* presses, selections */
-  --motion-page: 260ms;     /* screen changes */
+  --motion-leave: 180ms;    /* old screen fading out (keep in step with LEAVE_MS in app.js) */
+  --motion-page: 480ms;     /* new screen easing in */
   --motion-slow: 420ms;     /* the ticket arriving */
-  --motion-distance: 16px;  /* how far a screen slides in */
+  --motion-distance: 12px;  /* how far a screen slides in */
   --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
   --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --ease-soft: cubic-bezier(0.25, 0.1, 0.25, 1);
 }

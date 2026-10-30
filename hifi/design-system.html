@@ -7,8 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
-  <link rel="stylesheet" href="tokens.css?v=9">
-  <link rel="stylesheet" href="styles.css?v=9">
+  <link rel="stylesheet" href="tokens.css?v=10">
+  <link rel="stylesheet" href="styles.css?v=10">
   <style>
     /* Layout for this reference page only */
     .ds { max-width: 960px; margin: 0 auto; padding: var(--space-8) var(--space-4) 64px; }
@@ -89,10 +89,10 @@
 
     <section>
       <h2 class="section">Motion</h2>
-      <p class="hint section-note">Small and quick. Everything here switches off when the phone is set to reduce motion.</p>
+      <p class="hint section-note">Soft and small. When the phone is set to reduce motion, movement switches off and screens only fade.</p>
       <ul class="changes body">
         <li><strong>Loading screen:</strong> logo rises in, amber bar fills, then it fades away (about 1.3s, every time the app opens).</li>
-        <li><strong>Screen changes:</strong> slide in 16px and fade, from the right going forward and from the left going back (<code>--motion-page</code>, 260ms).</li>
+        <li><strong>Screen changes:</strong> the old screen fades out (<code>--motion-leave</code>, 180ms), then the new one fades and slides in 12px, from the right going forward and from the left going back (<code>--motion-page</code>, 480ms). With reduce motion it only fades.</li>
         <li><strong>Ticket:</strong> lands with a slight spring just after its screen (<code>--motion-slow</code>, 420ms).</li>
         <li><strong>Presses and choices:</strong> buttons and tiles shrink to 98% when pressed, the selected tick pops in, and colours ease (<code>--motion-fast</code>, 150ms).</li>
         <li><strong>Errors:</strong> a short side-to-side nudge when a message appears.</li>

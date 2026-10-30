@@ -681,6 +681,11 @@ button.worry-item:active { background: var(--color-surface-warm); }
 }
 .splash-out { opacity: 0; pointer-events: none; }
 
+/* Screen changes fade for everyone (fading isn't movement); the slide
+   is added below only when motion is welcome. */
+.screen.enter, .screen.enter-back { animation: screen-fade var(--motion-page) var(--ease-soft) both; }
+.screen.leave { opacity: 0; transition: opacity var(--motion-leave) ease; }
+
 /* Motion: only when the person hasn't asked to reduce motion */
 
 @media (prefers-reduced-motion: no-preference) {
@@ -690,8 +695,8 @@ button.worry-item:active { background: var(--color-surface-warm); }
   .splash-out { transition: opacity 400ms ease; }
   .splash-out .splash-mark { transform: scale(1.04); transition: transform 400ms var(--ease-out); }
 
-  .screen.enter { animation: screen-in var(--motion-page) var(--ease-out) both; }
-  .screen.enter-back { animation: screen-in-back var(--motion-page) var(--ease-out) both; }
+  .screen.enter { animation-name: screen-in; }
+  .screen.enter-back { animation-name: screen-in-back; }
 
   /* The ticket lands a beat after the screen. */
   #ticket.enter .ticket { animation: ticket-in var(--motion-slow) var(--ease-spring) 80ms both; }
@@ -719,6 +724,10 @@ button.worry-item:active { background: var(--color-surface-warm); }
 @keyframes splash-bar {
   from { transform: scaleX(0); }
   to { transform: scaleX(1); }
+}
+@keyframes screen-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 @keyframes screen-in {
   from { opacity: 0; transform: translateX(var(--motion-distance)); }
