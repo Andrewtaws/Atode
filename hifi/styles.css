@@ -254,6 +254,7 @@ h1 {
   box-shadow: none;
   color: var(--color-text);
 }
+.illus-hero:has(img) { background: none; border: 0; border-radius: var(--radius-md); }
 .illus-clock { height: 160px; }
 .illus-thought { height: 100px; }
 .illus-hand { height: 150px; }

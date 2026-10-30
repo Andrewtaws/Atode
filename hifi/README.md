@@ -18,4 +18,4 @@ It saves to its own storage (`atode.hifi.v1`), so testing one version doesn't af
 
 ## Illustrations
 
-The four Figma illustrations go in `assets/illustrations/` as `welcome.png`, `clock.png`, `thought.png` and `hand.png`. Until a file is there, a simple icon shows in its place.
+The four illustrations live in `assets/illustrations/` (`welcome.png`, `clock.png`, `thought.png`, `hand.png`). To swap one, replace the file with the same name. If a file is missing, a simple icon shows in its place.
