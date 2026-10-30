@@ -508,35 +508,39 @@ h1 {
 .contact { display: flex; flex-direction: column; gap: 6px; }
 .contact-label { font-size: var(--text-sm); font-weight: var(--weight-semibold); line-height: 20px; color: var(--color-text-heading); }
 
-/* Home and add (no hi-fi frames yet: built from the same parts) */
+/* Add a worry: dashboard and entry type (Figma 115:905) */
+
+.lead { font-size: var(--text-lg); line-height: 1.45; color: var(--color-text-body); }
+.lead p + p { margin-top: 23px; }
 
 .panel {
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
-  padding: var(--space-5);
+  padding: var(--space-4);
 }
-.panel-hero { gap: var(--space-4); }
 
-.schedule { display: flex; flex-direction: column; gap: var(--space-1); }
-.schedule-label { font-size: var(--text-sm); font-weight: var(--weight-semibold); line-height: 20px; color: var(--color-text-muted); }
+.card-title { font-size: var(--text-lg); font-weight: var(--weight-semibold); line-height: 1.4; color: var(--color-text-heading); }
+
+.schedule { display: flex; flex-direction: column; gap: var(--space-2); }
 .schedule-time {
   font-size: var(--text-h1);
-  font-weight: var(--weight-bold);
+  font-weight: var(--weight-semibold);
   line-height: var(--leading-tight);
   color: var(--color-text-heading);
   font-variant-numeric: tabular-nums;
 }
-.schedule-status { font-size: var(--text-sm); line-height: var(--leading-body); color: var(--color-text-muted); }
+.schedule-status { font-size: var(--text-md); line-height: 1.45; color: var(--color-text-body); }
 
+/* Figma has 12px here; raised to the 14px minimum. */
 .early-link {
-  display: inline-flex;
+  display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: var(--space-2);
-  align-self: flex-start;
   min-height: 24px;
+  margin-top: var(--space-1);
   font-size: var(--text-sm);
-  font-weight: var(--weight-medium);
   line-height: 22px;
   color: var(--color-text);
 }

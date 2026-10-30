@@ -9,8 +9,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
-  <link rel="stylesheet" href="tokens.css?v=5">
-  <link rel="stylesheet" href="styles.css?v=5">
+  <link rel="stylesheet" href="tokens.css?v=6">
+  <link rel="stylesheet" href="styles.css?v=6">
 </head>
 <body>
   <div class="phone">
@@ -253,26 +253,24 @@
       </main>
     </section>
 
-    <!-- Home (no hi-fi frame yet; built from the design system) -->
+    <!-- Add a worry 1. Dashboard (Figma 115:906) -->
     <section class="screen" id="home" data-title="Welcome back" hidden>
       <header class="app-header">
         <img class="logo" src="assets/logo.svg" width="67" height="18" alt="Atode">
         <a class="help-pill" href="#help">This can't wait</a>
       </header>
       <main class="content">
-        <div class="stack-sm">
-          <h1 tabindex="-1">Welcome back</h1>
-          <p class="body">Your worry time is <span data-time-label>6pm</span> today.</p>
-          <p class="body">Park a new worry below. Can’t make <span data-time-label>6pm</span>? Pick up your worries now.</p>
+        <h1 tabindex="-1" class="h1-display">Welcome back</h1>
+        <div class="lead">
+          <p>Your worry time is <span data-time-label>6pm</span> today.</p>
+          <p>Park a new worry below. Can’t make <span data-time-label>6pm</span>? Pick up your worries now.</p>
         </div>
-        <div class="panel panel-hero card">
-          <h2 class="step-title">Something on your mind?</h2>
-          <p class="step-text">Hand it over in a few seconds. Atode keeps it till <span data-time-label>6pm</span>.</p>
+        <div class="panel card">
           <a class="btn btn-primary" href="#add">Park a new worry</a>
         </div>
         <div class="panel card">
           <div class="schedule">
-            <h2 class="schedule-label">Daily worry time</h2>
+            <h2 class="card-title">Daily worry time</h2>
             <p class="schedule-time" data-time-24>18:00</p>
             <p class="schedule-status" data-reminder-status>Reminder on</p>
           </div>
@@ -284,34 +282,27 @@
       </main>
     </section>
 
-    <!-- Add your worry (no hi-fi frame yet) -->
+    <!-- Add a worry 2. Entry type (Figma 115:936) -->
     <section class="screen" id="add" data-title="Add your worry" hidden>
       <header class="app-header">
         <img class="logo" src="assets/logo.svg" width="67" height="18" alt="Atode">
         <a class="help-pill" href="#help">This can't wait</a>
       </header>
       <main class="content">
-        <div class="title-group">
-          <button type="button" class="back" data-back>
-            <img src="assets/arrow-left.svg" width="20" height="20" alt=""> Back
-          </button>
-          <h1 tabindex="-1">Add your worry</h1>
-        </div>
-        <p class="hint">Add your worry now, and let Atode remember it for you.</p>
+        <h1 tabindex="-1" class="h1-display">Add your worry</h1>
+        <p class="lead">Add your worry now, and let Atode remember it for you.</p>
         <div class="panel card">
-          <h2 class="step-title">Quick add</h2>
-          <p class="step-text">Pick a topic, add a few words if you like. Takes seconds.</p>
+          <h2 class="card-title">Quick add</h2>
           <a class="btn btn-primary" href="#quick">Quick add</a>
         </div>
         <div class="panel card">
-          <h2 class="step-title">Detailed entry</h2>
-          <p class="step-text">Write more about it.</p>
+          <h2 class="card-title">Detailed entry</h2>
           <a class="btn btn-secondary" href="#soon">Add detailed entry</a>
         </div>
       </main>
     </section>
 
-    <!-- Quick add (no hi-fi frame yet; same parts as screen 4) -->
+    <!-- Add a worry 3. Quick add (Figma 115:961) -->
     <section class="screen" id="quick" data-title="Quick add" hidden>
       <header class="app-header">
         <img class="logo" src="assets/logo.svg" width="67" height="18" alt="Atode">
@@ -321,12 +312,13 @@
         <form id="quick-form" class="form-fill park-form" data-source="quick" novalidate>
           <fieldset class="fieldset">
             <legend class="title-group">
-              <button type="button" class="back" data-back>
-                <img src="assets/arrow-left.svg" width="20" height="20" alt=""> Back
-              </button>
               <h1 tabindex="-1">Quick add</h1>
             </legend>
-            <p class="hint" id="quick-hint">Pick the closest one. You can add words if you want to.</p>
+            <p class="hint" id="quick-hint">Add your worry now, and let Atode remember it for you.</p>
+            <div class="illus illus-thought">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M7 15a4 4 0 0 1-.6-7.96A5 5 0 0 1 16 6a4.5 4.5 0 0 1 1.5 8.75A3 3 0 0 1 15 15H7Z"/><circle cx="7" cy="19" r="1.2"/><circle cx="4.5" cy="21.5" r=".7"/></svg>
+              <img src="assets/illustrations/thought.png" alt="" onerror="this.remove()">
+            </div>
             <p class="error" data-error hidden>Pick the closest one, or add a few words.</p>
             <div class="tiles" aria-describedby="quick-hint">
               <label class="tile"><input type="radio" name="topic" value="My work"><span>My work</span></label>
@@ -342,6 +334,7 @@
           </div>
           <div class="push">
             <button type="submit" class="btn btn-primary"><span>Park it till <span data-time-label>6pm</span></span></button>
+            <a class="link skip" href="#home">Nothing right now, skip→</a>
           </div>
         </form>
       </main>
@@ -370,6 +363,6 @@
   </div>
   <div id="announcer" class="visually-hidden" aria-live="polite"></div>
   <noscript><p class="noscript">Atode needs JavaScript turned on.</p></noscript>
-  <script src="app.js?v=5"></script>
+  <script src="app.js?v=6"></script>
 </body>
 </html>

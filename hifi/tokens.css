@@ -93,7 +93,7 @@
   --radius-xl: 24px;     /* hero */
   --radius-pill: 999px;
 
-  --shadow-card: 0 4px 8px rgba(0, 0, 0, 0.04);
+  --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.04);
   --shadow-illustration: 0 4px 16px rgba(0, 0, 0, 0.04);
 
   /* Sizes */
