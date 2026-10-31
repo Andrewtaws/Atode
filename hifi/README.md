@@ -10,6 +10,13 @@ Onboarding follows the Figma hi-fi frames (node 69:2274), and Home, Add your wor
 
 It saves to its own storage (`atode.hifi.v1`), so testing one version doesn't affect the other. Add `#reset` to the end of the address to clear it between testers.
 
+## Install it like an app
+
+- **Android (phone or tablet):** open the hi-fi link in Chrome, tap ⋮, then **Add to Home screen** (or **Install app**).
+- **iPhone or iPad:** open it in Safari, tap Share, then **Add to Home Screen**.
+
+It opens full screen with the Atode icon. Worries stay in that installed copy's storage on the device.
+
 ## Tablet
 
 Screens 768px wide or more (iPad portrait and landscape) use the tablet layout from Figma (node 130:1445): wider margins, roomier cards and two columns. The Figma frames cover Home and the Review worries flow; the other screens follow the same pattern. Phones are unchanged.
