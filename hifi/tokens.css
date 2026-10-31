@@ -84,6 +84,8 @@
   --space-5: 20px;
   --space-6: 24px;
   --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;  /* tablet side margins */
   --gutter: var(--space-6);
 
   /* Shape */
