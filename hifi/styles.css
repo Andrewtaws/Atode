@@ -44,7 +44,7 @@ h1:focus { outline: none; }
   background: var(--color-page);
 }
 
-@media (min-width: 480px) {
+@media (min-width: 480px) and (max-width: 767px) {
   body { padding: var(--space-6) 0; }
   .phone {
     width: 390px;
@@ -658,6 +658,55 @@ button.worry-item:active { background: var(--color-surface-warm); }
 .words-label-lg.words-label-lg { font-size: var(--text-lg); color: var(--color-text-body); }
 
 .btn-inline { width: auto; align-self: flex-start; min-height: var(--tap-min); padding: var(--space-3) var(--space-5); }
+
+/* Column wrappers: no effect on phones, two columns on tablets (below). */
+.split, .split > .col, .narrow { display: contents; }
+
+/* Tablet (Figma 130:1445, 1024×768): wider margins, roomier cards and
+   two columns. Applies to any screen 768px wide or more. */
+@media (min-width: 768px) {
+  .phone { width: 100%; max-width: 1024px; margin: 0 auto; }
+  .app-header {
+    min-height: 84px;
+    padding: calc(var(--space-4) + env(safe-area-inset-top)) var(--space-12) var(--space-4);
+    margin-bottom: 0;
+  }
+  .content, .content-tight { gap: var(--space-6); padding: var(--space-6) var(--space-12) var(--space-10); }
+  h1 { font-size: var(--text-display); }
+  .lead { max-width: 620px; }
+
+  .split { display: grid; gap: var(--space-12); align-items: start; }
+  .split > .col { display: flex; flex-direction: column; gap: var(--space-5); min-width: 0; }
+  .split-hero { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; flex: 1; }
+  .split-form { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
+  .split-list { grid-template-columns: 300px minmax(0, 1fr); }
+  .split-even { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-6); }
+  .split-review { gap: var(--space-8); }
+  form.split { flex: none; }
+
+  .narrow {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    width: 100%;
+    max-width: 640px;
+    margin: var(--space-6) auto 0;
+  }
+
+  .panel, .step, .worry-item { padding: var(--space-6); }
+  .steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-6); }
+  .step { flex-direction: column; }
+  .worry-list { margin-top: 0; }
+
+  .illus-hero { height: auto; aspect-ratio: 342 / 220; }
+  .illus-clock { height: auto; aspect-ratio: 342 / 160; }
+  .illus-hand { height: auto; aspect-ratio: 342 / 150; }
+
+  .push { margin-top: var(--space-2); }
+  .push .btn { width: auto; min-width: 240px; align-self: flex-start; }
+  .push.center { align-items: flex-start; }
+  .skip { align-self: flex-start; }
+}
 
 /* Loading screen */
 

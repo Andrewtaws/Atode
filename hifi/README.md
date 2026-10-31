@@ -10,6 +10,10 @@ Onboarding follows the Figma hi-fi frames (node 69:2274), and Home, Add your wor
 
 It saves to its own storage (`atode.hifi.v1`), so testing one version doesn't affect the other. Add `#reset` to the end of the address to clear it between testers.
 
+## Tablet
+
+Screens 768px wide or more (iPad portrait and landscape) use the tablet layout from Figma (node 130:1445): wider margins, roomier cards and two columns. The Figma frames cover Home and the Review worries flow; the other screens follow the same pattern. Phones are unchanged.
+
 ## Design system
 
 - `tokens.css`: every colour, size, space, radius and shadow. A palette layer (raw colours) and a roles layer (what each colour is for). Components only use roles, so most restyles are a change to this one file.

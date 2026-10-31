@@ -9,8 +9,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
-  <link rel="stylesheet" href="tokens.css?v=10">
-  <link rel="stylesheet" href="styles.css?v=10">
+  <link rel="stylesheet" href="tokens.css?v=11">
+  <link rel="stylesheet" href="styles.css?v=11">
 </head>
 <body>
   <!-- Loading screen, shown each time the app opens -->
@@ -29,10 +29,14 @@
         <a class="help-pill" href="#help">This can't wait</a>
       </header>
       <main class="content">
+        <div class="split split-hero">
+        <div class="col">
         <div class="illus illus-hero">
           <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7a2 2 0 1 1 2 2c-1 0-2 .6-2 1.6V12"/><path d="M12 12 3 18h18l-9-6"/></svg>
           <img src="assets/illustrations/welcome.png" alt="" onerror="this.remove()">
         </div>
+        </div>
+        <div class="col">
         <div class="stack-sm">
           <h1 tabindex="-1" class="h1-display">Welcome to Atode</h1>
           <p class="body">Worrying all day keeps your brain on high alert. Giving worries a set time teaches your brain they can wait.</p>
@@ -49,6 +53,8 @@
         </div>
         <div class="push">
           <a class="btn btn-primary" href="#how">Get started</a>
+        </div>
+        </div>
         </div>
       </main>
     </section>
@@ -102,18 +108,20 @@
         <a class="help-pill" href="#help">This can't wait</a>
       </header>
       <main class="content">
-        <form id="time-form" class="form-fill" novalidate>
-          <fieldset class="fieldset">
-            <legend class="title-group">
+        <form id="time-form" class="form-fill split split-form" novalidate>
+          <div class="col">
+            <div class="title-group">
               <span class="step-label">Step 1 of 2</span>
-              <h1 tabindex="-1">When should you collect your worries?</h1>
-            </legend>
+              <h1 tabindex="-1" id="time-q">When should you collect your worries?</h1>
+            </div>
             <p class="hint" id="time-hint">Pick a time most days. Not too close to bed.</p>
             <div class="illus illus-clock">
               <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
               <img src="assets/illustrations/clock.png" alt="" onerror="this.remove()">
             </div>
-            <div class="options" aria-describedby="time-hint">
+          </div>
+          <div class="col">
+            <div class="options" role="radiogroup" aria-labelledby="time-q" aria-describedby="time-hint">
               <label class="option">
                 <input type="radio" name="time" value="18:00" checked>
                 <span>Early evening · 6pm</span>
@@ -131,16 +139,16 @@
                 <input type="time" id="other-time-input" value="19:00" step="900">
               </div>
             </div>
-          </fieldset>
-          <div class="reminder">
-            <div>
-              <label class="reminder-label" for="reminder" id="reminder-label">Remind me at <span data-time-label>6pm</span></label>
-              <p class="reminder-note" id="reminder-note">The reminder never shows your worries.</p>
+            <div class="reminder">
+              <div>
+                <label class="reminder-label" for="reminder" id="reminder-label">Remind me at <span data-time-label>6pm</span></label>
+                <p class="reminder-note" id="reminder-note">The reminder never shows your worries.</p>
+              </div>
+              <input type="checkbox" role="switch" class="switch" id="reminder" checked aria-describedby="reminder-note">
             </div>
-            <input type="checkbox" role="switch" class="switch" id="reminder" checked aria-describedby="reminder-note">
-          </div>
-          <div class="push">
-            <button type="submit" class="btn btn-primary"><span>Use <span data-time-label>6pm</span></span></button>
+            <div class="push">
+              <button type="submit" class="btn btn-primary"><span>Use <span data-time-label>6pm</span></span></button>
+            </div>
           </div>
         </form>
       </main>
@@ -153,33 +161,35 @@
         <a class="help-pill" href="#help">This can't wait</a>
       </header>
       <main class="content">
-        <form id="worry-form" class="form-fill park-form" data-source="worry" novalidate>
-          <fieldset class="fieldset">
-            <legend class="title-group">
+        <form id="worry-form" class="form-fill park-form split split-form" data-source="worry" novalidate>
+          <div class="col">
+            <div class="title-group">
               <span class="step-label">Step 2 of 2</span>
-              <h1 tabindex="-1">What’s on your mind right now?</h1>
-            </legend>
+              <h1 tabindex="-1" id="worry-q">What’s on your mind right now?</h1>
+            </div>
             <p class="hint" id="worry-hint">Pick the closest one. You can add words if you want to.</p>
             <div class="illus illus-thought">
               <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M7 15a4 4 0 0 1-.6-7.96A5 5 0 0 1 16 6a4.5 4.5 0 0 1 1.5 8.75A3 3 0 0 1 15 15H7Z"/><circle cx="7" cy="19" r="1.2"/><circle cx="4.5" cy="21.5" r=".7"/></svg>
               <img src="assets/illustrations/thought.png" alt="" onerror="this.remove()">
             </div>
+          </div>
+          <div class="col">
             <p class="error" id="worry-error" data-error hidden>Pick the closest one, or add a few words.</p>
-            <div class="tiles" aria-describedby="worry-hint">
+            <div class="tiles" role="radiogroup" aria-labelledby="worry-q" aria-describedby="worry-hint">
               <label class="tile"><input type="radio" name="topic" value="My work"><span>My work</span></label>
               <label class="tile"><input type="radio" name="topic" value="Money"><span>Money</span></label>
               <label class="tile"><input type="radio" name="topic" value="Someone in my life"><span>Someone in my life</span></label>
               <label class="tile"><input type="radio" name="topic" value="My health"><span>My health</span></label>
               <label class="tile tile-wide"><input type="radio" name="topic" value="Something else"><span>Something else</span></label>
             </div>
-          </fieldset>
-          <div class="words">
-            <label for="words">A few words (optional)</label>
-            <textarea id="words" data-words rows="2" maxlength="140" placeholder="Just enough to remember it by"></textarea>
-          </div>
-          <div class="push">
-            <button type="submit" class="btn btn-primary"><span>Park it till <span data-time-label>6pm</span></span></button>
-            <a class="link skip" href="#home">Nothing right now, skip→</a>
+            <div class="words">
+              <label for="words">A few words (optional)</label>
+              <textarea id="words" data-words rows="2" maxlength="140" placeholder="Just enough to remember it by"></textarea>
+            </div>
+            <div class="push">
+              <button type="submit" class="btn btn-primary"><span>Park it till <span data-time-label>6pm</span></span></button>
+              <a class="link skip" href="#home">Nothing right now, skip→</a>
+            </div>
           </div>
         </form>
       </main>
@@ -192,6 +202,8 @@
         <a class="help-pill" href="#help">This can't wait</a>
       </header>
       <main class="content">
+        <div class="split split-form">
+        <div class="col">
         <h1 tabindex="-1">That’s how Atode works</h1>
         <div class="ticket" role="group" aria-label="Your ticket">
           <div class="ticket-top">
@@ -205,6 +217,8 @@
             <button type="button" class="link link-sm" data-undo>Undo</button>
           </div>
         </div>
+        </div>
+        <div class="col">
         <fieldset class="fieldset">
           <legend><h2 class="h2">Now, back to your day. What were you doing?</h2></legend>
           <div class="tiles">
@@ -218,6 +232,8 @@
           <p class="footnote">Next time a worry pops up, open Atode and tap. That's all.</p>
           <a class="btn btn-primary" href="#home">Done</a>
         </div>
+        </div>
+        </div>
       </main>
     </section>
 
@@ -227,6 +243,8 @@
         <img class="logo" src="assets/logo.svg" width="67" height="18" alt="Atode">
       </header>
       <main class="content">
+        <div class="split split-form">
+        <div class="col">
         <div class="title-group">
           <button type="button" class="back" data-back>
             <img src="assets/arrow-left.svg" width="20" height="20" alt=""> Back
@@ -238,6 +256,8 @@
           <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.35-7-9.5A4 4 0 0 1 12 8a4 4 0 0 1 7 2.5C19 15.65 12 20 12 20Z"/></svg>
           <img src="assets/illustrations/hand.png" alt="" onerror="this.remove()">
         </div>
+        </div>
+        <div class="col">
         <div class="contact">
           <h2 class="contact-label" id="c-danger">In danger right now</h2>
           <a class="btn btn-danger" href="tel:999" aria-describedby="c-danger">Call 999</a>
@@ -257,6 +277,8 @@
         <div class="push center">
           <button type="button" class="link" data-back>I'm OK, back to Atode</button>
         </div>
+        </div>
+        </div>
       </main>
     </section>
 
@@ -272,6 +294,7 @@
           <p>Your worry time is <span data-time-label>6pm</span> today.</p>
           <p>Park a new worry below. Can’t make <span data-time-label>6pm</span>? Pick up your worries now.</p>
         </div>
+        <div class="split split-even">
         <div class="panel card">
           <a class="btn btn-primary" href="#add">Park a new worry</a>
         </div>
@@ -286,6 +309,7 @@
             <img src="assets/arrow-right-circle.svg" width="16" height="16" alt="">
           </a>
         </div>
+        </div>
       </main>
     </section>
 
@@ -298,6 +322,7 @@
       <main class="content">
         <h1 tabindex="-1" class="h1-display">Add your worry</h1>
         <p class="lead">Add your worry now, and let Atode remember it for you.</p>
+        <div class="split split-even">
         <div class="panel card">
           <h2 class="card-title">Quick add</h2>
           <a class="btn btn-primary" href="#quick">Quick add</a>
@@ -305,6 +330,7 @@
         <div class="panel card">
           <h2 class="card-title">Detailed entry</h2>
           <a class="btn btn-secondary" href="#soon">Add detailed entry</a>
+        </div>
         </div>
       </main>
     </section>
@@ -316,32 +342,34 @@
         <a class="help-pill" href="#help">This can't wait</a>
       </header>
       <main class="content">
-        <form id="quick-form" class="form-fill park-form" data-source="quick" novalidate>
-          <fieldset class="fieldset">
-            <legend class="title-group">
-              <h1 tabindex="-1">Quick add</h1>
-            </legend>
+        <form id="quick-form" class="form-fill park-form split split-form" data-source="quick" novalidate>
+          <div class="col">
+            <div class="title-group">
+              <h1 tabindex="-1" id="quick-q">Quick add</h1>
+            </div>
             <p class="hint" id="quick-hint">Add your worry now, and let Atode remember it for you.</p>
             <div class="illus illus-thought">
               <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M7 15a4 4 0 0 1-.6-7.96A5 5 0 0 1 16 6a4.5 4.5 0 0 1 1.5 8.75A3 3 0 0 1 15 15H7Z"/><circle cx="7" cy="19" r="1.2"/><circle cx="4.5" cy="21.5" r=".7"/></svg>
               <img src="assets/illustrations/thought.png" alt="" onerror="this.remove()">
             </div>
+          </div>
+          <div class="col">
             <p class="error" data-error hidden>Pick the closest one, or add a few words.</p>
-            <div class="tiles" aria-describedby="quick-hint">
+            <div class="tiles" role="radiogroup" aria-labelledby="quick-q" aria-describedby="quick-hint">
               <label class="tile"><input type="radio" name="topic" value="My work"><span>My work</span></label>
               <label class="tile"><input type="radio" name="topic" value="Money"><span>Money</span></label>
               <label class="tile"><input type="radio" name="topic" value="Someone in my life"><span>Someone in my life</span></label>
               <label class="tile"><input type="radio" name="topic" value="My health"><span>My health</span></label>
               <label class="tile tile-wide"><input type="radio" name="topic" value="Something else"><span>Something else</span></label>
             </div>
-          </fieldset>
-          <div class="words">
-            <label for="quick-words">A few words (optional)</label>
-            <textarea id="quick-words" data-words rows="2" maxlength="140" placeholder="Just enough to remember it by"></textarea>
-          </div>
-          <div class="push">
-            <button type="submit" class="btn btn-primary"><span>Park it till <span data-time-label>6pm</span></span></button>
-            <a class="link skip" href="#home">Nothing right now, skip→</a>
+            <div class="words">
+              <label for="quick-words">A few words (optional)</label>
+              <textarea id="quick-words" data-words rows="2" maxlength="140" placeholder="Just enough to remember it by"></textarea>
+            </div>
+            <div class="push">
+              <button type="submit" class="btn btn-primary"><span>Park it till <span data-time-label>6pm</span></span></button>
+              <a class="link skip" href="#home">Nothing right now, skip→</a>
+            </div>
           </div>
         </form>
       </main>
@@ -360,23 +388,25 @@
           </a>
           <h1 tabindex="-1" class="h1-display">Review my parked worries</h1>
         </div>
-        <div class="tabs" role="group" aria-label="Show">
-          <button type="button" class="tab" data-tab="today" aria-pressed="true">Today’s notes</button>
-          <button type="button" class="tab" data-tab="passed" aria-pressed="false">Passed worries</button>
+        <div class="split split-list">
+          <div class="col">
+            <div class="tabs" role="group" aria-label="Show">
+              <button type="button" class="tab" data-tab="today" aria-pressed="true">Today’s notes</button>
+              <button type="button" class="tab" data-tab="passed" aria-pressed="false">Passed worries</button>
+            </div>
+            <p class="lead" data-panel="today" data-review-count>You have parked 3 worries today, select one to review and add any comments.</p>
+            <p class="lead" data-panel="passed" data-passed-count hidden>Worries you’ve already looked at.</p>
+          </div>
+          <div class="col">
+            <ul class="worry-list" data-panel="today" data-list="today"></ul>
+            <ul class="worry-list" data-panel="passed" data-list="passed" hidden></ul>
+            <hr class="divider">
+            <a class="early-link" href="#home" data-later>
+              <span>I’ll look at these parked worries tomorrow</span>
+              <img src="assets/arrow-right-circle.svg" width="16" height="16" alt="">
+            </a>
+          </div>
         </div>
-        <div data-panel="today">
-          <p class="lead" data-review-count>You have parked 3 worries today, select one to review and add any comments.</p>
-          <ul class="worry-list" data-list="today"></ul>
-        </div>
-        <div data-panel="passed" hidden>
-          <p class="lead" data-passed-count>Worries you’ve already looked at.</p>
-          <ul class="worry-list" data-list="passed"></ul>
-        </div>
-        <hr class="divider">
-        <a class="early-link" href="#home" data-later>
-          <span>I’ll look at these parked worries tomorrow</span>
-          <img src="assets/arrow-right-circle.svg" width="16" height="16" alt="">
-        </a>
       </main>
     </section>
 
@@ -394,12 +424,16 @@
           <h1 tabindex="-1" class="h1-display">Review my parked worries</h1>
         </div>
         <p class="lead" data-review-count>You have parked 3 worries today, select one to review and add any comments.</p>
+        <div class="split split-even split-review">
+        <div class="col">
         <div class="panel card">
           <span class="topic-tag" data-review-topic>Money</span>
         </div>
         <div class="panel card worry-words">
           <p data-review-words>Will the repair cost more than I saved?</p>
         </div>
+        </div>
+        <div class="col">
         <h2 class="card-title" id="affect-q">Does this still affect you?</h2>
         <div class="panel card" role="group" aria-labelledby="affect-q">
           <button type="button" class="choice" data-affect="no">No</button>
@@ -411,6 +445,8 @@
           <span>I’ll look at these parked worries tomorrow</span>
           <img src="assets/arrow-right-circle.svg" width="16" height="16" alt="">
         </a>
+        </div>
+        </div>
       </main>
     </section>
 
@@ -428,10 +464,14 @@
             </button>
             <h1 tabindex="-1" class="h1-display">What can be done about this worry?</h1>
           </div>
+          <div class="split split-form">
+          <div class="col">
           <div class="stack-xs">
             <p class="hint" data-review-position>Worry 2 of 3</p>
             <p class="body" data-review-words>Will the repair cost more than I saved?</p>
           </div>
+          </div>
+          <div class="col">
           <fieldset class="fieldset fieldset-tight">
             <legend><h2 class="card-title">Does this still affect you?</h2></legend>
             <p class="error" data-error hidden>Pick the one that fits best.</p>
@@ -451,6 +491,8 @@
             <span>I’ll look at these parked worries tomorrow</span>
             <img src="assets/arrow-right-circle.svg" width="16" height="16" alt="">
           </a>
+          </div>
+          </div>
         </form>
       </main>
     </section>
@@ -462,10 +504,12 @@
         <a class="help-pill" href="#help">This can't wait</a>
       </header>
       <main class="content">
+        <div class="narrow">
         <h1 tabindex="-1" class="h1-display">This has been updated</h1>
         <div class="lead stack-md" data-done-copy></div>
         <hr class="divider">
         <a class="btn btn-primary btn-inline" href="#review" data-done-next>Done</a>
+        </div>
       </main>
     </section>
 
@@ -492,6 +536,6 @@
   </div>
   <div id="announcer" class="visually-hidden" aria-live="polite"></div>
   <noscript><p class="noscript">Atode needs JavaScript turned on.</p></noscript>
-  <script src="app.js?v=10"></script>
+  <script src="app.js?v=11"></script>
 </body>
 </html>
