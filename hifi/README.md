@@ -21,7 +21,12 @@ It opens full screen with the Atode icon. Worries stay in that installed copy's 
 
 ## Tablet
 
-Screens 768px wide or more (iPad portrait and landscape) use the tablet layout from Figma (node 130:1445): wider margins, roomier cards and two columns. The Figma frames cover Home and the Review worries flow; the other screens follow the same pattern. Phones are unchanged.
+Phones are unchanged. From 768px wide:
+
+- The Atode wordmark moves into the header (left, opposite "This can't wait"), so page titles get the full width.
+- Text steps up a size (body 17px, titles 40px, 44px from 1280px).
+- **Portrait tablets (768–1023px):** one centred column, 600px wide.
+- **Landscape tablets and desktop (1024px and up):** two columns (Figma node 130:1445), held in a centred column (928px, 1040px from 1280px) and centred vertically so screens don't sit in the top half.
 
 ## Design system
 
