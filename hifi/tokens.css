@@ -1,5 +1,6 @@
 /* Atode design tokens
-   Source: Figma "Designs-for-Rapid-Ideation", section 156:1955 (Dashboard,
+   Source: Figma "Designs-for-Rapid-Ideation", section 156:1955, updated
+   from 169:867 and 160:1956 (red help button, flat yellow buttons) (Dashboard,
    Review Notes, Review Note steps). This replaced the warm brown palette
    from the first hi-fi (69:2274) on 3 Nov 2026.
 
@@ -20,11 +21,12 @@
   --grey-200: #e8e8e8;    /* dividers */
   --paper-50: #fafaf7;    /* page */
   --white: #ffffff;
-  --yellow-400: #ffc000;  /* primary button */
+  --yellow-400: #ffbe00;  /* primary button, topic chip (Figma 169:867) */
   --amber-500: #f5a623;   /* topic chip */
   --lilac-50: #f6f2fa;    /* "Thought note" card */
   --stone-100: #eee9df;   /* "Review note time" card */
   --red-700: #b00020;
+  --red-help: #c1121f;    /* "I need help now" (Figma 169:867): white text on it is 6.2:1 */
 
   /* Onboarding palette (Figma 160:1956, 3 Nov 2026): white page, lilac
      surfaces, violet accent. Used by the .onb screens only for now. */
@@ -70,12 +72,14 @@
 
   /* Roles: actions */
   --color-primary: var(--yellow-400);
-  --color-primary-border: var(--ink-900);
+  --color-primary-border: var(--yellow-400);  /* no outline since 169:867 */
   --color-primary-pressed: #f0b400;
   --color-danger: var(--ink-900);
   --color-selected: var(--ink-900);
   --color-selected-border: var(--ink-900);
-  --color-chip: var(--amber-500);
+  --color-chip: var(--yellow-400);
+  --color-help: var(--red-help);
+  --color-text-on-help: var(--white);
   --color-focus: var(--ink-900);
 
   /* Type: Inter for headings and copy, Work Sans for controls

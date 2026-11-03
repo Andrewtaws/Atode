@@ -5,12 +5,12 @@
   "use strict";
 
   var STORE_KEY = "atode.hifi.v1";
-  var SCREENS = ["welcome", "how", "time", "worry", "ticket", "help", "home", "add", "quick", "review", "review-item", "review-act", "review-done", "soon"];
+  var SCREENS = ["welcome", "how", "time", "worry", "ticket", "help", "home", "add", "quick", "review", "review-item", "review-act", "review-done", "past-note", "soon"];
 
   var state = load();
 
   function load() {
-    var fallback = { time: "18:00", reminder: true, worries: [], ticketCount: 0, onboarded: false, current: null, refocus: null, reviewing: null, lastOutcome: null, tab: "today" };
+    var fallback = { time: "18:00", reminder: true, worries: [], ticketCount: 0, onboarded: false, current: null, refocus: null, reviewing: null, lastOutcome: null, tab: "today", viewing: null };
     try {
       var saved = JSON.parse(localStorage.getItem(STORE_KEY));
       return saved ? Object.assign(fallback, saved) : fallback;
@@ -82,6 +82,7 @@
     if (id === "ticket" && !currentWorry()) id = state.worries.length ? "home" : "worry";
     if ((id === "review-item" || id === "review-act") && !reviewingWorry()) id = "review";
     if (id === "review-done" && !state.lastOutcome) id = "review";
+    if (id === "past-note" && !viewingWorry()) id = "review";
 
     var previous = trail[trail.length - 1];
     var back = trail.length > 1 && trail[trail.length - 2] === id;
@@ -95,6 +96,7 @@
     if (id === "review") renderReview();
     if (id === "review-item" || id === "review-act") renderReviewItem(screen, id);
     if (id === "review-done") renderDone();
+    if (id === "past-note") renderPastNote();
     if (id === "home" && !state.onboarded) { state.onboarded = true; save(); }
     // Leaving the add flow drops any half-finished edit.
     if (id === "home" || id === "add") {
@@ -306,6 +308,14 @@
     return null;
   }
 
+  // A note from the Past Notes tab (already reviewed), opened to read.
+  function viewingWorry() {
+    for (var i = 0; i < state.worries.length; i++) {
+      if (state.worries[i].ticket === state.viewing && state.worries[i].outcome) return state.worries[i];
+    }
+    return null;
+  }
+
   function worryText(w) { return w.words || w.topic; }
 
   // Figma 156:1955 names: a short chip label and a sticky-note title per topic.
@@ -379,7 +389,10 @@
     var passed = state.worries.filter(function (w) { return w.outcome; });
     $all("[data-review-count]").forEach(function (el) { el.textContent = countText(parked.length); });
     $("[data-review-tap]").hidden = parked.length === 0;
-    $("[data-passed-count]").textContent = passed.length ? "Notes you’ve already reviewed." : "Notes you review will show here.";
+    $("[data-passed-count]").textContent = passed.length
+      ? "These are the notes you’ve reviewed, newest first."
+      : "Nothing here yet. Notes you review will show here.";
+    $("[data-passed-tap]").hidden = passed.length === 0;
 
     var today = $("[data-list=today]");
     today.innerHTML = "";
@@ -398,12 +411,21 @@
 
     var list = $("[data-list=passed]");
     list.innerHTML = "";
-    passed.forEach(function (w, i) {
-      var li = document.createElement("li");
-      var extra = OUTCOMES[w.outcome] + (w.note ? ". Note: " + w.note : "");
-      li.appendChild(noteCard("div", w, i, extra));
-      list.appendChild(li);
-    });
+    // Past Notes: every reviewed note, newest review first. Each opens.
+    passed.slice().sort(function (a, b) { return (b.reviewedAt || "").localeCompare(a.reviewedAt || ""); })
+      .forEach(function (w, i) {
+        var li = document.createElement("li");
+        var btn = noteCard("button", w, i, OUTCOMES[w.outcome] + (w.note ? " · Note added" : ""));
+        btn.type = "button";
+        btn.setAttribute("aria-label", topicTitle(w.topic) + ". " + OUTCOMES[w.outcome] + (w.note ? ". Has a note." : "") + " Open");
+        btn.addEventListener("click", function () {
+          state.viewing = w.ticket;
+          save();
+          go("past-note");
+        });
+        li.appendChild(btn);
+        list.appendChild(li);
+      });
     setTab(state.tab || "today");
   }
 
@@ -480,6 +502,19 @@
     });
     // Done goes back to the list while anything is left to look at.
     $("[data-done-next]").setAttribute("href", parkedWorries().length && state.lastOutcome !== "again" ? "#review" : "#home");
+  }
+
+  function reviewedText(iso) { return addedText(iso).replace("Added", "Reviewed"); }
+
+  function renderPastNote() {
+    var w = viewingWorry();
+    $("[data-past-topic]").textContent = topicChip(w.topic);
+    $("[data-past-words]").textContent = w.words || topicTitle(w.topic);
+    $("[data-past-dates]").textContent = addedText(w.parkedAt) + (w.reviewedAt ? " · " + reviewedText(w.reviewedAt) : "");
+    $("[data-past-outcome]").textContent = OUTCOMES[w.outcome];
+    var note = $("[data-past-note]");
+    note.textContent = w.note || "You didn’t add a note to this one.";
+    note.classList.toggle("is-empty", !w.note);
   }
 
   // Returning users skip onboarding and land on home.

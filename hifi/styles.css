@@ -79,21 +79,43 @@ h1:focus { outline: none; }
 /* Header wordmark: tablet and desktop only (phones keep it beside the title). */
 .app-header .wordmark-top { display: none; }
 
+/* "I need help now" (Figma 169:867 / 160:1956): red, white cross icon. */
 .help-pill {
   display: inline-flex;
   align-items: center;
+  gap: var(--space-2);
   min-height: 44px;
-  padding: 10px 16px;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border-strong);
-  border-radius: var(--radius-pill);
-  font-family: var(--font-ui);
+  padding: 13px 14px;
+  background: var(--color-help);
+  border: 1px solid var(--color-help);
+  border-radius: 22px;
+  font-family: var(--font);
   font-size: var(--text-sm);
-  font-weight: var(--weight-semibold);
+  font-weight: var(--weight-medium);
   line-height: 1.3;
-  color: var(--color-text);
+  color: var(--color-text-on-help);
   text-decoration: none;
   white-space: nowrap;
+}
+.help-pill img { flex-shrink: 0; }
+.help-pill:active { background: var(--red-700); }
+
+/* Phones, screens outside onboarding: the pill sits in the title row,
+   top right, and there's no wordmark (Figma 169:867). From 768px the
+   header row from the tablet layout takes over again. */
+@media (max-width: 767px) {
+  .screen:not(.onb) { position: relative; }
+  .screen:not(.onb) .app-header {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0;
+    padding-bottom: 0;
+  }
+  .screen:not(.onb) .content { padding-top: calc(var(--space-3) + env(safe-area-inset-top)); }
+  .screen:not(.onb) .page-head .wordmark { display: none; }
+  .screen:not(.onb) .page-head h1 { padding-right: 178px; }
+  #act-form .btn-inline { width: 100%; }
 }
 
 .content {
@@ -172,10 +194,10 @@ h1 {
 }
 
 .question {
-  font-family: var(--font-ui);
-  font-size: var(--text-question);
+  font-family: var(--font);
+  font-size: var(--text-h1);
   font-weight: var(--weight-bold);
-  line-height: 1.25;
+  line-height: 1.2;
   color: var(--color-text-heading);
 }
 .question-lg { font-family: var(--font); font-size: var(--text-h1); line-height: 1.2; }
@@ -234,6 +256,7 @@ h1 {
   cursor: pointer;
 }
 .btn-primary {
+  border-radius: 16px;
   background: var(--color-primary);
   border-color: var(--color-primary-border);
   color: var(--color-text-on-primary);
@@ -613,21 +636,30 @@ h1 {
 
 .divider { width: 100%; height: 1px; margin: 0; border: 0; background: var(--color-border); }
 
-.tabs { display: flex; gap: var(--space-5); }
+/* Tabs (Figma 169:1017): yellow dot and underline on the open tab. */
+.tabs { display: flex; align-items: center; gap: var(--space-3); }
 .tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   min-height: 44px;
   padding: 0;
   background: none;
   border: 0;
-  font-family: var(--font-ui);
-  font-size: var(--text-md);
-  line-height: 22px;
-  color: var(--color-text-body);
-  text-decoration: underline;
-  text-underline-offset: 3px;
+  font-family: var(--font);
+  font-size: var(--text-sm);
+  line-height: 1.3;
+  color: var(--ink-800);
   cursor: pointer;
 }
-.tab[aria-pressed="true"] { font-weight: var(--weight-bold); color: var(--color-text); }
+.tab[aria-pressed="true"]::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.tab[aria-pressed="true"] { font-weight: var(--weight-semibold); text-decoration: underline; text-underline-offset: 4px; }
+.tab[aria-pressed="true"]::before { background: var(--color-primary); }
 
 .note-stack { list-style: none; margin: 0; padding: var(--space-1) 0 var(--space-2); display: flex; flex-direction: column; }
 .note-stack > li + li { margin-top: -18px; }
@@ -675,7 +707,7 @@ button.note { cursor: pointer; }
   align-self: flex-start;
   padding: var(--space-1) var(--space-5);
   background: var(--color-chip);
-  border: 1px solid var(--color-border-strong);
+  border: 0;
   border-radius: var(--radius-pill);
   font-family: var(--font-ui);
   font-size: var(--text-sm);
@@ -723,6 +755,32 @@ button.note { cursor: pointer; }
 
 .act-more { display: flex; flex-direction: column; gap: var(--space-6); }
 .act-more .words { gap: var(--space-4); }
+
+/* Past note (opened from Past Notes) */
+.note-dates { font-size: var(--text-sm); line-height: 1.4; color: var(--color-text-muted); }
+.past-block { display: flex; flex-direction: column; gap: var(--space-2); }
+.past-answer {
+  align-self: flex-start;
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-selected);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-ui);
+  font-size: var(--text-md);
+  font-weight: var(--weight-semibold);
+  line-height: 22px;
+  color: var(--color-text-on-selected);
+}
+.past-note-text {
+  padding: var(--space-4);
+  background: var(--note-yellow);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-lg);
+  line-height: 1.5;
+  color: var(--color-text);
+  white-space: pre-wrap;
+}
+.past-note-text.is-empty { background: var(--color-surface-warm); color: var(--color-text-body); }
+.note-extra { margin-top: auto; }
 
 /* Column wrappers: no effect on phones, two columns on tablets (below). */
 .split, .split > .col, .narrow { display: contents; }
@@ -830,17 +888,6 @@ button.note { cursor: pointer; }
 .onb .app-header .wordmark-top { display: block; }
 .onb .app-header:not(:has(.help-pill)) { padding-bottom: 0; margin-bottom: var(--space-5); }
 .onb .page-head .wordmark { display: none; }
-
-.onb .help-pill {
-  min-height: 46px;
-  padding: 13px 14px;
-  background: var(--onb-lilac-50);
-  border-color: var(--onb-ink);
-  border-radius: 22px;
-  font-family: var(--font);
-  font-weight: var(--weight-medium);
-  color: var(--onb-ink);
-}
 
 .onb h1 {
   font-size: var(--text-onb-title);
