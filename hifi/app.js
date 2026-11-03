@@ -1,4 +1,4 @@
-// Atode prototype: onboarding and add a worry.
+// Atode prototype: onboarding, add a worry and review notes.
 // Everything stays on this device (localStorage). Nothing is sent anywhere.
 
 (function () {
@@ -298,9 +298,29 @@
 
   function worryText(w) { return w.words || w.topic; }
 
+  // Figma 156:1955 names: a short chip label and a sticky-note title per topic.
+  var TOPIC_CHIP = { "My work": "Work", "Money": "Money", "Someone in my life": "Someone", "My health": "Health", "Something else": "Other" };
+  var TOPIC_TITLE = { "My work": "Work related", "Money": "Money worries", "Someone in my life": "Someone in my life", "My health": "Health related", "Something else": "Something else" };
+  function topicChip(t) { return TOPIC_CHIP[t] || t; }
+  function topicTitle(t) { return TOPIC_TITLE[t] || t; }
+
+  // "Added 9:32 Today" / "Added 14:54 Yesterday" / "Added 9:32, 1 Nov"
+  function addedText(iso) {
+    var d = new Date(iso);
+    if (isNaN(d)) return "";
+    var hm = d.getHours() + ":" + String(d.getMinutes()).padStart(2, "0");
+    var today = new Date();
+    var yest = new Date(); yest.setDate(today.getDate() - 1);
+    if (d.toDateString() === today.toDateString()) return "Added " + hm + " Today";
+    if (d.toDateString() === yest.toDateString()) return "Added " + hm + " Yesterday";
+    return "Added " + hm + ", " + d.getDate() + " " + d.toLocaleString("en-GB", { month: "short" });
+  }
+
   function countText(n) {
-    if (n === 0) return "Nothing is parked right now.";
-    return "You have parked " + n + (n === 1 ? " worry" : " worries") + ", select one to review and add any comments.";
+    if (n === 0) return "Nothing to review right now. Notes you park will show here.";
+    return "It’s time to review the notes you have added. It looks like you have added " +
+      (n === 1 ? "1 note" : n + " notes") + ", we will take a look at " +
+      (n === 1 ? "it" : "each one") + " and see if you need to create a plan for " + (n === 1 ? "it." : "them.");
   }
 
   function setTab(tab) {
@@ -309,26 +329,54 @@
     $all("#review [data-panel]").forEach(function (p) { p.hidden = p.dataset.panel !== tab; });
   }
 
+  // One sticky note. Colour and tilt come from its place in the stack.
+  function noteCard(tag, w, i, extra) {
+    var card = document.createElement(tag);
+    card.className = "note note-" + (i % 4);
+    var meta = document.createElement("span");
+    meta.className = "note-meta";
+    meta.textContent = "Note " + (i + 1) + " • " + addedText(w.parkedAt);
+    var head = document.createElement("span");
+    head.className = "note-head";
+    var title = document.createElement("span");
+    title.className = "note-title";
+    title.textContent = topicTitle(w.topic);
+    head.appendChild(title);
+    if (tag === "button") {
+      var icon = document.createElement("img");
+      icon.src = "assets/arrow-down.svg"; icon.width = 32; icon.height = 32; icon.alt = "";
+      head.appendChild(icon);
+    }
+    card.appendChild(meta);
+    card.appendChild(head);
+    if (w.words) {
+      var words = document.createElement("span");
+      words.className = "note-words";
+      words.textContent = w.words;
+      card.appendChild(words);
+    }
+    if (extra) {
+      var ex = document.createElement("span");
+      ex.className = "note-extra";
+      ex.textContent = extra;
+      card.appendChild(ex);
+    }
+    return card;
+  }
+
   function renderReview() {
     var parked = parkedWorries();
     var passed = state.worries.filter(function (w) { return w.outcome; });
     $all("[data-review-count]").forEach(function (el) { el.textContent = countText(parked.length); });
-    $("[data-passed-count]").textContent = passed.length ? "Worries you’ve already looked at." : "Worries you look at will show here.";
+    $("[data-review-tap]").hidden = parked.length === 0;
+    $("[data-passed-count]").textContent = passed.length ? "Notes you’ve already reviewed." : "Notes you review will show here.";
 
     var today = $("[data-list=today]");
     today.innerHTML = "";
-    parked.forEach(function (w) {
+    parked.forEach(function (w, i) {
       var li = document.createElement("li");
-      var btn = document.createElement("button");
+      var btn = noteCard("button", w, i);
       btn.type = "button";
-      btn.className = "worry-item card";
-      btn.textContent = worryText(w);
-      if (w.words) {
-        var meta = document.createElement("span");
-        meta.className = "worry-meta";
-        meta.textContent = w.topic;
-        btn.appendChild(meta);
-      }
       btn.addEventListener("click", function () {
         state.reviewing = w.ticket;
         save();
@@ -340,20 +388,10 @@
 
     var list = $("[data-list=passed]");
     list.innerHTML = "";
-    passed.forEach(function (w) {
+    passed.forEach(function (w, i) {
       var li = document.createElement("li");
-      li.className = "worry-item card";
-      li.appendChild(document.createTextNode(worryText(w)));
-      var meta = document.createElement("span");
-      meta.className = "worry-meta";
-      meta.textContent = OUTCOMES[w.outcome];
-      li.appendChild(meta);
-      if (w.note) {
-        var note = document.createElement("span");
-        note.className = "worry-note";
-        note.textContent = "Note: " + w.note;
-        li.appendChild(note);
-      }
+      var extra = OUTCOMES[w.outcome] + (w.note ? ". Note: " + w.note : "");
+      li.appendChild(noteCard("div", w, i, extra));
       list.appendChild(li);
     });
     setTab(state.tab || "today");
@@ -369,12 +407,11 @@
     $all("[data-review-count]", screen).forEach(function (el) { el.textContent = countText(parked.length); });
     $all("[data-review-words]", screen).forEach(function (el) { el.textContent = w.words || "No words added."; });
     var topic = $("[data-review-topic]", screen);
-    if (topic) topic.textContent = w.topic;
-    var pos = $("[data-review-position]", screen);
-    if (pos) pos.textContent = "Worry " + (parked.indexOf(w) + 1) + " of " + parked.length;
+    if (topic) topic.textContent = topicChip(w.topic);
     if (id === "review-act") {
       var form = $("#act-form");
       $all("input[name=outcome]", form).forEach(function (r) { r.checked = false; });
+      $("[data-act-more]", form).hidden = true;
       $("#review-note").value = w.note || "";
     }
   }
@@ -385,7 +422,11 @@
   });
 
   var actForm = $("#act-form");
-  actForm.addEventListener("change", function () { $("[data-error]", actForm).hidden = true; });
+  // The note and save button appear once a choice is made (Figma 150:1859).
+  actForm.addEventListener("change", function (e) {
+    $("[data-error]", actForm).hidden = true;
+    if (e.target.name === "outcome") $("[data-act-more]", actForm).hidden = false;
+  });
   actForm.addEventListener("submit", function (e) {
     e.preventDefault();
     var picked = $("input[name=outcome]:checked", actForm);

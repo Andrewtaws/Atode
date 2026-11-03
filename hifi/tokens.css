@@ -1,5 +1,7 @@
 /* Atode design tokens
-   Source: Figma "Designs-for-Rapid-Ideation", hi-fi onboarding (node 69:2274).
+   Source: Figma "Designs-for-Rapid-Ideation", section 156:1955 (Dashboard,
+   Review Notes, Review Note steps). This replaced the warm brown palette
+   from the first hi-fi (69:2274) on 3 Nov 2026.
 
    Two layers:
    1. Palette: raw colours, named for what they are. Change a colour here.
@@ -10,71 +12,83 @@
 
 :root {
   /* 1. Palette */
-  --cream-100: #fff8ee;
-  --cream-200: #f5f0e8;
-  --sand-200: #e8e0d0;
-  --sand-300: #e8d8b8;
-  --sand-500: #8a7e72;   /* not in Figma: input borders need 3:1 */
-  --brown-500: #716559;  /* Figma #7a6e64, darkened to pass 4.5:1 on cream */
-  --brown-600: #5c5347;
-  --brown-800: #3d2c1e;
-  --brown-900: #2c1a0e;
-  --brown-950: #1f1507;
-  --amber-500: #f5a623;
-  --amber-600: #e8941a;
-  --sun-400: #f5c842;
-  --sun-300: #e8d870;
-  --red-700: #b00020;
+  --ink-900: #1a1a1a;     /* text, outlines, selected fill */
+  --ink-800: #292929;
+  --ink-600: #555550;     /* body copy */
+  --ink-500: #55505f;     /* small labels on tinted cards */
+  --grey-500: #767676;    /* not in Figma: input borders need 3:1 (Figma #d0d0d0 is 1.5:1) */
+  --grey-200: #e8e8e8;    /* dividers */
+  --paper-50: #fafaf7;    /* page */
   --white: #ffffff;
+  --yellow-400: #ffc000;  /* primary button */
+  --amber-500: #f5a623;   /* topic chip */
+  --lilac-50: #f6f2fa;    /* "Thought note" card */
+  --stone-100: #eee9df;   /* "Review note time" card */
+  --red-700: #b00020;
+
+  /* Sticky-note colours, used in turn on the Review Notes stack */
+  --note-yellow: #fff1b0;
+  --note-pink: #fadde4;
+  --note-blue: #dfeffb;
+  --note-lilac: #ede2fd;
 
   /* 2. Roles: surfaces */
-  --color-page: var(--cream-200);
+  --color-page: var(--paper-50);
   --color-surface: var(--white);
-  --color-surface-warm: var(--cream-100);
-  --color-hero: var(--sun-400);
+  --color-surface-warm: var(--stone-100);
+  --color-surface-cool: var(--lilac-50);
+  --color-hero: var(--note-yellow);
 
   /* Roles: text */
-  --color-text-heading: var(--brown-950);
-  --color-text: var(--brown-800);
-  --color-text-body: var(--brown-600);
-  --color-text-muted: var(--brown-500);
-  --color-text-on-primary: var(--brown-950);
+  --color-text-heading: var(--ink-900);
+  --color-text: var(--ink-900);
+  --color-text-body: var(--ink-600);
+  --color-text-muted: var(--ink-500);
+  --color-text-on-primary: var(--ink-900);
+  --color-text-on-selected: var(--white);
   --color-text-on-danger: var(--white);
   --color-error: var(--red-700);
 
   /* Roles: lines */
-  --color-border: var(--sand-200);
-  --color-border-warm: var(--sand-300);
-  --color-border-input: var(--sand-500);
-  --color-border-hero: var(--sun-300);
-  --color-border-strong: var(--brown-800);
+  --color-border: var(--grey-200);
+  --color-border-warm: var(--grey-200);
+  --color-border-input: var(--grey-500);
+  --color-border-hero: var(--ink-900);
+  --color-border-strong: var(--ink-900);
 
   /* Roles: actions */
-  --color-primary: var(--amber-500);
-  --color-primary-border: var(--amber-600);
-  --color-primary-pressed: var(--amber-600);
-  --color-danger: var(--brown-900);
-  --color-selected: var(--amber-500);
-  --color-selected-border: var(--amber-600);
-  --color-focus: var(--brown-950);
+  --color-primary: var(--yellow-400);
+  --color-primary-border: var(--ink-900);
+  --color-primary-pressed: #f0b400;
+  --color-danger: var(--ink-900);
+  --color-selected: var(--ink-900);
+  --color-selected-border: var(--ink-900);
+  --color-chip: var(--amber-500);
+  --color-focus: var(--ink-900);
 
-  /* Type */
+  /* Type: Inter for headings and copy, Work Sans for controls
+     (back link, step label, chips, choice pills), as in Figma. */
   --font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-ui: "Work Sans", var(--font);
   --weight-regular: 400;
   --weight-medium: 500;
   --weight-semibold: 600;
   --weight-bold: 700;
+  --weight-black: 900;
 
-  --text-display: 28px;  /* welcome h1 */
-  --text-h1: 26px;
+  --text-time: 40px;     /* 18:00 on Home */
+  --text-hero: 36px;     /* "Thought Note" */
+  --text-display: 30px;  /* page titles */
+  --text-h1: 28px;       /* note titles, big questions */
+  --text-question: 26px;
   --text-h2: 18px;
-  --text-lg: 16px;       /* buttons, step titles, tiles */
-  --text-md: 15px;       /* body */
-  --text-sm: 14px;       /* smallest allowed size */
+  --text-lg: 16px;       /* buttons, section headings */
+  --text-md: 15px;       /* controls */
+  --text-sm: 14px;       /* smallest allowed size (Figma uses 12 and 13 in places) */
 
-  --leading-tight: 1.2;
-  --leading-snug: 1.35;
-  --leading-body: 1.5;
+  --leading-tight: 1.15;
+  --leading-snug: 1.3;
+  --leading-body: 1.55;
 
   /* Space */
   --space-1: 4px;
@@ -89,14 +103,17 @@
   --gutter: var(--space-6);
 
   /* Shape */
-  --radius-sm: 12px;     /* options, tiles, inputs */
-  --radius-md: 16px;     /* buttons, cards */
+  --radius-sm: 12px;     /* buttons, inputs, tiles */
+  --radius-md: 12px;
   --radius-lg: 20px;     /* illustration boxes */
-  --radius-xl: 24px;     /* hero */
-  --radius-pill: 999px;
+  --radius-xl: 24px;     /* cards */
+  --radius-note: 28px;   /* sticky notes */
+  --radius-pill: 999px;  /* choice pills, chips, help pill */
 
-  --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.04);
-  --shadow-illustration: 0 4px 16px rgba(0, 0, 0, 0.04);
+  --shadow-card: none;
+  --shadow-illustration: none;
+  --shadow-note: 0 10px 15px rgba(0, 0, 0, 0.13);
+  --shadow-field: 0 4px 16px rgba(0, 0, 0, 0.04);
 
   /* Sizes */
   --tap-min: 48px;

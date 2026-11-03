@@ -6,7 +6,9 @@ The hi-fi version of Atode, kept apart from the wireframe prototype in the repo 
 - Hi-fi prototype: https://andrewtaws.github.io/Atode/hifi/
 - Design system: https://andrewtaws.github.io/Atode/hifi/design-system.html
 
-Onboarding follows the Figma hi-fi frames (node 69:2274), and Home, Add your worry and Quick add follow the hi-fi "Add a worry" frames (node 115:905). Done at the end of onboarding opens Home. "Review worries early" on Home opens the Review worries flow (node 127:1257): pick a parked worry, say whether it still affects you, choose what can be done, add a note, and it moves to Passed worries (or gets parked again).
+**Look and feel (3 Nov 2026):** every screen uses the style from Figma section 156:1955: black Inter titles with the Atode wordmark beside them, yellow buttons with a black outline, black choice pills, a tinted Home and a sticky-note stack on Review Notes. Home and the Review flow follow those frames closely; the other screens take the same tokens and components.
+
+Onboarding follows the Figma hi-fi frames (node 69:2274), and Home, Add your worry and Quick add follow the hi-fi "Add a worry" frames (node 115:905). Done at the end of onboarding opens Home. "Review notes early" on Home opens Review Notes (node 150:1911): tap a sticky note, say whether it still affects you (step 1 of 2), choose what can be done and add a note (step 2 of 2), and it moves to Reviewed notes (or is parked again till tomorrow).
 
 It saves to its own storage (`atode.hifi.v1`), so testing one version doesn't affect the other. Add `#reset` to the end of the address to clear it between testers.
 
@@ -30,4 +32,4 @@ Screens 768px wide or more (iPad portrait and landscape) use the tablet layout f
 
 ## Illustrations
 
-The four illustrations live in `assets/illustrations/` (`welcome.png`, `clock.png`, `thought.png`, `hand.png`). To swap one, replace the file with the same name. If a file is missing, a simple icon shows in its place.
+The illustrations live in `assets/illustrations/` (`welcome.png`, `clock.png`, `thought.png`, `hand.png`, and `thought-cloud.png` on Home, exported from Figma at 88px). To swap one, replace the file with the same name. If a file is missing, a simple icon shows in its place.
