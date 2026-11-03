@@ -16,8 +16,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Work+Sans:wght@400;600;700&display=swap">
-  <link rel="stylesheet" href="tokens.css?v=15">
-  <link rel="stylesheet" href="styles.css?v=15">
+  <link rel="stylesheet" href="tokens.css?v=16">
+  <link rel="stylesheet" href="styles.css?v=16">
 </head>
 <body>
   <!-- Loading screen, shown each time the app opens -->
@@ -336,7 +336,7 @@
               <img src="assets/illustrations/thought-cloud.png" alt="" onerror="this.remove()">
             </div>
           </div>
-          <a class="btn btn-primary" href="#add">Add a new note <span aria-hidden="true">&nbsp;→</span></a>
+          <a class="btn btn-primary" href="#quick">Add a new note <span aria-hidden="true">&nbsp;→</span></a>
         </div>
         <div class="tint-card tint-warm">
           <div class="schedule">
@@ -353,32 +353,7 @@
       </main>
     </section>
 
-    <!-- Add a worry 2. Entry type (Figma 115:936) -->
-    <section class="screen" id="add" data-title="Add your worry" hidden>
-      <header class="app-header">
-        <img class="wordmark wordmark-top" src="assets/logo.svg" width="67" height="18" alt="" aria-hidden="true">
-        <a class="help-pill" href="#help"><img src="assets/help-cross.svg" width="16" height="16" alt="">I need help now</a>
-      </header>
-      <main class="content">
-        <div class="page-head">
-          <h1 tabindex="-1" class="h1-display">Add your worry</h1>
-          <img class="wordmark" src="assets/logo.svg" width="67" height="18" alt="" aria-hidden="true">
-        </div>
-        <p class="intro">Add your worry now, and let Atode remember it for you.</p>
-        <div class="split split-even">
-        <div class="tint-card tint-cool">
-          <h2 class="card-title">Quick add</h2>
-          <a class="btn btn-primary" href="#quick">Quick add</a>
-        </div>
-        <div class="tint-card tint-warm">
-          <h2 class="card-title">Detailed entry</h2>
-          <a class="btn btn-secondary" href="#soon">Add detailed entry</a>
-        </div>
-        </div>
-      </main>
-    </section>
-
-    <!-- Add a worry 3. Quick add (Figma 115:961) -->
+    <!-- Add a worry: Quick add (Figma 115:961). Home opens it directly; the detailed entry was removed. -->
     <section class="screen" id="quick" data-title="Quick add" hidden>
       <header class="app-header">
         <img class="wordmark wordmark-top" src="assets/logo.svg" width="67" height="18" alt="" aria-hidden="true">
@@ -392,6 +367,9 @@
                 <h1 tabindex="-1" id="quick-q">Quick add</h1>
                 <img class="wordmark" src="assets/logo.svg" width="67" height="18" alt="" aria-hidden="true">
               </div>
+              <a class="back" href="#home">
+                <img src="assets/arrow-left.svg" width="20" height="20" alt=""> Back
+              </a>
             </div>
             <p class="hint" id="quick-hint">Add your worry now, and let Atode remember it for you.</p>
             <div class="illus illus-thought">
@@ -614,32 +592,9 @@
       </main>
     </section>
 
-    <!-- Not designed yet: detailed entry -->
-    <section class="screen" id="soon" data-title="Not in this prototype yet" hidden>
-      <header class="app-header">
-        <img class="wordmark wordmark-top" src="assets/logo.svg" width="67" height="18" alt="" aria-hidden="true">
-        <a class="help-pill" href="#help"><img src="assets/help-cross.svg" width="16" height="16" alt="">I need help now</a>
-      </header>
-      <main class="content">
-        <div class="title-group">
-          <div class="page-head">
-            <h1 tabindex="-1">Not in this prototype yet</h1>
-            <img class="wordmark" src="assets/logo.svg" width="67" height="18" alt="" aria-hidden="true">
-          </div>
-          <button type="button" class="back" data-back>
-            <img src="assets/arrow-left.svg" width="20" height="20" alt=""> Back
-          </button>
-        </div>
-        <p class="hint">This part of Atode is still being designed.</p>
-        <div class="push">
-          <a class="btn btn-primary" href="#home">Back to home</a>
-        </div>
-      </main>
-    </section>
-
   </div>
   <div id="announcer" class="visually-hidden" aria-live="polite"></div>
   <noscript><p class="noscript">Atode needs JavaScript turned on.</p></noscript>
-  <script src="app.js?v=15"></script>
+  <script src="app.js?v=16"></script>
 </body>
 </html>
