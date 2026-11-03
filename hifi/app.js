@@ -5,7 +5,7 @@
   "use strict";
 
   var STORE_KEY = "atode.hifi.v1";
-  var SCREENS = ["welcome", "how", "time", "worry", "ticket", "help", "home", "add", "quick", "review", "review-item", "review-act", "review-done", "past-note", "soon"];
+  var SCREENS = ["welcome", "how", "time", "worry", "ticket", "help", "home", "quick", "review", "review-item", "review-act", "review-done", "past-note"];
 
   var state = load();
 
@@ -78,6 +78,9 @@
       location.replace(location.pathname + location.search);
       return;
     }
+    // Old links: the entry-type screen and the detailed entry were removed.
+    if (id === "add") id = "quick";
+    if (id === "soon") id = "home";
     if (SCREENS.indexOf(id) === -1) id = "welcome";
     if (id === "ticket" && !currentWorry()) id = state.worries.length ? "home" : "worry";
     if ((id === "review-item" || id === "review-act") && !reviewingWorry()) id = "review";
@@ -99,7 +102,7 @@
     if (id === "past-note") renderPastNote();
     if (id === "home" && !state.onboarded) { state.onboarded = true; save(); }
     // Leaving the add flow drops any half-finished edit.
-    if (id === "home" || id === "add") {
+    if (id === "home") {
       $all(".park-form").forEach(function (f) {
         if (f.dataset.editing) { delete f.dataset.editing; fillParkForm(f, null); }
       });
