@@ -815,6 +815,188 @@ button.note { cursor: pointer; }
   :root { --wrap: 1040px; --text-display: 44px; }
 }
 
+/* Onboarding (Figma 160:1956, 3 Nov 2026)
+   The six onboarding screens (.onb) use the newer look: white page,
+   wordmark in a header row on phones too, lilac surfaces, a violet
+   accent, yellow selection, ExtraBold titles. The rest of the app keeps
+   the 156:1955 style above. Layout from 768px is unchanged.
+   Deviations from Figma, for accessibility: control edges are
+   --onb-line-control (3:1) not #e6e0ef; 13px labels are 14px. */
+
+.screen.onb { background: var(--color-surface); color: var(--onb-ink); }
+
+/* Header row: wordmark left, pill right, on phones as well. */
+.onb .app-header { justify-content: space-between; margin-bottom: var(--space-5); }
+.onb .app-header .wordmark-top { display: block; }
+.onb .app-header:not(:has(.help-pill)) { padding-bottom: 0; margin-bottom: var(--space-5); }
+.onb .page-head .wordmark { display: none; }
+
+.onb .help-pill {
+  min-height: 46px;
+  padding: 13px 14px;
+  background: var(--onb-lilac-50);
+  border-color: var(--onb-ink);
+  border-radius: 22px;
+  font-family: var(--font);
+  font-weight: var(--weight-medium);
+  color: var(--onb-ink);
+}
+
+.onb h1 {
+  font-size: var(--text-onb-title);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--onb-ink);
+}
+#welcome h1, #how h1 { font-size: var(--text-onb-hero); }
+
+.onb .title-group { gap: 6px; }
+.onb .title-group:has(.back) { gap: var(--space-2); }
+.onb .back { font-family: var(--font); color: var(--onb-ink); }
+.onb .step-label { font-family: var(--font); font-size: var(--text-sm); line-height: 20px; letter-spacing: 0.2px; color: var(--onb-muted); }
+
+.onb .content { gap: var(--space-5); }
+#time .content, #time .form-fill { gap: 14px; }
+#worry .content, #worry .form-fill, #help .content { gap: var(--space-3); }
+#ticket .content { gap: 18px; }
+
+.onb .body, .onb .hint { color: var(--onb-ink); }
+.onb .body { font-size: var(--text-lg); line-height: 1.5; }
+.onb .hint { line-height: 1.5; }
+.onb .small { line-height: 1.5; color: var(--onb-muted); }
+.onb .link { font-weight: var(--weight-regular); line-height: 1.45; color: var(--onb-ink); }
+
+/* Buttons: yellow, no outline, 16px corners */
+.onb .btn { border-radius: 16px; }
+.onb .btn-primary { background: var(--onb-yellow); border-color: var(--onb-yellow); color: var(--onb-ink); }
+.onb .btn-primary:active { background: var(--color-primary-pressed); }
+.onb .btn-secondary {
+  background: var(--onb-lilac-50);
+  border-color: var(--onb-line);
+  font-weight: var(--weight-regular);
+  color: var(--onb-ink);
+}
+.onb .btn-secondary:active { background: var(--onb-lilac-200); }
+.onb .btn-danger { background: var(--onb-ink); border-color: var(--onb-ink); }
+
+/* Illustrations: lilac cloud characters in an edged box */
+.onb .illus { background: var(--onb-lilac-50); border: 1px solid var(--onb-line); border-radius: var(--radius-lg); }
+.onb .illus-hero { border-radius: var(--radius-xl); }
+.onb .illus:has(img) { background: var(--onb-lilac-50); border: 1px solid var(--onb-line); }
+
+/* Safety note */
+.onb .safety {
+  gap: var(--space-2);
+  padding: 14px;
+  background: var(--onb-lilac-50);
+  border: 1px solid var(--onb-line);
+  border-radius: 16px;
+}
+.onb .safety-title { gap: var(--space-2); font-weight: var(--weight-semibold); line-height: 1.3; }
+.onb .icon-badge { border-color: var(--onb-line); border-radius: 12px; }
+
+/* Steps: yellow, violet, lilac */
+.onb .step {
+  align-items: center;
+  padding: var(--space-4);
+  border: 1px solid var(--onb-line);
+  border-radius: 16px;
+}
+.onb .step:nth-child(1) { background: var(--onb-yellow); }
+.onb .step:nth-child(2) { background: var(--onb-violet); color: var(--color-surface); }
+.onb .step:nth-child(3) { background: var(--onb-lilac-50); }
+.onb .step-num { background: var(--onb-ink); font-weight: var(--weight-bold); }
+.onb .step:nth-child(2) .step-num { background: var(--color-surface); color: var(--onb-ink); }
+.onb .step:nth-child(3) .step-num { background: var(--onb-lilac-200); color: var(--onb-ink); }
+.onb .step-title { font-size: var(--text-lg); font-weight: var(--weight-semibold); line-height: 1.4; color: inherit; }
+.onb .step-text { margin-top: var(--space-1); line-height: 1.5; color: inherit; }
+
+/* Collection time options: selected is yellow with a filled dot */
+.onb .options { gap: 10px; }
+.onb .option { border-color: var(--onb-line-control); color: var(--onb-ink); }
+.onb .option input { width: 14px; height: 14px; border: 1px solid var(--onb-line-control); }
+.onb .option input:checked { border: 0; background: var(--onb-ink); box-shadow: none; }
+.onb .option:has(input:checked) {
+  background: var(--onb-yellow);
+  border: 2px solid var(--onb-ink);
+  padding: 15px;
+  color: var(--onb-ink);
+}
+
+/* Reminder switch: violet when on */
+.onb .reminder { border-color: var(--onb-line); }
+.onb .reminder-label { font-size: var(--text-md); line-height: 1.5; color: var(--onb-ink); }
+.onb .reminder-note { line-height: 1.5; color: var(--onb-muted); }
+.onb .switch { border: 0; background: var(--onb-line-control); }
+.onb .switch::after { top: 4px; left: 4px; background: var(--color-surface); }
+.onb .switch:checked { background: var(--onb-violet); }
+.onb .switch:checked::after { left: 24px; background: var(--color-surface); }
+
+/* Topic tiles and refocus pills: white, thin edge; selected is yellow + tick */
+.onb .tiles { gap: 10px; }
+.onb .tile { min-height: 65px; border-color: var(--onb-line-control); color: var(--onb-ink); }
+.onb .tile:has(input:checked) {
+  background: var(--onb-yellow);
+  border: 2px solid var(--onb-ink);
+  color: var(--onb-ink);
+}
+.onb .tiles:has(.tile-pill) { display: flex; flex-wrap: wrap; }
+.onb .tile-pill {
+  min-height: var(--tap-min);
+  padding: 12px 18px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font);
+  font-size: var(--text-lg);
+}
+
+.onb .words label { color: var(--onb-muted); }
+.onb .words textarea {
+  min-height: 72px;
+  padding: var(--space-4) 14px;
+  border-color: var(--onb-line-control);
+  box-shadow: none;
+  font-size: var(--text-md);
+  color: var(--onb-ink);
+}
+.onb .words textarea::placeholder { color: var(--onb-muted); }
+.onb .skip { font-weight: var(--weight-regular); }
+
+/* Ticket: lilac, dashed edge, flat */
+.onb .ticket {
+  padding: var(--space-5);
+  background: var(--onb-lilac-200);
+  border: 2px dashed var(--onb-line-control);
+  border-radius: 16px;
+  box-shadow: none;
+  rotate: none;
+}
+.onb .ticket-top { line-height: 1.5; color: var(--onb-muted-strong); }
+.onb .ticket-no { letter-spacing: 1px; }
+.onb .ticket-when { font-size: var(--text-onb-title); font-weight: 800; line-height: 1.2; letter-spacing: -0.02em; color: var(--onb-ink); }
+.onb .ticket-note { line-height: 1.5; color: var(--onb-ink); }
+.onb .ticket-actions { padding-top: 0; }
+.onb .ticket-actions .link { color: var(--onb-ink); }
+.onb .h2 { font-weight: var(--weight-semibold); line-height: 1.3; color: var(--onb-ink); }
+.onb .footnote { line-height: 1.5; color: var(--onb-muted); }
+
+/* Help */
+.onb .contact-label { font-weight: var(--weight-semibold); line-height: 1.4; color: var(--onb-ink); }
+
+@media (min-width: 768px) {
+  :root { --text-onb-hero: 40px; --text-onb-title: 32px; }
+  .onb .app-header { margin-bottom: 0; }
+  .onb .step { padding: var(--space-6); }
+  .onb .content { gap: var(--space-6); }
+  .onb .illus-thought { height: auto; max-height: 200px; aspect-ratio: 342 / 100; }
+}
+@media (min-width: 1024px) {
+  .onb .step { align-items: flex-start; }
+}
+@media (min-width: 1280px) {
+  :root { --text-onb-hero: 44px; }
+}
+
 /* Loading screen */
 
 .splash {

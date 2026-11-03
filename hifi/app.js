@@ -150,6 +150,16 @@
     });
   });
 
+  // "This can't wait" on the Help screen itself: go straight to "Call 999".
+  $all("[data-help-here]").forEach(function (pill) {
+    pill.addEventListener("click", function (e) {
+      e.preventDefault();
+      var first = $("#help .btn-danger");
+      first.scrollIntoView({ block: "center" });
+      first.focus();
+    });
+  });
+
   // Onboarding 3. Collection time
 
   var timeForm = $("#time-form");

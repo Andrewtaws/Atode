@@ -26,6 +26,18 @@
   --stone-100: #eee9df;   /* "Review note time" card */
   --red-700: #b00020;
 
+  /* Onboarding palette (Figma 160:1956, 3 Nov 2026): white page, lilac
+     surfaces, violet accent. Used by the .onb screens only for now. */
+  --onb-ink: #101010;
+  --onb-muted: #686270;       /* 5.9:1 on white */
+  --onb-muted-strong: #5e5866; /* not in Figma: ticket meta, #686270 is 4.3:1 on lilac */
+  --onb-yellow: #ffbe00;
+  --onb-violet: #7854e8;      /* white text on it is 5.0:1 */
+  --onb-lilac-50: #f5f2fa;    /* pill, safety note, secondary buttons */
+  --onb-lilac-200: #e2d6ff;   /* ticket, step 3 number */
+  --onb-line: #e6e0ef;        /* card edges (decorative) */
+  --onb-line-control: #8a8396; /* not in Figma: tiles, options and inputs need 3:1 (Figma #e6e0ef is 1.3:1) */
+
   /* Sticky-note colours, used in turn on the Review Notes stack */
   --note-yellow: #fff1b0;
   --note-pink: #fadde4;
@@ -85,6 +97,8 @@
   --text-lg: 16px;       /* buttons, section headings */
   --text-md: 15px;       /* controls */
   --text-sm: 14px;       /* smallest allowed size (Figma uses 12 and 13 in places) */
+  --text-onb-hero: 28px; /* onboarding: Welcome, How it works */
+  --text-onb-title: 26px; /* onboarding: other titles, ticket time */
 
   --leading-tight: 1.15;
   --leading-snug: 1.3;
