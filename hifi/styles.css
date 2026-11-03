@@ -75,7 +75,9 @@ h1:focus { outline: none; }
   padding: calc(var(--space-3) + env(safe-area-inset-top)) var(--gutter) 0;
   margin-bottom: var(--space-4);
 }
-.app-header:empty { padding-bottom: var(--space-4); margin-bottom: 0; }
+.app-header:not(:has(.help-pill)) { padding-bottom: var(--space-4); margin-bottom: 0; }
+/* Header wordmark: tablet and desktop only (phones keep it beside the title). */
+.app-header .wordmark-top { display: none; }
 
 .help-pill {
   display: inline-flex;
@@ -725,49 +727,92 @@ button.note { cursor: pointer; }
 /* Column wrappers: no effect on phones, two columns on tablets (below). */
 .split, .split > .col, .narrow { display: contents; }
 
-/* Tablet (Figma 130:1445, 1024×768): wider margins, roomier cards and
-   two columns. Applies to any screen 768px wide or more. */
+/* Tablet and desktop (3 Nov review). Phones are untouched: everything
+   below only applies from 768px.
+   - The wordmark moves to the header, so titles get the full width
+     instead of wrapping one word per line beside it.
+   - Type steps up so text isn't phone-sized on a big screen.
+   - Portrait tablets (768-1023) get one centred column, not two cramped
+     ones. Two columns start at 1024 (Figma 130:1445, 1024x768).
+   - Content is held in a centred column of fixed maximum width, and on
+     landscape screens it is centred vertically, so it doesn't sit in the
+     top half with an empty page below. */
 @media (min-width: 768px) {
-  .phone { width: 100%; max-width: 1024px; margin: 0 auto; }
+  :root {
+    --wrap: 600px;
+    --text-display: 40px;
+    --text-h1: 30px;
+    --text-question: 30px;
+    --text-h2: 20px;
+    --text-lg: 18px;
+    --text-md: 17px;
+    --text-sm: 15px;
+  }
+
+  .phone { width: 100%; }
+
+  .app-header,
+  .content {
+    width: 100%;
+    max-width: calc(var(--wrap) + 2 * var(--space-12));
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: var(--space-12);
+    padding-right: var(--space-12);
+  }
   .app-header {
-    padding: calc(var(--space-4) + env(safe-area-inset-top)) var(--space-12) 0;
+    justify-content: space-between;
+    min-height: calc(44px + var(--space-6) + env(safe-area-inset-top));
+    padding-top: calc(var(--space-6) + env(safe-area-inset-top));
     margin-bottom: 0;
   }
-  .content { gap: var(--space-6); padding: var(--space-6) var(--space-12) var(--space-10); }
-  h1 { font-size: 36px; }
-  .lead, .intro { max-width: 620px; }
+  .app-header:not(:has(.help-pill)) { padding-bottom: 0; }
+  .app-header .wordmark-top { display: block; width: 89px; height: auto; margin: 0; }
+  .page-head .wordmark { display: none; }
 
-  .split { display: grid; gap: var(--space-12); align-items: start; }
-  .split > .col { display: flex; flex-direction: column; gap: var(--space-5); min-width: 0; }
-  .split-hero { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; flex: 1; }
-  .split-form { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
-  .split-list { grid-template-columns: 300px minmax(0, 1fr); }
-  .split-even { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-6); }
-  .split-review { gap: var(--space-8); }
-  form.split { flex: none; }
-
-  .narrow {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-6);
-    width: 100%;
-    max-width: 640px;
-    margin: var(--space-6) auto 0;
-  }
+  .content { gap: var(--space-6); padding-top: var(--space-10); padding-bottom: var(--space-12); }
+  .lead, .intro { max-width: 60ch; }
 
   .tint-card, .step { padding: var(--space-6); }
-  .steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-6); }
-  .step { flex-direction: column; }
 
-  .illus-hero { height: auto; aspect-ratio: 342 / 220; }
-  .illus-clock { height: auto; aspect-ratio: 342 / 160; }
-  .illus-hand { height: auto; aspect-ratio: 342 / 150; }
+  .illus-hero, .illus-clock, .illus-hand { height: auto; max-height: 260px; }
+  .illus-hero { aspect-ratio: 342 / 220; }
+  .illus-clock { aspect-ratio: 342 / 160; }
+  .illus-hand { aspect-ratio: 342 / 150; }
 
   .push { margin-top: var(--space-2); }
-  .push .btn { width: auto; min-width: 240px; align-self: flex-start; }
+  .push .btn { width: auto; min-width: 260px; align-self: flex-start; }
   .push.center { align-items: flex-start; }
   .step-label-center { text-align: left; }
   .skip { align-self: flex-start; }
+
+  .narrow { display: flex; flex-direction: column; gap: var(--space-6); width: 100%; }
+}
+
+/* Landscape tablet and desktop: two columns, vertically centred. */
+@media (min-width: 1024px) {
+  :root { --wrap: 928px; }
+
+  .content { justify-content: center; padding-top: var(--space-8); }
+  .form-fill, .split-hero { flex: none; }
+
+  .split { display: grid; gap: var(--space-12); align-items: start; }
+  .split > .col { display: flex; flex-direction: column; gap: var(--space-5); min-width: 0; }
+  .split-hero { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; }
+  .split-form { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); }
+  .split-list { grid-template-columns: minmax(0, 4fr) minmax(0, 6fr); }
+  .split-even { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-8); }
+  #home .split-even, #add .split-even { align-items: stretch; }
+  form.split { flex: none; }
+
+  .steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-6); }
+  .step { flex-direction: column; }
+
+  .narrow { max-width: 640px; margin: 0 auto; }
+}
+
+@media (min-width: 1280px) {
+  :root { --wrap: 1040px; --text-display: 44px; }
 }
 
 /* Loading screen */
