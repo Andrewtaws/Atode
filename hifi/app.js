@@ -523,8 +523,8 @@
   // Download Report (Figma 172:1209 / 172:1270)
   // The PDF is made here, on the device, with jsPDF and the Inter font.
   // Both load only when someone asks for a report. Nothing is sent to Atode:
-  // "Send email" hands the file to the phone's share sheet (pick Mail), or on
-  // a computer saves it and opens an email to the address typed in.
+  // "Share my report" hands the file to the device share sheet, or where that
+  // can't share files (most computers) saves it so it can be attached by hand.
 
   var VENDOR = {
     jspdf: "vendor/jspdf.umd.min.js",
@@ -771,15 +771,12 @@
   }
 
   var dialog = $("#report-dialog");
-  var reportForm = $("#report-form");
-  var emailInput = $("#report-email");
-  var emailError = $("#report-email-error");
   var statusEl = $("[data-report-status]", dialog);
   var opener = null;
 
   function setStatus(msg) { statusEl.textContent = msg; }
   function setBusy(busy) {
-    $all("[data-report-email], [data-report-download]", dialog).forEach(function (b) { b.disabled = busy || !state.worries.length; });
+    $all("[data-report-share], [data-report-download]", dialog).forEach(function (b) { b.disabled = busy || !state.worries.length; });
   }
 
   $all("[data-report-open]").forEach(function (btn) {
@@ -787,10 +784,9 @@
       opener = btn;
       var empty = !state.worries.length;
       $("[data-report-empty]", dialog).hidden = !empty;
-      emailError.hidden = true; emailInput.removeAttribute("aria-invalid");
       setStatus(""); setBusy(false);
       if (dialog.showModal) dialog.showModal(); else dialog.setAttribute("open", "");
-      loadVendor().catch(function () {}); // warm up while they type
+      loadVendor().catch(function () {}); // warm up before they choose
     });
   });
   function closeDialog() { if (dialog.close) dialog.close(); else dialog.removeAttribute("open"); }
@@ -799,7 +795,6 @@
   dialog.addEventListener("close", function () { if (opener) opener.focus(); });
 
   $("[data-report-download]", dialog).addEventListener("click", function () {
-    emailError.hidden = true; emailInput.removeAttribute("aria-invalid");
     setBusy(true); setStatus("Making your report…");
     reportFile().then(function (file) {
       return saveFile(file).then(function () {
@@ -812,29 +807,24 @@
     }).then(function () { setBusy(false); });
   });
 
-  reportForm.addEventListener("submit", function (e) {
-    e.preventDefault();
-    var email = emailInput.value.trim();
-    var ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    emailError.hidden = ok;
-    if (!ok) { emailInput.setAttribute("aria-invalid", "true"); emailInput.focus(); return; }
-    emailInput.removeAttribute("aria-invalid");
+  // Share my report: the device's share sheet with the PDF attached (Mail, Messages, WhatsApp…).
+  // Where files can't be shared (most computers), save it so it can be attached by hand.
+  $("[data-report-share]", dialog).addEventListener("click", function () {
     setBusy(true); setStatus("Making your report…");
     reportFile().then(function (file) {
-      var text = "Here is my Atode worry report.";
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        setStatus("Choose Mail, then send it to " + email + ".");
-        return navigator.share({ files: [file], title: "Atode worry report", text: text }).then(function () {
-          setStatus("Shared. Check it went to " + email + ".");
+        setStatus("Choose who to share it with.");
+        return navigator.share({ files: [file], title: "Atode worry report", text: "Here is my Atode worry report." }).then(function () {
+          setStatus("Shared.");
         }, function (err) {
-          setStatus(err && err.name === "AbortError" ? "Not sent. You can try again, or download it instead." : "Sharing didn’t work here. Try “Download to device”.");
+          setStatus(err && err.name === "AbortError" ? "Not shared. You can try again, or download it instead." : "Sharing didn’t work here. Try “Download to device”.");
         });
       }
-      // Computers: save the PDF and open an email ready to attach it to.
-      saveFile(file).catch(function () {});
-      location.href = "mailto:" + encodeURIComponent(email) + "?subject=" + encodeURIComponent("My Atode worry report") +
-        "&body=" + encodeURIComponent(text + "\n\n(Attach " + file.name + " from your downloads.)");
-      setStatus("Your report is saved as " + file.name + ". Attach it to the email that has opened.");
+      return saveFile(file).then(function () {
+        setStatus("Sharing isn’t available on this device, so your report is saved as " + file.name + ". You can attach it to an email or message from your downloads.");
+      }, function (err) {
+        setStatus(err && err.code === "declined" ? "Not saved. You can try again." : "Sorry, the report couldn’t be shared or saved here.");
+      });
     }).catch(function () {
       setStatus("Sorry, the report couldn’t be made. Check your connection and try again.");
     }).then(function () { setBusy(false); });
