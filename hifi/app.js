@@ -520,6 +520,312 @@
     note.classList.toggle("is-empty", !w.note);
   }
 
+  // Download Report (Figma 172:1209 / 172:1270)
+  // The PDF is made here, on the device, with jsPDF and the Inter font.
+  // Both load only when someone asks for a report. Nothing is sent to Atode:
+  // "Send email" hands the file to the phone's share sheet (pick Mail), or on
+  // a computer saves it and opens an email to the address typed in.
+
+  var VENDOR = {
+    jspdf: "vendor/jspdf.umd.min.js",
+    fonts: { normal: "vendor/fonts/Inter-Regular.ttf", semibold: "vendor/fonts/Inter-SemiBold.ttf", black: "vendor/fonts/Inter-Black.ttf" }
+  };
+  var vendorReady = null;
+
+  function loadScript(src) {
+    return new Promise(function (resolve, reject) {
+      var s = document.createElement("script");
+      s.src = src; s.onload = resolve; s.onerror = reject;
+      document.head.appendChild(s);
+    });
+  }
+  function toBase64(buf) {
+    var bytes = new Uint8Array(buf), out = "", CH = 0x8000;
+    for (var i = 0; i < bytes.length; i += CH) out += String.fromCharCode.apply(null, bytes.subarray(i, i + CH));
+    return btoa(out);
+  }
+  function loadVendor() {
+    if (vendorReady) return vendorReady;
+    var inline = window.ATODE_FONTS_B64; // set by the single-file preview build
+    var lib = window.jspdf ? Promise.resolve() : loadScript(VENDOR.jspdf);
+    var fonts = inline ? Promise.resolve(inline) : Promise.all(Object.keys(VENDOR.fonts).map(function (k) {
+      return fetch(VENDOR.fonts[k]).then(function (r) { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); })
+        .then(function (b) { return [k, toBase64(b)]; });
+    })).then(function (pairs) { var o = {}; pairs.forEach(function (p) { o[p[0]] = p[1]; }); return o; });
+    vendorReady = Promise.all([lib, fonts]).then(function (r) { return r[1]; });
+    vendorReady.catch(function () { vendorReady = null; });
+    return vendorReady;
+  }
+
+  var C = {
+    ink: "#1a1a1a", body: "#555550", muted: "#55505f", paper: "#fafaf7", white: "#ffffff",
+    yellow: "#ffbe00", line: "#e8e8e8", stone: "#eee9df", lilacCard: "#f6f2fa", red: "#c1121f",
+    notes: ["#fff1b0", "#fadde4", "#dfeffb", "#ede2fd"]
+  };
+
+  function dayText(d) { return d.getDate() + " " + d.toLocaleString("en-GB", { month: "short" }) + " " + d.getFullYear(); }
+  function hmText(d) { return d.getHours() + ":" + String(d.getMinutes()).padStart(2, "0"); }
+
+  function reportData() {
+    var list = state.worries.slice().sort(function (a, b) { return (a.parkedAt || "").localeCompare(b.parkedAt || ""); });
+    var counts = {};
+    list.forEach(function (w) { counts[w.topic] = (counts[w.topic] || 0) + 1; });
+    var themes = Object.keys(counts).map(function (t) { return { topic: t, n: counts[t] }; })
+      .sort(function (a, b) { return b.n - a.n; });
+    var top = themes.length ? themes.filter(function (t) { return t.n === themes[0].n; }) : [];
+    return {
+      worries: list,
+      themes: themes,
+      top: top,
+      reviewed: list.filter(function (w) { return w.outcome; }).length
+    };
+  }
+
+  function buildReport(fonts) {
+    var jsPDF = window.jspdf.jsPDF;
+    var doc = new jsPDF({ unit: "mm", format: "a4", compress: true });
+    doc.addFileToVFS("Inter-Regular.ttf", fonts.normal); doc.addFont("Inter-Regular.ttf", "Inter", "normal");
+    doc.addFileToVFS("Inter-SemiBold.ttf", fonts.semibold); doc.addFont("Inter-SemiBold.ttf", "Inter", "semibold");
+    doc.addFileToVFS("Inter-Black.ttf", fonts.black); doc.addFont("Inter-Black.ttf", "Inter", "black");
+    doc.setProperties({ title: "Atode worry report", subject: "Worries parked in Atode", creator: "Atode", author: "Atode" });
+    if (doc.setLanguage) doc.setLanguage("en-GB");
+
+    var data = reportData();
+    var W = 210, H = 297, M = 18, CW = W - 2 * M, FOOT = 18;
+    var now = new Date();
+    var y = 0;
+
+    function bg() { doc.setFillColor(C.paper); doc.rect(0, 0, W, H, "F"); }
+    function font(style, size, color) { doc.setFont("Inter", style); doc.setFontSize(size); doc.setTextColor(color || C.ink); }
+    function lh(size, f) { return size * 0.3528 * (f || 1.35); }
+    function lines(text, width) { return doc.splitTextToSize(String(text), width); }
+    function block(textLines, x, top, size, f) {
+      var step = lh(size, f);
+      textLines.forEach(function (l, i) { doc.text(l, x, top + size * 0.3528 + i * step); });
+      return textLines.length * step;
+    }
+    function newPage() { doc.addPage(); bg(); y = M; miniHead(); }
+    function ensure(h) { if (y + h > H - FOOT - 4) newPage(); }
+    function miniHead() {
+      font("black", 11); doc.text("Atode", M, y + 4);
+      font("normal", 8.5, C.muted); doc.text("Worry report · " + dayText(now), W - M, y + 4, { align: "right" });
+      y += 12;
+    }
+    function heading(text) {
+      ensure(16);
+      font("black", 15); doc.text(text, M, y + 5.5);
+      y += 11;
+    }
+
+    // Page 1 header
+    bg();
+    y = M;
+    font("black", 20); doc.text("Atode", M, y + 7);
+    doc.setFillColor(C.yellow); doc.roundedRect(M, y + 10, 13, 1.6, 0.8, 0.8, "F");
+    font("normal", 9, C.muted); doc.text("Made on " + dayText(now) + ", on this device", W - M, y + 7, { align: "right" });
+    y += 22;
+    font("black", 30); doc.text("Your worry report", M, y + 10);
+    y += 17;
+
+    var first = data.worries[0], last = data.worries[data.worries.length - 1];
+    var span = first ? (dayText(new Date(first.parkedAt)) === dayText(new Date(last.parkedAt))
+      ? "on " + dayText(new Date(first.parkedAt))
+      : "from " + dayText(new Date(first.parkedAt)) + " to " + dayText(new Date(last.parkedAt))) : "";
+    font("normal", 11, C.body);
+    y += block(lines("The worries you parked in Atode " + span + ". You can give this to someone you trust, or use it as notes at your next therapy appointment.", CW), M, y, 11, 1.45);
+    y += 8;
+
+    // Summary cards
+    var gap = 5, cw = (CW - 2 * gap) / 3, ch = 38;
+    var topLabel = data.top.map(function (t) { return t.topic; }).join(" and ");
+    var cards = [
+      { fill: C.notes[0], label: "Worries added", big: String(data.worries.length), sub: first ? "Since " + dayText(new Date(first.parkedAt)) : "" },
+      { fill: C.notes[3], label: "Most common theme", theme: topLabel || "None yet",
+        sub: data.top.length ? data.top[0].n + " of " + data.worries.length + " worries" + (data.top.length > 1 ? " each" : "") : "" },
+      { fill: C.notes[2], label: "Reviewed", big: String(data.reviewed), sub: (data.worries.length - data.reviewed) + " still parked" }
+    ];
+    cards.forEach(function (c, i) {
+      var x = M + i * (cw + gap);
+      doc.setFillColor(c.fill); doc.roundedRect(x, y, cw, ch, 5, 5, "F");
+      font("semibold", 9, C.muted); doc.text(c.label, x + 5, y + 8);
+      if (c.big) { font("black", 30); doc.text(c.big, x + 5, y + 23); }
+      else {
+        var size = 15, tl;
+        do { font("black", size); tl = lines(c.theme, cw - 10); size -= 1; } while (tl.length > 2 && size > 10);
+        block(tl, x + 5, y + 11.5, size + 1, 1.1);
+      }
+      font("normal", 9, C.ink); doc.text(c.sub, x + 5, y + ch - 5);
+    });
+    y += ch + 10;
+
+    // Themes
+    if (data.themes.length) {
+      heading("Themes");
+      var labelW = 46, barX = M + labelW, barW = CW - labelW - 14, max = data.themes[0].n;
+      data.themes.forEach(function (t) {
+        ensure(9);
+        font("normal", 10.5); doc.text(t.topic, M, y + 4.2);
+        doc.setFillColor(C.stone); doc.roundedRect(barX, y, barW, 5.5, 2.75, 2.75, "F");
+        doc.setFillColor(C.yellow); doc.roundedRect(barX, y, Math.max(5.5, barW * t.n / max), 5.5, 2.75, 2.75, "F");
+        font("semibold", 10.5); doc.text(String(t.n), W - M, y + 4.2, { align: "right" });
+        y += 8.5;
+      });
+      y += 5;
+    }
+
+    // Each note, as a sticky note like the app
+    heading("Your notes");
+    var pad = 6, inner = CW - 2 * pad;
+    data.worries.forEach(function (w, i) {
+      var added = new Date(w.parkedAt);
+      var meta = "Note " + (i + 1) + " • Added " + hmText(added) + ", " + dayText(added);
+      var status = w.outcome ? "Reviewed" + (w.reviewedAt ? " " + dayText(new Date(w.reviewedAt)) : "") : "Still parked";
+      font("black", 16); var titleL = lines(topicTitle(w.topic), inner - 40);
+      font("normal", 11); var wordsL = lines(w.words || "No words added.", inner);
+      var rows = [];
+      if (w.outcome) rows.push(["What you decided", OUTCOMES[w.outcome]]);
+      if (w.note) rows.push(["Your note", w.note]);
+      font("normal", 10.5);
+      var rowL = rows.map(function (r) { return lines(r[1], inner); });
+      var h = pad + 4 + 3 + titleL.length * lh(16, 1.15) + 2 + wordsL.length * lh(11, 1.4)
+        + rows.reduce(function (s, r, k) { return s + 5 + 1.5 + rowL[k].length * lh(10.5, 1.4); }, 0)
+        + (rows.length ? 3 : 0) + pad;
+      ensure(h + 5);
+      var top = y;
+      doc.setFillColor(C.notes[i % 4]); doc.roundedRect(M, top, CW, h, 6, 6, "F");
+      var cy = top + pad;
+      font("normal", 9, C.ink); doc.text(meta, M + pad, cy + 3);
+      font("semibold", 8.5, C.ink);
+      var sw = doc.getTextWidth(status) + 6;
+      doc.setFillColor(w.outcome ? C.ink : C.white);
+      doc.roundedRect(W - M - pad - sw, cy - 1, sw, 5.6, 2.8, 2.8, "F");
+      doc.setTextColor(w.outcome ? C.white : C.ink);
+      doc.text(status, W - M - pad - sw / 2, cy + 2.9, { align: "center" });
+      cy += 4 + 3;
+      font("black", 16); cy += block(titleL, M + pad, cy, 16, 1.15) + 2;
+      font("normal", 11, w.words ? C.ink : C.muted); cy += block(wordsL, M + pad, cy, 11, 1.4);
+      if (rows.length) {
+        cy += 3;
+        doc.setDrawColor(C.muted); doc.setLineWidth(0.15); doc.setLineDashPattern([1, 1], 0);
+        doc.line(M + pad, cy, W - M - pad, cy); doc.setLineDashPattern([], 0);
+        rows.forEach(function (r, k) {
+          cy += 5;
+          font("semibold", 9.5, C.muted); doc.text(r[0], M + pad, cy);
+          cy += 1.5;
+          font("normal", 10.5, C.ink); cy += block(rowL[k], M + pad, cy, 10.5, 1.4);
+        });
+      }
+      y = top + h + 5;
+    });
+
+    // Where to get help
+    var helpL;
+    font("normal", 10); helpL = lines("If you’re in danger, call 999. For urgent mental health help, call NHS 111 and choose option 2. To talk to someone, call Samaritans on 116 123, or text SHOUT to 85258. They’re free and confidential.", CW - 12);
+    var hh = 6 + 6 + helpL.length * lh(10, 1.4) + 6;
+    ensure(hh + 4);
+    y += 3;
+    doc.setFillColor(C.stone); doc.roundedRect(M, y, CW, hh, 6, 6, "F");
+    font("black", 12); doc.text("If you need help now", M + 6, y + 9);
+    font("normal", 10); block(helpL, M + 6, y + 12, 10, 1.4);
+
+    // Footers
+    var pages = doc.getNumberOfPages();
+    for (var p = 1; p <= pages; p++) {
+      doc.setPage(p);
+      doc.setDrawColor(C.line); doc.setLineWidth(0.3); doc.line(M, H - 13, W - M, H - 13);
+      font("normal", 8.5, C.muted);
+      doc.text("Atode · Made on this device. Not a medical record.", M, H - 8);
+      doc.text("Page " + p + " of " + pages, W - M, H - 8, { align: "right" });
+    }
+    return doc;
+  }
+
+  function reportFile() {
+    return loadVendor().then(function (fonts) {
+      var blob = buildReport(fonts).output("blob");
+      var d = new Date();
+      var name = "atode-worry-report-" + d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0") + ".pdf";
+      var file;
+      try { file = new File([blob], name, { type: "application/pdf" }); } catch (e) { file = blob; file.name = name; }
+      return file;
+    });
+  }
+
+  function saveFile(file) {
+    var url = URL.createObjectURL(file);
+    var a = document.createElement("a");
+    a.href = url; a.download = file.name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 30000);
+  }
+
+  var dialog = $("#report-dialog");
+  var reportForm = $("#report-form");
+  var emailInput = $("#report-email");
+  var emailError = $("#report-email-error");
+  var statusEl = $("[data-report-status]", dialog);
+  var opener = null;
+
+  function setStatus(msg) { statusEl.textContent = msg; }
+  function setBusy(busy) {
+    $all("[data-report-email], [data-report-download]", dialog).forEach(function (b) { b.disabled = busy || !state.worries.length; });
+  }
+
+  $all("[data-report-open]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      opener = btn;
+      var empty = !state.worries.length;
+      $("[data-report-empty]", dialog).hidden = !empty;
+      emailError.hidden = true; emailInput.removeAttribute("aria-invalid");
+      setStatus(""); setBusy(false);
+      if (dialog.showModal) dialog.showModal(); else dialog.setAttribute("open", "");
+      loadVendor().catch(function () {}); // warm up while they type
+    });
+  });
+  function closeDialog() { if (dialog.close) dialog.close(); else dialog.removeAttribute("open"); }
+  $("[data-report-close]", dialog).addEventListener("click", closeDialog);
+  dialog.addEventListener("click", function (e) { if (e.target === dialog) closeDialog(); }); // tap outside
+  dialog.addEventListener("close", function () { if (opener) opener.focus(); });
+
+  $("[data-report-download]", dialog).addEventListener("click", function () {
+    emailError.hidden = true; emailInput.removeAttribute("aria-invalid");
+    setBusy(true); setStatus("Making your report…");
+    reportFile().then(function (file) {
+      saveFile(file);
+      setStatus("Your report is saved as " + file.name + ".");
+    }).catch(function () {
+      setStatus("Sorry, the report couldn’t be made. Check your connection and try again.");
+    }).then(function () { setBusy(false); });
+  });
+
+  reportForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var email = emailInput.value.trim();
+    var ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    emailError.hidden = ok;
+    if (!ok) { emailInput.setAttribute("aria-invalid", "true"); emailInput.focus(); return; }
+    emailInput.removeAttribute("aria-invalid");
+    setBusy(true); setStatus("Making your report…");
+    reportFile().then(function (file) {
+      var text = "Here is my Atode worry report.";
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        setStatus("Choose Mail, then send it to " + email + ".");
+        return navigator.share({ files: [file], title: "Atode worry report", text: text }).then(function () {
+          setStatus("Shared. Check it went to " + email + ".");
+        }, function (err) {
+          setStatus(err && err.name === "AbortError" ? "Not sent. You can try again, or download it instead." : "Sharing didn’t work here. Try “Download to device”.");
+        });
+      }
+      // Computers: save the PDF and open an email ready to attach it to.
+      saveFile(file);
+      location.href = "mailto:" + encodeURIComponent(email) + "?subject=" + encodeURIComponent("My Atode worry report") +
+        "&body=" + encodeURIComponent(text + "\n\n(Attach " + file.name + " from your downloads.)");
+      setStatus("Your report is saved as " + file.name + ". Attach it to the email that has opened.");
+    }).catch(function () {
+      setStatus("Sorry, the report couldn’t be made. Check your connection and try again.");
+    }).then(function () { setBusy(false); });
+  });
+
   // Returning users skip onboarding and land on home.
   var start = location.hash ? current() : (state.onboarded ? "home" : "welcome");
   if (!location.hash && start === "home") history.replaceState(null, "", "#home");

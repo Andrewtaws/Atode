@@ -16,8 +16,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Work+Sans:wght@400;600;700&display=swap">
-  <link rel="stylesheet" href="tokens.css?v=16">
-  <link rel="stylesheet" href="styles.css?v=16">
+  <link rel="stylesheet" href="tokens.css?v=17">
+  <link rel="stylesheet" href="styles.css?v=17">
 </head>
 <body>
   <!-- Loading screen, shown each time the app opens -->
@@ -429,6 +429,10 @@
               <button type="button" class="tab" data-tab="today" aria-pressed="true">Today’s Notes</button>
               <button type="button" class="tab" data-tab="passed" aria-pressed="false">Past Notes</button>
             </div>
+            <!-- Figma 172:1209 -->
+            <button type="button" class="btn btn-outline" data-report-open aria-haspopup="dialog">
+              Download or email report <img src="assets/download.svg" width="16" height="16" alt="">
+            </button>
           </div>
           <div class="col">
             <ul class="note-stack" data-panel="today" data-list="today"></ul>
@@ -593,8 +597,33 @@
     </section>
 
   </div>
+
+  <!-- Download Report (Figma 172:1270). The PDF is made on this device; nothing is sent to Atode. -->
+  <dialog class="sheet" id="report-dialog" aria-labelledby="report-title" aria-describedby="report-intro">
+    <div class="sheet-head">
+      <h2 class="sheet-title" id="report-title">Download Report</h2>
+      <button type="button" class="sheet-close" data-report-close aria-label="Close">
+        <img src="assets/close.svg" width="24" height="24" alt="">
+      </button>
+    </div>
+    <p class="sheet-text" id="report-intro">Download a report of your notes. You can give it to a trusted person, or use it as therapy notes at your next appointment.</p>
+    <p class="sheet-text" data-report-empty hidden><strong>There are no notes yet.</strong> Park a worry first, and it will show in your report.</p>
+    <form class="sheet-form" id="report-form" novalidate>
+      <div class="field">
+        <label for="report-email">Email address:</label>
+        <input type="email" id="report-email" autocomplete="email" inputmode="email" aria-describedby="report-email-error">
+        <p class="error" id="report-email-error" hidden>Enter an email address, like name@example.com</p>
+      </div>
+      <button type="submit" class="btn btn-primary" data-report-email>Send email</button>
+    </form>
+    <hr class="divider">
+    <p class="sheet-text">Or download your report to this device.</p>
+    <button type="button" class="btn btn-outline" data-report-download>Download to device</button>
+    <p class="sheet-status" data-report-status role="status" aria-live="polite"></p>
+  </dialog>
+
   <div id="announcer" class="visually-hidden" aria-live="polite"></div>
   <noscript><p class="noscript">Atode needs JavaScript turned on.</p></noscript>
-  <script src="app.js?v=16"></script>
+  <script src="app.js?v=17"></script>
 </body>
 </html>

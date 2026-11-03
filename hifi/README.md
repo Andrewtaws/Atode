@@ -16,6 +16,15 @@ Onboarding was first built from the Figma hi-fi frames (node 69:2274), and Home 
 
 It saves to its own storage (`atode.hifi.v1`), so testing one version doesn't affect the other. Add `#reset` to the end of the address to clear it between testers.
 
+## Worry report (PDF)
+
+Review Notes has a "Download or email report" button (Figma 172:1209). It opens the Download Report sheet (172:1270). Both buttons make a PDF on the device, in Atode's colours and the Inter font: worries added, the most common theme, a bar for each theme, then every note as a sticky note (when it was added, whether it's been reviewed, what was decided and the note added), and where to get help.
+
+- **Download to device** saves `atode-worry-report-YYYY-MM-DD.pdf`.
+- **Send email** checks the address, then on phones opens the share sheet with the PDF attached (pick Mail). On computers it saves the PDF and opens an email to that address, ready to attach it. There's no server, so nothing is sent to Atode.
+
+jsPDF and the Inter font files are in `vendor/` and only load when a report is asked for.
+
 ## Install it like an app
 
 - **Android (phone or tablet):** open the hi-fi link in Chrome, tap ⋮, then **Add to Home screen** (or **Install app**).
