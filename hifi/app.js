@@ -751,7 +751,18 @@
     });
   }
 
+  // Inside the claude.ai preview, files go through its downloads prompt;
+  // everywhere else (GitHub Pages, the installed app) a normal download.
   function saveFile(file) {
+    if (window.claude && window.claude.use) {
+      return window.claude.use("downloads").then(function (dl) {
+        if (!dl) return plainSave(file);
+        return dl.save({ filename: file.name, data: file });
+      });
+    }
+    return Promise.resolve(plainSave(file));
+  }
+  function plainSave(file) {
     var url = URL.createObjectURL(file);
     var a = document.createElement("a");
     a.href = url; a.download = file.name;
@@ -791,8 +802,11 @@
     emailError.hidden = true; emailInput.removeAttribute("aria-invalid");
     setBusy(true); setStatus("Making your report…");
     reportFile().then(function (file) {
-      saveFile(file);
-      setStatus("Your report is saved as " + file.name + ".");
+      return saveFile(file).then(function () {
+        setStatus("Your report is saved as " + file.name + ".");
+      }, function (err) {
+        setStatus(err && err.code === "declined" ? "Not saved. You can try again." : "Sorry, the report couldn’t be saved here.");
+      });
     }).catch(function () {
       setStatus("Sorry, the report couldn’t be made. Check your connection and try again.");
     }).then(function () { setBusy(false); });
@@ -817,7 +831,7 @@
         });
       }
       // Computers: save the PDF and open an email ready to attach it to.
-      saveFile(file);
+      saveFile(file).catch(function () {});
       location.href = "mailto:" + encodeURIComponent(email) + "?subject=" + encodeURIComponent("My Atode worry report") +
         "&body=" + encodeURIComponent(text + "\n\n(Attach " + file.name + " from your downloads.)");
       setStatus("Your report is saved as " + file.name + ". Attach it to the email that has opened.");
