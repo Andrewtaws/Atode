@@ -1,5 +1,6 @@
 /* Atode hi-fi components
-   Uses only the role tokens from tokens.css. Values come from Figma node 69:2274. */
+   Uses only the role tokens from tokens.css. Look and feel from Figma
+   section 156:1955 (3 Nov 2026), applied to every screen. */
 
 *, *::before, *::after { box-sizing: border-box; }
 
@@ -63,29 +64,30 @@ h1:focus { outline: none; }
   padding-bottom: env(safe-area-inset-bottom);
 }
 
-/* Header: logo and "This can't wait" */
+/* Header: "This can't wait" sits top right on every screen but Help.
+   Figma 156:1955 has no help route; it stays for safety. */
 
 .app-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: var(--space-3);
-  min-height: 46px;
-  padding: calc(var(--space-4) + env(safe-area-inset-top)) var(--gutter) 0;
-  margin-bottom: var(--space-5);
+  padding: calc(var(--space-3) + env(safe-area-inset-top)) var(--gutter) 0;
+  margin-bottom: var(--space-4);
 }
-.logo { display: block; }
+.app-header:empty { padding-bottom: var(--space-4); margin-bottom: 0; }
 
 .help-pill {
   display: inline-flex;
   align-items: center;
-  min-height: 46px;
-  padding: 13px 14px;
-  background: var(--color-page);
+  min-height: 44px;
+  padding: 10px 16px;
+  background: var(--color-surface);
   border: 1px solid var(--color-border-strong);
   border-radius: var(--radius-pill);
+  font-family: var(--font-ui);
   font-size: var(--text-sm);
-  font-weight: var(--weight-medium);
+  font-weight: var(--weight-semibold);
   line-height: 1.3;
   color: var(--color-text);
   text-decoration: none;
@@ -97,10 +99,10 @@ h1:focus { outline: none; }
   display: flex;
   flex-direction: column;
   gap: var(--space-5);
-  padding: 0 var(--gutter) var(--space-6);
+  padding: 0 var(--gutter) var(--space-8);
 }
 
-.form-fill { flex: 1; display: flex; flex-direction: column; gap: var(--space-4); }
+.form-fill { flex: 1; display: flex; flex-direction: column; gap: var(--space-5); }
 
 .push {
   margin-top: auto;
@@ -110,11 +112,24 @@ h1:focus { outline: none; }
 }
 .push.center { align-items: center; }
 
+/* Page title row: big black title, wordmark on the right (Figma "Frame 566") */
+
+.page-head {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-5);
+  width: 100%;
+}
+.page-head h1 { flex: 1; min-width: 0; }
+.wordmark { display: block; flex-shrink: 0; margin-top: 7px; }
+
+.title-group { display: flex; flex-direction: column; gap: var(--space-5); width: 100%; }
+
 /* Type */
 
 h1 {
-  font-size: var(--text-h1);
-  font-weight: var(--weight-bold);
+  font-size: var(--text-display);
+  font-weight: var(--weight-black);
   line-height: var(--leading-tight);
   color: var(--color-text-heading);
 }
@@ -122,25 +137,59 @@ h1 {
 
 .h2 {
   font-size: var(--text-h2);
-  font-weight: var(--weight-semibold);
+  font-weight: var(--weight-bold);
   line-height: var(--leading-snug);
   color: var(--color-text-heading);
 }
 
-.title-group { display: flex; flex-direction: column; gap: var(--space-2); width: 100%; }
-
-/* Figma has 13px; raised to the 14px minimum. */
 .step-label {
-  font-size: var(--text-sm);
-  line-height: 20px;
-  color: var(--color-text-muted);
+  font-family: var(--font-ui);
+  font-size: var(--text-md);
+  line-height: 1.5;
+  color: var(--color-text);
 }
+.step-label-center { text-align: center; }
 
 .body { font-size: var(--text-lg); line-height: var(--leading-body); color: var(--color-text-body); }
 .hint { font-size: var(--text-md); line-height: var(--leading-body); color: var(--color-text-body); }
 .small { font-size: var(--text-sm); line-height: var(--leading-body); color: var(--color-text-muted); }
 
+.intro { font-size: var(--text-sm); line-height: var(--leading-body); color: var(--color-text-body); }
+.intro p + p { margin-top: 22px; }
+.intro-strong { font-weight: var(--weight-bold); color: var(--color-text); }
+
+.lead { font-size: var(--text-lg); line-height: 1.5; color: var(--color-text-body); }
+.lead p + p { margin-top: var(--space-4); }
+
+.eyebrow {
+  font-size: var(--text-sm);   /* Figma 13 */
+  font-weight: var(--weight-medium);
+  line-height: 1.2;
+  letter-spacing: 0.2px;
+  color: var(--color-text-muted);
+}
+
+.question {
+  font-family: var(--font-ui);
+  font-size: var(--text-question);
+  font-weight: var(--weight-bold);
+  line-height: 1.25;
+  color: var(--color-text-heading);
+}
+.question-lg { font-family: var(--font); font-size: var(--text-h1); line-height: 1.2; }
+
+.section-heading {
+  display: block;
+  font-family: var(--font-ui);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  line-height: 1.3;
+  color: var(--color-text-heading);
+}
+
 .stack-sm > * + * { margin-top: 10px; }
+.stack-xs > * + * { margin-top: var(--space-2); }
+.stack-md > * + * { margin-top: var(--space-4); }
 
 .link {
   font-size: var(--text-md);
@@ -164,7 +213,7 @@ h1 {
   padding-left: 10px;
 }
 
-/* Buttons */
+/* Buttons: yellow with a black outline (Figma "Button / Primary") */
 
 .btn {
   display: flex;
@@ -190,7 +239,7 @@ h1 {
 .btn-primary:active { background: var(--color-primary-pressed); }
 .btn-secondary {
   background: var(--color-surface);
-  border-color: var(--color-border);
+  border-color: var(--color-border-strong);
   color: var(--color-text);
   font-weight: var(--weight-medium);
 }
@@ -200,19 +249,23 @@ h1 {
   border-color: var(--color-danger);
   color: var(--color-text-on-danger);
 }
+.btn-inline { width: min(302px, 100%); align-self: flex-start; }
 
+/* Back: Figma's is 22px tall; padding makes the tap area 44px without moving it. */
 .back {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   align-self: flex-start;
-  min-height: 24px;
-  padding: 0;
+  min-height: 44px;
+  margin: -11px 0;
+  padding: 0 var(--space-2) 0 0;
   background: none;
   border: 0;
+  font-family: var(--font-ui);
   font-size: var(--text-md);
-  font-weight: var(--weight-medium);
   line-height: 22px;
+  letter-spacing: 0.2px;
   color: var(--color-text-heading);
   text-decoration: none;
   cursor: pointer;
@@ -223,9 +276,28 @@ h1 {
 .card {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-card);
+  border-radius: var(--radius-xl);
 }
+
+/* Tinted cards on Home (Figma "Frame 570" and "Frame 571") */
+.tint-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  padding: var(--space-5);
+  border-radius: var(--radius-xl);
+}
+.tint-cool { background: var(--color-surface-cool); }
+.tint-warm { background: var(--color-surface-warm); }
+.tint-card-top { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-2); }
+.tint-card-text { display: flex; flex-direction: column; gap: var(--space-2); min-width: 0; }
+.hero-title {
+  font-size: var(--text-hero);
+  font-weight: var(--weight-black);
+  line-height: 1.1;
+  color: var(--color-text-heading);
+}
+.card-title { font-size: var(--text-lg); font-weight: var(--weight-bold); line-height: 1.4; color: var(--color-text-heading); }
 
 /* Illustration slot. The picture comes from assets/illustrations/; if it's
    missing, the simple icon underneath shows instead. */
@@ -236,10 +308,9 @@ h1 {
   justify-content: center;
   flex-shrink: 0;
   overflow: hidden;
-  background: var(--color-surface);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-illustration);
-  color: var(--color-primary-border);
+  background: var(--color-surface-cool);
+  border-radius: var(--radius-xl);
+  color: var(--color-text);
 }
 .illus img {
   position: absolute;
@@ -252,14 +323,13 @@ h1 {
   height: 220px;
   background: var(--color-hero);
   border: 1px solid var(--color-border-hero);
-  border-radius: var(--radius-xl);
-  box-shadow: none;
-  color: var(--color-text);
 }
-.illus-hero:has(img) { background: none; border: 0; border-radius: var(--radius-md); }
+.illus-hero:has(img) { background: none; border: 0; }
 .illus-clock { height: 160px; }
 .illus-thought { height: 100px; }
 .illus-hand { height: 150px; }
+/* Figma "Illustration · A thought safely held", exported at 88px. */
+.illus-thumb { width: 88px; height: 88px; border-radius: var(--radius-sm); background: transparent; }
 
 /* Safety note */
 
@@ -267,17 +337,16 @@ h1 {
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
-  padding: 14px;
+  padding: var(--space-4);
   background: var(--color-surface-warm);
-  border: 1px solid var(--color-border-warm);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-xl);
 }
 .safety-title {
   display: flex;
   align-items: center;
   gap: 10px;
   font-size: var(--text-md);
-  font-weight: var(--weight-semibold);
+  font-weight: var(--weight-bold);
   line-height: 1.6;
   color: var(--color-text-heading);
 }
@@ -289,20 +358,23 @@ h1 {
   width: 24px;
   height: 24px;
   background: var(--color-surface);
-  border: 1px solid var(--color-border-warm);
+  border: 1px solid var(--color-border-strong);
   border-radius: 50%;
 }
 
-/* Steps */
+/* Steps: one sticky-note colour each */
 
 .steps { list-style: none; display: flex; flex-direction: column; gap: var(--space-3); }
 .step {
   display: flex;
   align-items: flex-start;
   gap: var(--space-4);
-  padding: var(--space-4);
+  padding: var(--space-5);
+  border: 0;
 }
-/* Figma has white numbers on amber (2:1). Dark text keeps the look and passes. */
+.step:nth-child(1) { background: var(--note-yellow); }
+.step:nth-child(2) { background: var(--note-pink); }
+.step:nth-child(3) { background: var(--note-blue); }
 .step-num {
   display: flex;
   align-items: center;
@@ -310,22 +382,22 @@ h1 {
   flex-shrink: 0;
   width: 36px;
   height: 36px;
-  background: var(--color-primary);
+  background: var(--color-selected);
   border-radius: 50%;
   font-size: var(--text-lg);
-  font-weight: var(--weight-bold);
+  font-weight: var(--weight-black);
   line-height: 1;
-  color: var(--color-text-on-primary);
+  color: var(--color-text-on-selected);
 }
-.step-title { font-size: var(--text-lg); font-weight: var(--weight-semibold); line-height: var(--leading-body); color: var(--color-text-heading); }
-.step-text { margin-top: 2px; font-size: var(--text-md); line-height: var(--leading-body); color: var(--color-text-body); }
+.step-title { font-size: var(--text-h2); font-weight: var(--weight-black); line-height: 1.3; color: var(--color-text-heading); }
+.step-text { margin-top: 2px; font-size: var(--text-md); line-height: var(--leading-body); color: var(--color-text); }
 
 /* Radio options (collection time) */
 
 .fieldset { display: flex; flex-direction: column; gap: var(--space-4); }
 .fieldset > legend { margin-bottom: var(--space-4); }
 
-.options { display: flex; flex-direction: column; gap: 10px; }
+.options { display: flex; flex-direction: column; gap: var(--space-3); }
 
 .option {
   display: flex;
@@ -334,7 +406,7 @@ h1 {
   min-height: 54px;
   padding: var(--space-4);
   background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--color-border-strong);
   border-radius: var(--radius-sm);
   font-size: var(--text-lg);
   line-height: 22px;
@@ -345,23 +417,20 @@ h1 {
   appearance: none;
   -webkit-appearance: none;
   flex-shrink: 0;
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
   margin: 0;
-  border: 2px solid var(--color-border-input);
+  border: 2px solid var(--color-border-strong);
   border-radius: 50%;
-}
-.option input:checked {
-  border: 4px solid var(--color-text-heading);
   background: var(--color-surface);
 }
+.option input:checked { border: 5px solid var(--color-surface); background: var(--color-selected); box-shadow: 0 0 0 1px var(--color-surface); }
 .option input:focus-visible { outline: none; }
 .option:has(input:checked) {
   background: var(--color-selected);
-  border: 2px solid var(--color-selected-border);
-  padding: 15px;
+  border-color: var(--color-selected-border);
   font-weight: var(--weight-semibold);
-  color: var(--color-text-heading);
+  color: var(--color-text-on-selected);
 }
 .option:has(input:focus-visible) { outline: 3px solid var(--color-focus); outline-offset: 2px; }
 
@@ -383,11 +452,11 @@ h1 {
   justify-content: space-between;
   gap: var(--space-3);
   padding: 14px 0;
-  border-top: 1px solid var(--color-border-warm);
-  border-bottom: 1px solid var(--color-border-warm);
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
 }
 .reminder-label { display: block; font-size: var(--text-lg); line-height: var(--leading-body); color: var(--color-text-heading); cursor: pointer; }
-.reminder-note { margin-top: 2px; font-size: var(--text-sm); line-height: var(--leading-body); color: var(--color-text-muted); }
+.reminder-note { margin-top: 2px; font-size: var(--text-sm); line-height: var(--leading-body); color: var(--color-text-body); }
 
 .switch {
   appearance: none;
@@ -397,7 +466,7 @@ h1 {
   width: 52px;
   height: 32px;
   margin: 0;
-  border: 2px solid var(--color-border-input);
+  border: 2px solid var(--color-border-strong);
   border-radius: var(--radius-pill);
   background: var(--color-surface);
   cursor: pointer;
@@ -410,27 +479,28 @@ h1 {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: var(--color-border-input);
+  background: var(--color-border-strong);
 }
-.switch:checked { background: var(--color-primary); border-color: var(--color-primary-border); }
-.switch:checked::after { left: 22px; background: var(--color-surface); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); }
+.switch:checked { background: var(--color-primary); }
+.switch:checked::after { left: 22px; background: var(--color-selected); }
 @media (prefers-reduced-motion: no-preference) {
   .switch::after { transition: left 0.15s ease; }
 }
 
-/* Choice tiles (topics) and pills (refocus) */
+/* Choice tiles (topics) and pills (refocus). Selected = black, like the
+   Figma choice pills, plus a tick so it doesn't rely on colour alone. */
 
-.tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.tiles { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); }
 .tile {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
-  min-height: 65px;
+  min-height: 60px;
   padding: 12px 8px;
   background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--color-border-strong);
   border-radius: var(--radius-sm);
   font-size: var(--text-lg);
   line-height: 1.3;
@@ -439,56 +509,56 @@ h1 {
   cursor: pointer;
 }
 .tile-wide { grid-column: 1 / -1; }
-.tile-pill { min-height: 47px; padding: 12px; }
+.tile-pill { min-height: var(--tap-min); padding: 12px; border-radius: var(--radius-pill); font-family: var(--font-ui); font-size: var(--text-md); }
 .tile input {
   position: absolute;
   opacity: 0;
   width: 1px;
   height: 1px;
 }
-/* A tick as well as colour, so the choice doesn't rely on colour alone. */
 .tile:has(input:checked) {
   background: var(--color-selected);
-  border: 2px solid var(--color-selected-border);
-  padding: 11px 7px;
+  border-color: var(--color-selected-border);
   font-weight: var(--weight-semibold);
-  color: var(--color-text-heading);
+  color: var(--color-text-on-selected);
 }
-.tile-pill:has(input:checked) { padding: 11px; }
 .tile:has(input:checked)::before { content: "✓"; font-weight: var(--weight-bold); }
 .tile:has(input:focus-visible) { outline: 3px solid var(--color-focus); outline-offset: 2px; }
 
 /* Text input */
 
 .words { display: flex; flex-direction: column; gap: var(--space-2); }
-.words label { font-size: var(--text-sm); line-height: 1.3; color: var(--color-text-muted); }
+.words label { font-size: var(--text-sm); line-height: 1.3; color: var(--color-text-body); }
 .words textarea {
   width: 100%;
-  min-height: 72px;
-  padding: var(--space-4);
+  min-height: 76px;
+  padding: var(--space-3);
   border: 1px solid var(--color-border-input);
   border-radius: var(--radius-sm);
   background: var(--color-surface);
+  box-shadow: var(--shadow-field);
   font-size: var(--text-lg);
   line-height: 1.3;
   color: var(--color-text-heading);
   resize: vertical;
 }
-/* Figma #c8bea8 is 1.8:1; muted text keeps the hint readable. */
 .words textarea::placeholder { color: var(--color-text-muted); opacity: 1; }
+.words-label-lg.words-label-lg { font-size: var(--text-lg); line-height: 1.45; color: var(--color-text); }
 
 .skip { align-self: center; font-size: var(--text-sm); }
 
-/* Ticket */
+/* Ticket: a yellow sticky note with a dashed edge */
 
 .ticket {
   display: flex;
   flex-direction: column;
   gap: 10px;
   padding: var(--space-5);
-  background: var(--color-surface-warm);
-  border: 2px dashed var(--color-primary);
-  border-radius: var(--radius-md);
+  background: var(--note-yellow);
+  border: 2px dashed var(--color-border-strong);
+  border-radius: var(--radius-note);
+  box-shadow: var(--shadow-note);
+  rotate: -1deg;
 }
 .ticket-top {
   display: flex;
@@ -496,73 +566,58 @@ h1 {
   gap: var(--space-3);
   font-size: var(--text-sm);
   line-height: 20px;
-  color: var(--color-text-muted);
+  color: var(--color-text);
 }
 .ticket-no { font-weight: var(--weight-semibold); letter-spacing: 1px; text-transform: uppercase; }
-.ticket-when { font-size: var(--text-h1); font-weight: var(--weight-bold); line-height: var(--leading-tight); color: var(--color-text-heading); }
-.ticket-note { font-size: var(--text-md); line-height: var(--leading-body); color: var(--color-text-body); }
+.ticket-when { font-size: var(--text-h1); font-weight: var(--weight-black); line-height: var(--leading-tight); color: var(--color-text-heading); }
+.ticket-note { font-size: var(--text-md); line-height: var(--leading-body); color: var(--color-text); }
 .ticket-actions { display: flex; justify-content: space-between; padding-top: var(--space-2); }
 
-.footnote { font-size: var(--text-sm); line-height: var(--leading-body); color: var(--color-text-muted); text-align: center; }
+.footnote { font-size: var(--text-sm); line-height: var(--leading-body); color: var(--color-text-body); text-align: center; }
 
 /* Help */
 
 .contact { display: flex; flex-direction: column; gap: 6px; }
-.contact-label { font-size: var(--text-sm); font-weight: var(--weight-semibold); line-height: 20px; color: var(--color-text-heading); }
+.contact-label { font-size: var(--text-sm); font-weight: var(--weight-bold); line-height: 20px; color: var(--color-text-heading); }
 
-/* Add a worry: dashboard and entry type (Figma 115:905) */
+/* Home: worry time */
 
-.lead { font-size: var(--text-lg); line-height: 1.45; color: var(--color-text-body); }
-.lead p + p { margin-top: 23px; }
-
-.panel {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  padding: var(--space-4);
-}
-
-.card-title { font-size: var(--text-lg); font-weight: var(--weight-semibold); line-height: 1.4; color: var(--color-text-heading); }
-
-.schedule { display: flex; flex-direction: column; gap: var(--space-2); }
+.schedule { display: flex; flex-direction: column; gap: 6px; }
 .schedule-time {
-  font-size: var(--text-h1);
-  font-weight: var(--weight-semibold);
-  line-height: var(--leading-tight);
+  font-size: var(--text-time);
+  font-weight: var(--weight-black);
+  line-height: 1.05;
   color: var(--color-text-heading);
   font-variant-numeric: tabular-nums;
 }
-.schedule-status { font-size: var(--text-md); line-height: 1.45; color: var(--color-text-body); }
+.schedule-status { font-size: var(--text-sm); line-height: 1.3; color: var(--color-text); }  /* Figma 13 */
 
-/* Figma has 12px here; raised to the 14px minimum. */
 .early-link {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-2);
-  min-height: 24px;
-  margin-top: var(--space-1);
+  min-height: 44px;
+  margin: -12px 0;
   font-size: var(--text-sm);
-  line-height: 22px;
+  line-height: 1.2;
   color: var(--color-text);
 }
 .early-link span { text-decoration: underline; text-underline-offset: 3px; }
-.early-link[data-later] { justify-content: flex-start; }
+.early-link[data-later] { justify-content: flex-start; margin: 0; }
 
-/* Review worries (Figma 127:1257) */
-
-.content-tight { gap: 14px; }
-.stack-xs > * + * { margin-top: var(--space-2); }
-.stack-md > * + * { margin-top: var(--space-4); }
+/* Review Notes: sticky-note stack (Figma 150:1923). Each note overlaps the
+   one above by 18px and tilts a little; colours go yellow, pink, blue, lilac. */
 
 .divider { width: 100%; height: 1px; margin: 0; border: 0; background: var(--color-border); }
 
-.tabs { display: flex; gap: var(--space-4); }
+.tabs { display: flex; gap: var(--space-5); }
 .tab {
-  min-height: 24px;
+  min-height: 44px;
   padding: 0;
   background: none;
   border: 0;
+  font-family: var(--font-ui);
   font-size: var(--text-md);
   line-height: 22px;
   color: var(--color-text-body);
@@ -570,94 +625,102 @@ h1 {
   text-underline-offset: 3px;
   cursor: pointer;
 }
-.tab[aria-pressed="true"] { font-weight: var(--weight-semibold); color: var(--color-text); }
+.tab[aria-pressed="true"] { font-weight: var(--weight-bold); color: var(--color-text); }
 
-.worry-list { list-style: none; margin: var(--space-5) 0 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-5); }
-.worry-item {
+.note-stack { list-style: none; margin: 0; padding: var(--space-1) 0 var(--space-2); display: flex; flex-direction: column; }
+.note-stack > li + li { margin-top: -18px; }
+
+.note {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
+  gap: var(--space-2);
   width: 100%;
-  min-height: 55px;
-  padding: var(--space-4);
+  min-height: 160px;
+  padding: var(--space-5) var(--space-5) 38px;
+  border: 0;
+  border-radius: var(--radius-note);
+  box-shadow: var(--shadow-note);
+  font: inherit;
   text-align: left;
-  font-size: var(--text-lg);
-  line-height: 1.45;
-  color: var(--color-text-heading);
-  text-decoration: none;
-  cursor: pointer;
-}
-button.worry-item:active { background: var(--color-surface-warm); }
-.worry-meta { font-size: var(--text-sm); color: var(--color-text-muted); }
-.worry-note { font-size: var(--text-md); color: var(--color-text-body); }
-.empty { font-size: var(--text-lg); color: var(--color-text-body); }
-
-.topic-tag {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: var(--tap-min);
-  padding: var(--space-3) var(--space-5);
-  border: 1.5px solid var(--color-border);
-  border-radius: var(--radius-xl);
-  font-size: var(--text-md);
   color: var(--color-text);
 }
-.worry-words { min-height: 76px; font-size: var(--text-lg); line-height: 1.45; color: var(--color-text-heading); }
-
-.choice {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: var(--tap-min);
-  padding: var(--space-3) var(--space-5);
-  background: var(--color-surface);
-  border: 1.5px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  font-size: var(--text-md);
-  color: var(--color-text);
-  text-decoration: none;
-  cursor: pointer;
+button.note { cursor: pointer; }
+.note:focus-visible { z-index: 2; outline-offset: 3px; }
+.note-0 { background: var(--note-yellow); }
+.note-1 { background: var(--note-pink); rotate: -2deg; }
+.note-2 { background: var(--note-blue); rotate: 2deg; }
+.note-3 { background: var(--note-lilac); rotate: -2deg; }
+.note-meta { font-size: var(--text-sm); line-height: 1.2; }  /* Figma 13 */
+.note-head { display: flex; align-items: center; gap: var(--space-2); }
+.note-head img { flex-shrink: 0; }
+.note-title {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--text-h1);
+  font-weight: var(--weight-black);
+  line-height: var(--leading-tight);
 }
-.choice:active, .choice[aria-current="true"] {
-  background: var(--color-selected);
-  border-color: var(--color-selected-border);
-  font-weight: var(--weight-semibold);
-  color: var(--color-text-heading);
-}
+.note-words { font-size: var(--text-sm); line-height: 1.3; }
+.note-extra { font-size: var(--text-sm); font-weight: var(--weight-semibold); line-height: 1.3; }
 
-.fieldset-tight { gap: var(--space-3); }
-.fieldset-tight > legend { margin-bottom: var(--space-3); }
+/* Review Note: topic chip, choice pills (Figma 150:1653 to 150:1859) */
 
-.chips { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-3); }
-.chip {
-  position: relative;
+/* Figma 12px, raised to 14. */
+.topic-chip {
   display: inline-flex;
   align-items: center;
+  align-self: flex-start;
+  padding: var(--space-1) var(--space-5);
+  background: var(--color-chip);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  line-height: 22px;
+  letter-spacing: 0.2px;
+  color: var(--color-text-heading);
+}
+
+.choice-row { display: flex; gap: var(--space-6); }
+.choice-row .choice { flex: 1; min-width: 0; padding-left: var(--space-2); padding-right: var(--space-2); }
+.choices { display: flex; flex-direction: column; gap: var(--space-6); }
+
+.choice {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   gap: 6px;
   min-height: var(--tap-min);
   padding: var(--space-3) var(--space-5);
   background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-ui);
   font-size: var(--text-md);
+  line-height: 22px;
+  letter-spacing: 0.2px;
+  text-align: center;
   color: var(--color-text);
+  text-decoration: none;
   cursor: pointer;
 }
-.chip input { position: absolute; opacity: 0; width: 1px; height: 1px; }
-.chip:has(input:checked) {
+.choice input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.choice-strong, .choice:has(input:checked), .choice:active {
   background: var(--color-selected);
-  border: 2px solid var(--color-selected-border);
-  padding: 11px 19px;
+  border-color: var(--color-selected-border);
   font-weight: var(--weight-semibold);
-  color: var(--color-text-heading);
+  color: var(--color-text-on-selected);
 }
-.chip:has(input:checked)::before { content: "✓"; font-weight: var(--weight-bold); }
-.chip:has(input:focus-visible) { outline: 3px solid var(--color-focus); outline-offset: 2px; }
+.choice:has(input:checked)::before { content: "✓"; font-weight: var(--weight-bold); }
+.choice:has(input:focus-visible) { outline: 3px solid var(--color-focus); outline-offset: 2px; }
 
-.words-label-lg.words-label-lg { font-size: var(--text-lg); color: var(--color-text-body); }
+.fieldset-tight { gap: var(--space-3); }
+.fieldset-tight > legend { margin-bottom: var(--space-3); }
 
-.btn-inline { width: auto; align-self: flex-start; min-height: var(--tap-min); padding: var(--space-3) var(--space-5); }
+.act-more { display: flex; flex-direction: column; gap: var(--space-6); }
+.act-more .words { gap: var(--space-4); }
 
 /* Column wrappers: no effect on phones, two columns on tablets (below). */
 .split, .split > .col, .narrow { display: contents; }
@@ -667,13 +730,12 @@ button.worry-item:active { background: var(--color-surface-warm); }
 @media (min-width: 768px) {
   .phone { width: 100%; max-width: 1024px; margin: 0 auto; }
   .app-header {
-    min-height: 84px;
-    padding: calc(var(--space-4) + env(safe-area-inset-top)) var(--space-12) var(--space-4);
+    padding: calc(var(--space-4) + env(safe-area-inset-top)) var(--space-12) 0;
     margin-bottom: 0;
   }
-  .content, .content-tight { gap: var(--space-6); padding: var(--space-6) var(--space-12) var(--space-10); }
-  h1 { font-size: var(--text-display); }
-  .lead { max-width: 620px; }
+  .content { gap: var(--space-6); padding: var(--space-6) var(--space-12) var(--space-10); }
+  h1 { font-size: 36px; }
+  .lead, .intro { max-width: 620px; }
 
   .split { display: grid; gap: var(--space-12); align-items: start; }
   .split > .col { display: flex; flex-direction: column; gap: var(--space-5); min-width: 0; }
@@ -693,10 +755,9 @@ button.worry-item:active { background: var(--color-surface-warm); }
     margin: var(--space-6) auto 0;
   }
 
-  .panel, .step, .worry-item { padding: var(--space-6); }
+  .tint-card, .step { padding: var(--space-6); }
   .steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-6); }
   .step { flex-direction: column; }
-  .worry-list { margin-top: 0; }
 
   .illus-hero { height: auto; aspect-ratio: 342 / 220; }
   .illus-clock { height: auto; aspect-ratio: 342 / 160; }
@@ -705,6 +766,7 @@ button.worry-item:active { background: var(--color-surface-warm); }
   .push { margin-top: var(--space-2); }
   .push .btn { width: auto; min-width: 240px; align-self: flex-start; }
   .push.center { align-items: flex-start; }
+  .step-label-center { text-align: left; }
   .skip { align-self: flex-start; }
 }
 
@@ -750,18 +812,18 @@ button.worry-item:active { background: var(--color-surface-warm); }
   /* The ticket lands a beat after the screen. */
   #ticket.enter .ticket { animation: ticket-in var(--motion-slow) var(--ease-spring) 80ms both; }
 
-  .btn, .tile, .chip, .option, .choice, .worry-item, .help-pill, .topic-tag {
+  .btn, .tile, .option, .choice, .note, .help-pill {
     transition:
       background-color var(--motion-fast) ease,
       border-color var(--motion-fast) ease,
       transform var(--motion-fast) var(--ease-out);
   }
-  .btn:active, .tile:active, .chip:active, .option:active, .choice:active, button.worry-item:active, .help-pill:active {
+  .btn:active, .tile:active, .option:active, .choice:active, button.note:active, .help-pill:active {
     transform: scale(0.98);
   }
 
   .tile:has(input:checked)::before,
-  .chip:has(input:checked)::before { animation: tick-in var(--motion-fast) var(--ease-spring) both; }
+  .choice:has(input:checked)::before { animation: tick-in var(--motion-fast) var(--ease-spring) both; }
 
   .error:not([hidden]) { animation: nudge 300ms var(--ease-out); }
 }

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#f5f0e8">
+  <meta name="theme-color" content="#fafaf7">
   <meta name="description" content="Atode: hand a worry over now, collect it later. Hi-fi prototype for user testing.">
   <title>Welcome to Atode (hi-fi)</title>
   <link rel="manifest" href="manifest.webmanifest">
@@ -15,9 +15,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
-  <link rel="stylesheet" href="tokens.css?v=11">
-  <link rel="stylesheet" href="styles.css?v=11">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Work+Sans:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="tokens.css?v=12">
+  <link rel="stylesheet" href="styles.css?v=12">
 </head>
 <body>
   <!-- Loading screen, shown each time the app opens -->
@@ -32,7 +32,6 @@
     <!-- 1. Welcome (Figma 69:2275) -->
     <section class="screen" id="welcome" data-title="Welcome to Atode">
       <header class="app-header">
-        <img class="logo" src="assets/logo.svg" width="67" height="18" alt="Atode">
         <a class="help-pill" href="#help">This can't wait</a>
       </header>
       <main class="content">
@@ -45,7 +44,10 @@
         </div>
         <div class="col">
         <div class="stack-sm">
-          <h1 tabindex="-1" class="h1-display">Welcome to Atode</h1>
+          <div class="page-head">
+            <h1 tabindex="-1" class="h1-display">Welcome to Atode</h1>
+            <img class="wordmark" src="assets/logo.svg" width="67" height="18" alt="" aria-hidden="true">
+          </div>
           <p class="body">Worrying all day keeps your brain on high alert. Giving worries a set time teaches your brain they can wait.</p>
           <p class="body">Hand one over, and collect it later, like a coat in a cloakroom.</p>
           <p class="small">A technique from cognitive behavioural therapy (CBT).</p>
@@ -69,15 +71,17 @@
     <!-- 2. How it works (Figma 69:2310) -->
     <section class="screen" id="how" data-title="How it works" hidden>
       <header class="app-header">
-        <img class="logo" src="assets/logo.svg" width="67" height="18" alt="Atode">
         <a class="help-pill" href="#help">This can't wait</a>
       </header>
       <main class="content">
         <div class="title-group">
+          <div class="page-head">
+            <h1 tabindex="-1">How it works</h1>
+            <img class="wordmark" src="assets/logo.svg" width="67" height="18" alt="" aria-hidden="true">
+          </div>
           <button type="button" class="back" data-back>
             <img src="assets/arrow-left.svg" width="20" height="20" alt=""> Back
           </button>
-          <h1 tabindex="-1">How it works</h1>
         </div>
         <ol class="steps">
           <li class="step card">
@@ -111,15 +115,17 @@
     <!-- 3. Collection time (Figma 69:2354) -->
     <section class="screen" id="time" data-title="When should you collect your worries?" hidden>
       <header class="app-header">
-        <img class="logo" src="assets/logo.svg" width="67" height="18" alt="Atode">
         <a class="help-pill" href="#help">This can't wait</a>
       </header>
       <main class="content">
         <form id="time-form" class="form-fill split split-form" novalidate>
           <div class="col">
             <div class="title-group">
+              <div class="page-head">
+                <h1 tabindex="-1" id="time-q">When should you collect your worries?</h1>
+                <img class="wordmark" src="assets/logo.svg" width="67" height="18" alt="" aria-hidden="true">
+              </div>
               <span class="step-label">Step 1 of 2</span>
-              <h1 tabindex="-1" id="time-q">When should you collect your worries?</h1>
             </div>
             <p class="hint" id="time-hint">Pick a time most days. Not too close to bed.</p>
             <div class="illus illus-clock">
@@ -164,15 +170,17 @@
     <!-- 4. Add first worry (Figma 69:2395) -->
     <section class="screen" id="worry" data-title="What’s on your mind right now?" hidden>
       <header class="app-header">
-        <img class="logo" src="assets/logo.svg" width="67" height="18" alt="Atode">
         <a class="help-pill" href="#help">This can't wait</a>
       </header>
       <main class="content">
         <form id="worry-form" class="form-fill park-form split split-form" data-source="worry" novalidate>
           <div class="col">
             <div class="title-group">
+              <div class="page-head">
+                <h1 tabindex="-1" id="worry-q">What’s on your mind right now?</h1>
+                <img class="wordmark" src="assets/logo.svg" width="67" height="18" alt="" aria-hidden="true">
+              </div>
               <span class="step-label">Step 2 of 2</span>
-              <h1 tabindex="-1" id="worry-q">What’s on your mind right now?</h1>
             </div>
             <p class="hint" id="worry-hint">Pick the closest one. You can add words if you want to.</p>
             <div class="illus illus-thought">
@@ -205,13 +213,15 @@
     <!-- 5. Ticket created (Figma 69:2433) -->
     <section class="screen" id="ticket" data-title="That’s how Atode works" hidden>
       <header class="app-header">
-        <img class="logo" src="assets/logo.svg" width="67" height="18" alt="Atode">
         <a class="help-pill" href="#help">This can't wait</a>
       </header>
       <main class="content">
         <div class="split split-form">
         <div class="col">
-        <h1 tabindex="-1">That’s how Atode works</h1>
+        <div class="page-head">
+          <h1 tabindex="-1">That’s how Atode works</h1>
+          <img class="wordmark" src="assets/logo.svg" width="67" height="18" alt="" aria-hidden="true">
+        </div>
         <div class="ticket" role="group" aria-label="Your ticket">
           <div class="ticket-top">
             <span class="ticket-no">Ticket No. <span data-ticket-no>1</span></span>
@@ -246,17 +256,18 @@
 
     <!-- 6. If in danger (Figma 69:2472). No "This can't wait" pill: this is where it leads. -->
     <section class="screen" id="help" data-title="You don't have to carry this alone" hidden>
-      <header class="app-header">
-        <img class="logo" src="assets/logo.svg" width="67" height="18" alt="Atode">
-      </header>
+      <header class="app-header"></header>
       <main class="content">
         <div class="split split-form">
         <div class="col">
         <div class="title-group">
+          <div class="page-head">
+            <h1 tabindex="-1">You don't have to carry this alone</h1>
+            <img class="wordmark" src="assets/logo.svg" width="67" height="18" alt="" aria-hidden="true">
+          </div>
           <button type="button" class="back" data-back>
             <img src="assets/arrow-left.svg" width="20" height="20" alt=""> Back
           </button>
-          <h1 tabindex="-1">You don't have to carry this alone</h1>
         </div>
         <p class="hint">These are free and confidential.</p>
         <div class="illus illus-hand">
@@ -289,31 +300,43 @@
       </main>
     </section>
 
-    <!-- Add a worry 1. Dashboard (Figma 115:906) -->
+    <!-- Home (Figma 150:1700, section 156:1955) -->
     <section class="screen" id="home" data-title="Welcome back" hidden>
       <header class="app-header">
-        <img class="logo" src="assets/logo.svg" width="67" height="18" alt="Atode">
         <a class="help-pill" href="#help">This can't wait</a>
       </header>
       <main class="content">
-        <h1 tabindex="-1" class="h1-display">Welcome back</h1>
-        <div class="lead">
+        <div class="page-head">
+          <h1 tabindex="-1">Welcome Back</h1>
+          <img class="wordmark" src="assets/logo.svg" width="67" height="18" alt="" aria-hidden="true">
+        </div>
+        <div class="intro">
           <p>Your worry time is <span data-time-label>6pm</span> today.</p>
           <p>Park a new worry below. Can’t make <span data-time-label>6pm</span>? Pick up your worries now.</p>
         </div>
         <div class="split split-even">
-        <div class="panel card">
-          <a class="btn btn-primary" href="#add">Park a new worry</a>
+        <div class="tint-card tint-cool">
+          <div class="tint-card-top">
+            <div class="tint-card-text">
+              <p class="eyebrow" id="park-label">What’s on your mind?</p>
+              <h2 class="hero-title" aria-describedby="park-label">Thought Note</h2>
+            </div>
+            <div class="illus illus-thumb">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M7 15a4 4 0 0 1-.6-7.96A5 5 0 0 1 16 6a4.5 4.5 0 0 1 1.5 8.75A3 3 0 0 1 15 15H7Z"/><circle cx="7" cy="19" r="1.2"/><circle cx="4.5" cy="21.5" r=".7"/></svg>
+              <img src="assets/illustrations/thought-cloud.png" alt="" onerror="this.remove()">
+            </div>
+          </div>
+          <a class="btn btn-primary" href="#add">Add a new note <span aria-hidden="true">&nbsp;→</span></a>
         </div>
-        <div class="panel card">
+        <div class="tint-card tint-warm">
           <div class="schedule">
-            <h2 class="card-title">Daily worry time</h2>
+            <h2 class="eyebrow">Review note time</h2>
             <p class="schedule-time" data-time-24>18:00</p>
             <p class="schedule-status" data-reminder-status>Reminder on</p>
           </div>
           <a class="early-link" href="#review">
-            <span>Review worries early</span>
-            <img src="assets/arrow-right-circle.svg" width="16" height="16" alt="">
+            <span>Review notes early</span>
+            <img src="assets/arrow-right-circle.svg" width="20" height="20" alt="">
           </a>
         </div>
         </div>
@@ -323,18 +346,20 @@
     <!-- Add a worry 2. Entry type (Figma 115:936) -->
     <section class="screen" id="add" data-title="Add your worry" hidden>
       <header class="app-header">
-        <img class="logo" src="assets/logo.svg" width="67" height="18" alt="Atode">
         <a class="help-pill" href="#help">This can't wait</a>
       </header>
       <main class="content">
-        <h1 tabindex="-1" class="h1-display">Add your worry</h1>
-        <p class="lead">Add your worry now, and let Atode remember it for you.</p>
+        <div class="page-head">
+          <h1 tabindex="-1" class="h1-display">Add your worry</h1>
+          <img class="wordmark" src="assets/logo.svg" width="67" height="18" alt="" aria-hidden="true">
+        </div>
+        <p class="intro">Add your worry now, and let Atode remember it for you.</p>
         <div class="split split-even">
-        <div class="panel card">
+        <div class="tint-card tint-cool">
           <h2 class="card-title">Quick add</h2>
           <a class="btn btn-primary" href="#quick">Quick add</a>
         </div>
-        <div class="panel card">
+        <div class="tint-card tint-warm">
           <h2 class="card-title">Detailed entry</h2>
           <a class="btn btn-secondary" href="#soon">Add detailed entry</a>
         </div>
@@ -345,14 +370,16 @@
     <!-- Add a worry 3. Quick add (Figma 115:961) -->
     <section class="screen" id="quick" data-title="Quick add" hidden>
       <header class="app-header">
-        <img class="logo" src="assets/logo.svg" width="67" height="18" alt="Atode">
         <a class="help-pill" href="#help">This can't wait</a>
       </header>
       <main class="content">
         <form id="quick-form" class="form-fill park-form split split-form" data-source="quick" novalidate>
           <div class="col">
             <div class="title-group">
-              <h1 tabindex="-1" id="quick-q">Quick add</h1>
+              <div class="page-head">
+                <h1 tabindex="-1" id="quick-q">Quick add</h1>
+                <img class="wordmark" src="assets/logo.svg" width="67" height="18" alt="" aria-hidden="true">
+              </div>
             </div>
             <p class="hint" id="quick-hint">Add your worry now, and let Atode remember it for you.</p>
             <div class="illus illus-thought">
@@ -382,121 +409,126 @@
       </main>
     </section>
 
-    <!-- Review worries 1. Review my parked worries (Figma 127:1290) -->
-    <section class="screen" id="review" data-title="Review my parked worries" hidden>
+    <!-- Review Notes: the sticky-note stack (Figma 150:1911) -->
+    <section class="screen" id="review" data-title="Review notes" hidden>
       <header class="app-header">
-        <img class="logo" src="assets/logo.svg" width="67" height="18" alt="Atode">
         <a class="help-pill" href="#help">This can't wait</a>
       </header>
       <main class="content">
         <div class="title-group">
+          <div class="page-head">
+            <h1 tabindex="-1">Review Notes</h1>
+            <img class="wordmark" src="assets/logo.svg" width="67" height="18" alt="" aria-hidden="true">
+          </div>
           <a class="back" href="#home">
             <img src="assets/arrow-left.svg" width="20" height="20" alt=""> Back
           </a>
-          <h1 tabindex="-1" class="h1-display">Review my parked worries</h1>
         </div>
         <div class="split split-list">
           <div class="col">
+            <div class="intro" data-panel="today">
+              <p data-review-count>It’s time to review the notes you have added today.</p>
+              <p class="intro-strong" data-review-tap>Tap a card below to review your note.</p>
+            </div>
+            <p class="intro" data-panel="passed" data-passed-count hidden>Notes you’ve already reviewed.</p>
             <div class="tabs" role="group" aria-label="Show">
               <button type="button" class="tab" data-tab="today" aria-pressed="true">Today’s notes</button>
-              <button type="button" class="tab" data-tab="passed" aria-pressed="false">Passed worries</button>
+              <button type="button" class="tab" data-tab="passed" aria-pressed="false">Reviewed notes</button>
             </div>
-            <p class="lead" data-panel="today" data-review-count>You have parked 3 worries today, select one to review and add any comments.</p>
-            <p class="lead" data-panel="passed" data-passed-count hidden>Worries you’ve already looked at.</p>
           </div>
           <div class="col">
-            <ul class="worry-list" data-panel="today" data-list="today"></ul>
-            <ul class="worry-list" data-panel="passed" data-list="passed" hidden></ul>
-            <hr class="divider">
+            <ul class="note-stack" data-panel="today" data-list="today"></ul>
+            <ul class="note-stack" data-panel="passed" data-list="passed" hidden></ul>
             <a class="early-link" href="#home" data-later>
-              <span>I’ll look at these parked worries tomorrow</span>
-              <img src="assets/arrow-right-circle.svg" width="16" height="16" alt="">
+              <span>I’ll look at these notes tomorrow</span>
+              <img src="assets/arrow-right-circle.svg" width="20" height="20" alt="">
             </a>
           </div>
         </div>
       </main>
     </section>
 
-    <!-- Review worries 2. One worry (Figma 127:1327) -->
+    <!-- Review Note, step 1 of 2 (Figma 150:1653) -->
     <section class="screen" id="review-item" data-title="Does this still affect you?" hidden>
       <header class="app-header">
-        <img class="logo" src="assets/logo.svg" width="67" height="18" alt="Atode">
         <a class="help-pill" href="#help">This can't wait</a>
       </header>
-      <main class="content content-tight">
+      <main class="content">
         <div class="title-group">
+          <div class="page-head">
+            <h1 tabindex="-1">Review Note</h1>
+            <img class="wordmark" src="assets/logo.svg" width="67" height="18" alt="" aria-hidden="true">
+          </div>
           <button type="button" class="back" data-back>
             <img src="assets/arrow-left.svg" width="20" height="20" alt=""> Back
           </button>
-          <h1 tabindex="-1" class="h1-display">Review my parked worries</h1>
         </div>
-        <p class="lead" data-review-count>You have parked 3 worries today, select one to review and add any comments.</p>
+        <p class="step-label step-label-center">Step 1 of 2</p>
         <div class="split split-even split-review">
         <div class="col">
-        <div class="panel card">
-          <span class="topic-tag" data-review-topic>Money</span>
-        </div>
-        <div class="panel card worry-words">
-          <p data-review-words>Will the repair cost more than I saved?</p>
-        </div>
+          <span class="topic-chip" data-review-topic>Money</span>
+          <p class="question" data-review-words>Will the repair cost more than I saved?</p>
         </div>
         <div class="col">
-        <h2 class="card-title" id="affect-q">Does this still affect you?</h2>
-        <div class="panel card" role="group" aria-labelledby="affect-q">
-          <button type="button" class="choice" data-affect="no">No</button>
-          <a class="choice" href="#review-act" data-affect="yes">Yes</a>
-          <a class="choice" href="#review">See all</a>
-        </div>
-        <hr class="divider">
-        <a class="early-link" href="#home" data-later>
-          <span>I’ll look at these parked worries tomorrow</span>
-          <img src="assets/arrow-right-circle.svg" width="16" height="16" alt="">
-        </a>
+          <h2 class="section-heading" id="affect-q">Does this still affect you?</h2>
+          <div class="choice-row" role="group" aria-labelledby="affect-q">
+            <button type="button" class="choice" data-affect="no">No</button>
+            <a class="choice choice-strong" href="#review-act" data-affect="yes">Yes</a>
+            <a class="choice" href="#review">See all</a>
+          </div>
+          <a class="early-link" href="#home" data-later>
+            <span>I’ll look at these notes tomorrow</span>
+            <img src="assets/arrow-right-circle.svg" width="20" height="20" alt="">
+          </a>
         </div>
         </div>
       </main>
     </section>
 
-    <!-- Review worries 3. What can be done (Figma 127:1368) -->
+    <!-- Review Note, step 2 of 2 (Figma 150:1766 and 150:1859) -->
     <section class="screen" id="review-act" data-title="What can be done about this worry?" hidden>
       <header class="app-header">
-        <img class="logo" src="assets/logo.svg" width="67" height="18" alt="Atode">
         <a class="help-pill" href="#help">This can't wait</a>
       </header>
       <main class="content">
         <form id="act-form" class="form-fill" novalidate>
           <div class="title-group">
+            <div class="page-head">
+              <h1 tabindex="-1">Review Note</h1>
+              <img class="wordmark" src="assets/logo.svg" width="67" height="18" alt="" aria-hidden="true">
+            </div>
             <button type="button" class="back" data-back>
               <img src="assets/arrow-left.svg" width="20" height="20" alt=""> Back
             </button>
-            <h1 tabindex="-1" class="h1-display">What can be done about this worry?</h1>
           </div>
+          <p class="step-label step-label-center">Step 2 of 2</p>
           <div class="split split-form">
           <div class="col">
-          <div class="stack-xs">
-            <p class="hint" data-review-position>Worry 2 of 3</p>
-            <p class="body" data-review-words>Will the repair cost more than I saved?</p>
-          </div>
+            <span class="topic-chip" data-review-topic>Money</span>
+            <h2 class="question question-lg">What can be done about this worry?</h2>
+            <p class="visually-hidden" data-review-words></p>
           </div>
           <div class="col">
           <fieldset class="fieldset fieldset-tight">
-            <legend><h2 class="card-title">Does this still affect you?</h2></legend>
+            <legend><span class="section-heading">What can you do to help this thought?</span></legend>
             <p class="error" data-error hidden>Pick the one that fits best.</p>
-            <div class="chips">
-              <label class="chip"><input type="radio" name="outcome" value="action"><span>I can do something</span></label>
-              <label class="chip"><input type="radio" name="outcome" value="letgo"><span>I can’t control this</span></label>
-              <label class="chip"><input type="radio" name="outcome" value="again"><span>Not now, park it again</span></label>
+            <div class="choices">
+              <label class="choice"><input type="radio" name="outcome" value="action"><span>I can do something</span></label>
+              <label class="choice"><input type="radio" name="outcome" value="letgo"><span>I can’t control this</span></label>
+              <label class="choice"><input type="radio" name="outcome" value="again"><span>Not now, review tomorrow</span></label>
             </div>
           </fieldset>
-          <div class="words">
-            <label class="words-label-lg" for="review-note">Add a note:</label>
-            <textarea id="review-note" rows="3" maxlength="280"></textarea>
+          <div class="act-more" data-act-more hidden>
+            <div class="words">
+              <label class="words-label-lg" for="review-note">Add a note:</label>
+              <textarea id="review-note" rows="3" maxlength="280"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-inline">Update my thought</button>
           </div>
           <hr class="divider">
-          <button type="submit" class="btn btn-primary btn-inline">Save my update</button>
           <a class="early-link" href="#home" data-later>
-            <span>I’ll look at these parked worries tomorrow</span>
-            <img src="assets/arrow-right-circle.svg" width="16" height="16" alt="">
+            <span>I’ll look at these notes tomorrow</span>
+            <img src="assets/arrow-right-circle.svg" width="20" height="20" alt="">
           </a>
           </div>
           </div>
@@ -507,12 +539,14 @@
     <!-- Review worries 4. Saved (Figma 127:1407) -->
     <section class="screen" id="review-done" data-title="This has been updated" hidden>
       <header class="app-header">
-        <img class="logo" src="assets/logo.svg" width="67" height="18" alt="Atode">
         <a class="help-pill" href="#help">This can't wait</a>
       </header>
       <main class="content">
         <div class="narrow">
-        <h1 tabindex="-1" class="h1-display">This has been updated</h1>
+        <div class="page-head">
+          <h1 tabindex="-1" class="h1-display">This has been updated</h1>
+          <img class="wordmark" src="assets/logo.svg" width="67" height="18" alt="" aria-hidden="true">
+        </div>
         <div class="lead stack-md" data-done-copy></div>
         <hr class="divider">
         <a class="btn btn-primary btn-inline" href="#review" data-done-next>Done</a>
@@ -523,15 +557,17 @@
     <!-- Not designed yet: detailed entry -->
     <section class="screen" id="soon" data-title="Not in this prototype yet" hidden>
       <header class="app-header">
-        <img class="logo" src="assets/logo.svg" width="67" height="18" alt="Atode">
         <a class="help-pill" href="#help">This can't wait</a>
       </header>
       <main class="content">
         <div class="title-group">
+          <div class="page-head">
+            <h1 tabindex="-1">Not in this prototype yet</h1>
+            <img class="wordmark" src="assets/logo.svg" width="67" height="18" alt="" aria-hidden="true">
+          </div>
           <button type="button" class="back" data-back>
             <img src="assets/arrow-left.svg" width="20" height="20" alt=""> Back
           </button>
-          <h1 tabindex="-1">Not in this prototype yet</h1>
         </div>
         <p class="hint">This part of Atode is still being designed.</p>
         <div class="push">
@@ -543,6 +579,6 @@
   </div>
   <div id="announcer" class="visually-hidden" aria-live="polite"></div>
   <noscript><p class="noscript">Atode needs JavaScript turned on.</p></noscript>
-  <script src="app.js?v=11"></script>
+  <script src="app.js?v=12"></script>
 </body>
 </html>
