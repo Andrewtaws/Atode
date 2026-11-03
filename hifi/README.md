@@ -8,7 +8,9 @@ The hi-fi version of Atode, kept apart from the wireframe prototype in the repo 
 
 **Look and feel (3 Nov 2026):** every screen uses the style from Figma section 156:1955: black Inter titles with the Atode wordmark beside them, yellow buttons with a black outline, black choice pills, a tinted Home and a sticky-note stack on Review Notes. Home and the Review flow follow those frames closely; the other screens take the same tokens and components.
 
-Onboarding follows the Figma hi-fi frames (node 69:2274), and Home, Add your worry and Quick add follow the hi-fi "Add a worry" frames (node 115:905). Done at the end of onboarding opens Home. "Review notes early" on Home opens Review Notes (node 150:1911): tap a sticky note, say whether it still affects you (step 1 of 2), choose what can be done and add a note (step 2 of 2), and it moves to Reviewed notes (or is parked again till tomorrow).
+**Onboarding (3 Nov 2026, later):** the six onboarding screens (marked `.onb`) follow Figma node 160:1956: white page, wordmark and "This can't wait" in a header row, lilac cloud illustrations, yellow / violet / lilac step cards, yellow selection, lilac ticket, lilac secondary buttons on Help. Its colours are the `--onb-*` tokens. Two changes for accessibility: tile, option, input and ticket edges use `--onb-line-control` (3:1) instead of Figma's #e6e0ef, and 13px labels are 14px. Help now shows the pill too; tapping it there jumps to "Call 999".
+
+Onboarding was first built from the Figma hi-fi frames (node 69:2274), and Home, Add your worry and Quick add follow the hi-fi "Add a worry" frames (node 115:905). Done at the end of onboarding opens Home. "Review notes early" on Home opens Review Notes (node 150:1911): tap a sticky note, say whether it still affects you (step 1 of 2), choose what can be done and add a note (step 2 of 2), and it moves to Reviewed notes (or is parked again till tomorrow).
 
 It saves to its own storage (`atode.hifi.v1`), so testing one version doesn't affect the other. Add `#reset` to the end of the address to clear it between testers.
 
@@ -37,4 +39,4 @@ Phones are unchanged. From 768px wide:
 
 ## Illustrations
 
-The illustrations live in `assets/illustrations/` (`welcome.png`, `clock.png`, `thought.png`, `hand.png`, and `thought-cloud.png` on Home, exported from Figma at 88px). To swap one, replace the file with the same name. If a file is missing, a simple icon shows in its place.
+Onboarding uses `onb-welcome.png`, `onb-clock.png`, `onb-thought.png` and `onb-help.png` (Figma 160:1956, 1x exports, so they soften on tablets until 2x files replace them). The older illustrations live in `assets/illustrations/` too (`welcome.png`, `clock.png`, `thought.png`, `hand.png`, and `thought-cloud.png` on Home, exported from Figma at 88px). To swap one, replace the file with the same name. If a file is missing, a simple icon shows in its place.

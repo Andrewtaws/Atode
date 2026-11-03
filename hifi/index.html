@@ -15,9 +15,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Work+Sans:wght@400;600;700&display=swap">
-  <link rel="stylesheet" href="tokens.css?v=13">
-  <link rel="stylesheet" href="styles.css?v=13">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Work+Sans:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="tokens.css?v=14">
+  <link rel="stylesheet" href="styles.css?v=14">
 </head>
 <body>
   <!-- Loading screen, shown each time the app opens -->
@@ -29,8 +29,9 @@
   </div>
   <div class="phone">
 
-    <!-- 1. Welcome (Figma 69:2275) -->
-    <section class="screen" id="welcome" data-title="Welcome to Atode">
+    <!-- Onboarding: Figma 160:1956 (3 Nov 2026). Screens marked .onb. -->
+    <!-- 1. Welcome (Figma 160:1957) -->
+    <section class="screen onb" id="welcome" data-title="Welcome to Atode">
       <header class="app-header">
         <img class="wordmark wordmark-top" src="assets/logo.svg" width="67" height="18" alt="" aria-hidden="true">
         <a class="help-pill" href="#help">This can't wait</a>
@@ -40,7 +41,7 @@
         <div class="col">
         <div class="illus illus-hero">
           <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7a2 2 0 1 1 2 2c-1 0-2 .6-2 1.6V12"/><path d="M12 12 3 18h18l-9-6"/></svg>
-          <img src="assets/illustrations/welcome.png" alt="" onerror="this.remove()">
+          <img src="assets/illustrations/onb-welcome.png" alt="" onerror="this.remove()">
         </div>
         </div>
         <div class="col">
@@ -69,21 +70,21 @@
       </main>
     </section>
 
-    <!-- 2. How it works (Figma 69:2310) -->
-    <section class="screen" id="how" data-title="How it works" hidden>
+    <!-- 2. How it works (Figma 160:1992) -->
+    <section class="screen onb" id="how" data-title="How it works" hidden>
       <header class="app-header">
         <img class="wordmark wordmark-top" src="assets/logo.svg" width="67" height="18" alt="" aria-hidden="true">
         <a class="help-pill" href="#help">This can't wait</a>
       </header>
       <main class="content">
         <div class="title-group">
+          <button type="button" class="back" data-back>
+            <img src="assets/arrow-left.svg" width="20" height="20" alt=""> Back
+          </button>
           <div class="page-head">
             <h1 tabindex="-1">How it works</h1>
             <img class="wordmark" src="assets/logo.svg" width="67" height="18" alt="" aria-hidden="true">
           </div>
-          <button type="button" class="back" data-back>
-            <img src="assets/arrow-left.svg" width="20" height="20" alt=""> Back
-          </button>
         </div>
         <ol class="steps">
           <li class="step card">
@@ -114,8 +115,8 @@
       </main>
     </section>
 
-    <!-- 3. Collection time (Figma 69:2354) -->
-    <section class="screen" id="time" data-title="When should you collect your worries?" hidden>
+    <!-- 3. Collection time (Figma 160:2036) -->
+    <section class="screen onb" id="time" data-title="When should you collect your worries?" hidden>
       <header class="app-header">
         <img class="wordmark wordmark-top" src="assets/logo.svg" width="67" height="18" alt="" aria-hidden="true">
         <a class="help-pill" href="#help">This can't wait</a>
@@ -124,16 +125,16 @@
         <form id="time-form" class="form-fill split split-form" novalidate>
           <div class="col">
             <div class="title-group">
+              <span class="step-label">Step 1 of 2</span>
               <div class="page-head">
                 <h1 tabindex="-1" id="time-q">When should you collect your worries?</h1>
                 <img class="wordmark" src="assets/logo.svg" width="67" height="18" alt="" aria-hidden="true">
               </div>
-              <span class="step-label">Step 1 of 2</span>
             </div>
             <p class="hint" id="time-hint">Pick a time most days. Not too close to bed.</p>
             <div class="illus illus-clock">
               <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
-              <img src="assets/illustrations/clock.png" alt="" onerror="this.remove()">
+              <img src="assets/illustrations/onb-clock.png" alt="" onerror="this.remove()">
             </div>
           </div>
           <div class="col">
@@ -170,8 +171,8 @@
       </main>
     </section>
 
-    <!-- 4. Add first worry (Figma 69:2395) -->
-    <section class="screen" id="worry" data-title="What’s on your mind right now?" hidden>
+    <!-- 4. Add first worry (Figma 160:2077) -->
+    <section class="screen onb" id="worry" data-title="What’s on your mind right now?" hidden>
       <header class="app-header">
         <img class="wordmark wordmark-top" src="assets/logo.svg" width="67" height="18" alt="" aria-hidden="true">
         <a class="help-pill" href="#help">This can't wait</a>
@@ -180,16 +181,16 @@
         <form id="worry-form" class="form-fill park-form split split-form" data-source="worry" novalidate>
           <div class="col">
             <div class="title-group">
+              <span class="step-label">Step 2 of 2</span>
               <div class="page-head">
                 <h1 tabindex="-1" id="worry-q">What’s on your mind right now?</h1>
                 <img class="wordmark" src="assets/logo.svg" width="67" height="18" alt="" aria-hidden="true">
               </div>
-              <span class="step-label">Step 2 of 2</span>
             </div>
             <p class="hint" id="worry-hint">Pick the closest one. You can add words if you want to.</p>
             <div class="illus illus-thought">
               <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M7 15a4 4 0 0 1-.6-7.96A5 5 0 0 1 16 6a4.5 4.5 0 0 1 1.5 8.75A3 3 0 0 1 15 15H7Z"/><circle cx="7" cy="19" r="1.2"/><circle cx="4.5" cy="21.5" r=".7"/></svg>
-              <img src="assets/illustrations/thought.png" alt="" onerror="this.remove()">
+              <img src="assets/illustrations/onb-thought.png" alt="" onerror="this.remove()">
             </div>
           </div>
           <div class="col">
@@ -214,8 +215,8 @@
       </main>
     </section>
 
-    <!-- 5. Ticket created (Figma 69:2433) -->
-    <section class="screen" id="ticket" data-title="That’s how Atode works" hidden>
+    <!-- 5. Ticket created (Figma 160:2115) -->
+    <section class="screen onb" id="ticket" data-title="That’s how Atode works" hidden>
       <header class="app-header">
         <img class="wordmark wordmark-top" src="assets/logo.svg" width="67" height="18" alt="" aria-hidden="true">
         <a class="help-pill" href="#help">This can't wait</a>
@@ -259,27 +260,28 @@
       </main>
     </section>
 
-    <!-- 6. If in danger (Figma 69:2472). No "This can't wait" pill: this is where it leads. -->
-    <section class="screen" id="help" data-title="You don't have to carry this alone" hidden>
+    <!-- 6. If in danger (Figma 160:2154). The pill shows here too, as in Figma; here it jumps to "Call 999". -->
+    <section class="screen onb" id="help" data-title="You don't have to carry this alone" hidden>
       <header class="app-header">
         <img class="wordmark wordmark-top" src="assets/logo.svg" width="67" height="18" alt="" aria-hidden="true">
+        <a class="help-pill" href="#help" data-help-here>This can't wait</a>
       </header>
       <main class="content">
         <div class="split split-form">
         <div class="col">
         <div class="title-group">
+          <button type="button" class="back" data-back>
+            <img src="assets/arrow-left.svg" width="20" height="20" alt=""> Back
+          </button>
           <div class="page-head">
             <h1 tabindex="-1">You don't have to carry this alone</h1>
             <img class="wordmark" src="assets/logo.svg" width="67" height="18" alt="" aria-hidden="true">
           </div>
-          <button type="button" class="back" data-back>
-            <img src="assets/arrow-left.svg" width="20" height="20" alt=""> Back
-          </button>
         </div>
         <p class="hint">These are free and confidential.</p>
         <div class="illus illus-hand">
           <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.35-7-9.5A4 4 0 0 1 12 8a4 4 0 0 1 7 2.5C19 15.65 12 20 12 20Z"/></svg>
-          <img src="assets/illustrations/hand.png" alt="" onerror="this.remove()">
+          <img src="assets/illustrations/onb-help.png" alt="" onerror="this.remove()">
         </div>
         </div>
         <div class="col">
@@ -594,6 +596,6 @@
   </div>
   <div id="announcer" class="visually-hidden" aria-live="polite"></div>
   <noscript><p class="noscript">Atode needs JavaScript turned on.</p></noscript>
-  <script src="app.js?v=13"></script>
+  <script src="app.js?v=14"></script>
 </body>
 </html>
