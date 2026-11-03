@@ -18,10 +18,10 @@ It saves to its own storage (`atode.hifi.v1`), so testing one version doesn't af
 
 ## Worry report (PDF)
 
-Review Notes has a "Download or email report" button (Figma 172:1209). It opens the Download Report sheet (172:1270). Both buttons make a PDF on the device, in Atode's colours and the Inter font: worries added, the most common theme, a bar for each theme, then every note as a sticky note (when it was added, whether it's been reviewed, what was decided and the note added), and where to get help.
+Review Notes has a "Download or email report" button (Figma 172:1209). It opens the Download Report sheet (173:1331). Both buttons make a PDF on the device, in Atode's colours and the Inter font: worries added, the most common theme, a bar for each theme, then every note as a sticky note (when it was added, whether it's been reviewed, what was decided and the note added), and where to get help.
 
 - **Download to device** saves `atode-worry-report-YYYY-MM-DD.pdf`.
-- **Send email** checks the address, then on phones opens the share sheet with the PDF attached (pick Mail). On computers it saves the PDF and opens an email to that address, ready to attach it. There's no server, so nothing is sent to Atode.
+- **Share my report** opens the device share sheet with the PDF attached, so it can go by Mail, Messages or any app. Where files can't be shared (most computers), it saves the PDF instead so it can be attached by hand. There's no server, so nothing is sent to Atode.
 
 jsPDF and the Inter font files are in `vendor/` and only load when a report is asked for.
 
