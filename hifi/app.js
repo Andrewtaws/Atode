@@ -46,6 +46,65 @@
     setTimeout(function () { el.textContent = msg; }, 50);
   }
 
+  // Errors: shown, tied to their group with aria-describedby (so a screen
+  // reader reads it with the first option) and announced (WCAG 3.3.1, 4.1.3).
+  function showError(form, focusEl) {
+    var error = $("[data-error]", form);
+    var group = $("[data-error-group]", form);
+    error.hidden = false;
+    if (group) {
+      var ids = (group.getAttribute("aria-describedby") || "").split(" ").filter(Boolean);
+      if (ids.indexOf(error.id) === -1) ids.unshift(error.id);
+      group.setAttribute("aria-describedby", ids.join(" "));
+      group.setAttribute("aria-invalid", "true");
+    }
+    focusEl.focus();
+    announce(error.textContent);
+  }
+  function hideError(form) {
+    var error = $("[data-error]", form);
+    var group = $("[data-error-group]", form);
+    if (!error) return;
+    error.hidden = true;
+    if (group) {
+      var ids = (group.getAttribute("aria-describedby") || "").split(" ").filter(function (id) { return id && id !== error.id; });
+      if (ids.length) group.setAttribute("aria-describedby", ids.join(" ")); else group.removeAttribute("aria-describedby");
+      group.removeAttribute("aria-invalid");
+    }
+  }
+
+  // Phones, outside onboarding: the help pill sits in the title row (Figma
+  // 169:867). When the title can't fit beside it (320px / 400% zoom, larger
+  // text spacing, long titles), the pill takes its own row above the title
+  // instead of covering it (WCAG 1.4.10, 1.4.12).
+  function fitPill(screen) {
+    if (!screen || screen.hidden || screen.classList.contains("onb")) return;
+    screen.classList.remove("pill-row");
+    if (window.innerWidth >= 768) return;
+    var h1 = $("h1", screen), pill = $(".help-pill", screen);
+    if (!h1 || !pill) return;
+    h1.style.overflowWrap = "normal"; // measure whole words, not the break-word fallback
+    var p = pill.getBoundingClientRect();
+    var range = document.createRange();
+    range.selectNodeContents(h1);
+    var hit = Array.prototype.some.call(range.getClientRects(), function (t) {
+      return t.right > p.left - 4 && t.left < p.right && t.bottom > p.top && t.top < p.bottom;
+    });
+    if (hit || h1.scrollWidth > h1.clientWidth + 1) screen.classList.add("pill-row");
+    h1.style.overflowWrap = "";
+  }
+  function visibleScreen() {
+    for (var i = 0; i < SCREENS.length; i++) { var el = $("#" + SCREENS[i]); if (!el.hidden) return el; }
+    return null;
+  }
+  window.addEventListener("resize", function () { fitPill(visibleScreen()); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { fitPill(visibleScreen()); });
+  if (window.ResizeObserver) {
+    // The pill grows with text spacing or text size; refit when it does.
+    var pillObserver = new ResizeObserver(function () { fitPill(visibleScreen()); });
+    $all(".screen:not(.onb) .help-pill").forEach(function (el) { pillObserver.observe(el); });
+  }
+
   function currentWorry() {
     for (var i = 0; i < state.worries.length; i++) {
       if (state.worries[i].ticket === state.current) return state.worries[i];
@@ -107,7 +166,7 @@
         if (f.dataset.editing) { delete f.dataset.editing; fillParkForm(f, null); }
       });
     }
-    $all("[data-error]", screen).forEach(function (el) { el.hidden = true; });
+    $all("form", screen).forEach(hideError);
 
     // Page transition: the old screen fades out, then the new one eases in
     // (from the right going forward, from the left going back).
@@ -119,6 +178,7 @@
         el.hidden = s !== id;
         el.classList.remove("leave");
       });
+      fitPill(screen);
       if (outgoing) {
         screen.classList.remove("enter", "enter-back");
         void screen.offsetWidth; // restart the animation
@@ -218,17 +278,14 @@
   }
 
   $all(".park-form").forEach(function (form) {
-    var error = $("[data-error]", form);
-
-    form.addEventListener("change", function () { error.hidden = true; });
+    form.addEventListener("change", function () { hideError(form); });
 
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       var topicInput = $("input[name=topic]:checked", form);
       var text = $("[data-words]", form).value.trim();
       if (!topicInput && !text) {
-        error.hidden = false;
-        $("input[name=topic]", form).focus();
+        showError(form, $("input[name=topic]", form));
         return;
       }
       var topic = topicInput ? topicInput.value : "Something else";
@@ -420,7 +477,6 @@
         var li = document.createElement("li");
         var btn = noteCard("button", w, i, OUTCOMES[w.outcome] + (w.note ? " · Note added" : ""));
         btn.type = "button";
-        btn.setAttribute("aria-label", topicTitle(w.topic) + ". " + OUTCOMES[w.outcome] + (w.note ? ". Has a note." : "") + " Open");
         btn.addEventListener("click", function () {
           state.viewing = w.ticket;
           save();
@@ -459,15 +515,14 @@
   var actForm = $("#act-form");
   // The note and save button appear once a choice is made (Figma 150:1859).
   actForm.addEventListener("change", function (e) {
-    $("[data-error]", actForm).hidden = true;
+    hideError(actForm);
     if (e.target.name === "outcome") $("[data-act-more]", actForm).hidden = false;
   });
   actForm.addEventListener("submit", function (e) {
     e.preventDefault();
     var picked = $("input[name=outcome]:checked", actForm);
     if (!picked) {
-      $("[data-error]", actForm).hidden = false;
-      $("input[name=outcome]", actForm).focus();
+      showError(actForm, $("input[name=outcome]", actForm));
       return;
     }
     finishReview(picked.value, $("#review-note").value.trim());
@@ -581,61 +636,164 @@
     };
   }
 
+  // Tagged PDF (PDF/UA-1). jsPDF has no tagging, so this adds it: every piece
+  // of text is wrapped in marked content (BDC/EMC) with an MCID and tied to a
+  // structure element (H1, H2, P, L/LI/LBody); backgrounds, bars, rules and the
+  // running header and footer are marked as artifacts. The structure tree,
+  // parent tree, MarkInfo and XMP metadata (with the PDF/UA identifier) are
+  // written into the file as it's built.
+  function pdfTagger(doc) {
+    var root = { S: "Document", kids: [] };
+    var stack = [root];
+    var nextMcid = {};
+    var api = doc.internal;
+    function top() { return stack[stack.length - 1]; }
+    function page() { return api.getCurrentPageInfo().pageNumber; }
+    function open(S) {
+      var el = { S: S, kids: [], parent: top() };
+      top().kids.push(el);
+      stack.push(el);
+      return el;
+    }
+    function close() { stack.pop(); }
+    // Content that belongs to the open element.
+    function mc(draw) {
+      var pg = page(), id = nextMcid[pg] || 0;
+      nextMcid[pg] = id + 1;
+      api.write("/" + top().S + " <</MCID " + id + ">> BDC");
+      draw();
+      api.write("EMC");
+      top().kids.push({ page: pg, mcid: id, owner: top() });
+    }
+    function leaf(S, draw) { open(S); mc(draw); close(); }
+    function artifact(draw, kind) {
+      api.write(kind === "page" ? "/Artifact <</Type /Pagination>> BDC" : "/Artifact BMC");
+      draw();
+      api.write("EMC");
+    }
+
+    var ids = { root: 0, parentTree: 0, xmp: 0 };
+    api.events.subscribe("putPage", function (d) {
+      api.out("/StructParents " + (d.pageNumber - 1));
+      api.out("/Tabs /S");
+    });
+    api.events.subscribe("putAdditionalObjects", function () {
+      var all = [];
+      (function walk(el) { all.push(el); el.kids.forEach(function (k) { if (k.S) walk(k); }); })(root);
+      ids.root = api.newObjectDeferred();
+      ids.parentTree = api.newObjectDeferred();
+      all.forEach(function (el) { el.id = api.newObjectDeferred(); });
+      var byPage = {};
+      all.forEach(function (el) {
+        var kids = el.kids.map(function (k) {
+          if (k.S) return k.id + " 0 R";
+          (byPage[k.page] = byPage[k.page] || [])[k.mcid] = el.id;
+          return "<< /Type /MCR /Pg " + api.getPageInfo(k.page).objId + " 0 R /MCID " + k.mcid + " >>";
+        });
+        api.newObjectDeferredBegin(el.id, true);
+        api.out("<< /Type /StructElem /S /" + el.S + " /P " + (el.parent ? el.parent.id : ids.root) + " 0 R /K [" + kids.join(" ") + "] >>");
+        api.out("endobj");
+      });
+      var pages = api.getNumberOfPages(), nums = [];
+      for (var pg = 1; pg <= pages; pg++) {
+        nums.push((pg - 1) + " [" + (byPage[pg] || []).map(function (id) { return id + " 0 R"; }).join(" ") + "]");
+      }
+      api.newObjectDeferredBegin(ids.parentTree, true);
+      api.out("<< /Nums [" + nums.join(" ") + "] >>");
+      api.out("endobj");
+      api.newObjectDeferredBegin(ids.root, true);
+      api.out("<< /Type /StructTreeRoot /K [" + root.id + " 0 R] /ParentTree " + ids.parentTree + " 0 R /ParentTreeNextKey " + pages + " >>");
+      api.out("endobj");
+      // XMP: title, language and the PDF/UA identifier.
+      var xmp = '<?xpacket begin="" id="W5M0MpCehiHzreSzNTczkc9d"?><x:xmpmeta xmlns:x="adobe:ns:meta/"><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">' +
+        '<rdf:Description rdf:about="" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:pdfuaid="http://www.aiim.org/pdfua/ns/id/" xmlns:pdf="http://ns.adobe.com/pdf/1.3/" xmlns:xmp="http://ns.adobe.com/xap/1.0/">' +
+        '<dc:title><rdf:Alt><rdf:li xml:lang="x-default">Atode worry report</rdf:li></rdf:Alt></dc:title>' +
+        '<dc:description><rdf:Alt><rdf:li xml:lang="x-default">Worries parked in Atode</rdf:li></rdf:Alt></dc:description>' +
+        '<dc:creator><rdf:Seq><rdf:li>Atode</rdf:li></rdf:Seq></dc:creator>' +
+        '<dc:language><rdf:Bag><rdf:li>en-GB</rdf:li></rdf:Bag></dc:language>' +
+        '<pdf:Producer>' + api.pdfEscape("jsPDF") + '</pdf:Producer><xmp:CreatorTool>Atode</xmp:CreatorTool>' +
+        '<pdfuaid:part>1</pdfuaid:part></rdf:Description></rdf:RDF></x:xmpmeta><?xpacket end="w"?>';
+      ids.xmp = api.newObject();
+      api.out("<< /Type /Metadata /Subtype /XML /Length " + xmp.length + " >>");
+      api.out("stream");
+      api.out(xmp);
+      api.out("endstream");
+      api.out("endobj");
+    });
+    api.events.subscribe("putCatalog", function () {
+      api.out("/MarkInfo << /Marked true >>");
+      api.out("/StructTreeRoot " + ids.root + " 0 R");
+      api.out("/Metadata " + ids.xmp + " 0 R");
+    });
+    return { open: open, close: close, mc: mc, leaf: leaf, artifact: artifact };
+  }
+
   function buildReport(fonts) {
     var jsPDF = window.jspdf.jsPDF;
-    var doc = new jsPDF({ unit: "mm", format: "a4", compress: true });
+    var doc = new jsPDF({ unit: "mm", format: "a4", compress: true, putOnlyUsedFonts: true });
     doc.addFileToVFS("Inter-Regular.ttf", fonts.normal); doc.addFont("Inter-Regular.ttf", "Inter", "normal");
     doc.addFileToVFS("Inter-SemiBold.ttf", fonts.semibold); doc.addFont("Inter-SemiBold.ttf", "Inter", "semibold");
     doc.addFileToVFS("Inter-Black.ttf", fonts.black); doc.addFont("Inter-Black.ttf", "Inter", "black");
     doc.setProperties({ title: "Atode worry report", subject: "Worries parked in Atode", creator: "Atode", author: "Atode" });
     if (doc.setLanguage) doc.setLanguage("en-GB");
+    // Show "Atode worry report" in the viewer's title bar, not the file name.
+    if (doc.viewerPreferences) doc.viewerPreferences({ DisplayDocTitle: true });
+    var T = pdfTagger(doc);
 
     var data = reportData();
     var W = 210, H = 297, M = 18, CW = W - 2 * M, FOOT = 18;
     var now = new Date();
     var y = 0;
 
-    function bg() { doc.setFillColor(C.paper); doc.rect(0, 0, W, H, "F"); }
+    function bg() { T.artifact(function () { doc.setFillColor(C.paper); doc.rect(0, 0, W, H, "F"); }); }
+    function fillBox(color, x, top, w, h, r) { T.artifact(function () { doc.setFillColor(color); doc.roundedRect(x, top, w, h, r, r, "F"); }); }
     function font(style, size, color) { doc.setFont("Inter", style); doc.setFontSize(size); doc.setTextColor(color || C.ink); }
     function lh(size, f) { return size * 0.3528 * (f || 1.35); }
     function lines(text, width) { return doc.splitTextToSize(String(text), width); }
     function block(textLines, x, top, size, f) {
       var step = lh(size, f);
-      textLines.forEach(function (l, i) { doc.text(l, x, top + size * 0.3528 + i * step); });
+      // A trailing space on wrapped lines keeps words apart when the text is
+      // read out or copied (each line is its own text run).
+      textLines.forEach(function (l, i) { doc.text(i < textLines.length - 1 ? l + " " : l, x, top + size * 0.3528 + i * step); });
       return textLines.length * step;
     }
     function newPage() { doc.addPage(); bg(); y = M; miniHead(); }
     function ensure(h) { if (y + h > H - FOOT - 4) newPage(); }
+    // The running header repeats on every page after the first: an artifact.
     function miniHead() {
-      font("black", 11); doc.text("Atode", M, y + 4);
-      font("normal", 8.5, C.muted); doc.text("Worry report · " + dayText(now), W - M, y + 4, { align: "right" });
+      T.artifact(function () {
+        font("black", 11); doc.text("Atode", M, y + 4);
+        font("normal", 8.5, C.muted); doc.text("Worry report · " + dayText(now), W - M, y + 4, { align: "right" });
+      }, "page");
       y += 12;
     }
     function heading(text) {
       ensure(16);
-      font("black", 15); doc.text(text, M, y + 5.5);
+      T.leaf("H2", function () { font("black", 15); doc.text(text, M, y + 5.5); });
       y += 11;
     }
 
     // Page 1 header
     bg();
     y = M;
-    font("black", 20); doc.text("Atode", M, y + 7);
-    doc.setFillColor(C.yellow); doc.roundedRect(M, y + 10, 13, 1.6, 0.8, 0.8, "F");
-    font("normal", 9, C.muted); doc.text("Made on " + dayText(now) + ", on this device", W - M, y + 7, { align: "right" });
+    T.leaf("P", function () { font("black", 20); doc.text("Atode", M, y + 7); });
+    fillBox(C.yellow, M, y + 10, 13, 1.6, 0.8);
+    T.leaf("P", function () { font("normal", 9, C.muted); doc.text("Made on " + dayText(now) + ", on this device", W - M, y + 7, { align: "right" }); });
     y += 22;
-    font("black", 30); doc.text("Your worry report", M, y + 10);
+    T.leaf("H1", function () { font("black", 30); doc.text("Your worry report", M, y + 10); });
     y += 17;
 
     var first = data.worries[0], last = data.worries[data.worries.length - 1];
     var span = first ? (dayText(new Date(first.parkedAt)) === dayText(new Date(last.parkedAt))
       ? "on " + dayText(new Date(first.parkedAt))
       : "from " + dayText(new Date(first.parkedAt)) + " to " + dayText(new Date(last.parkedAt))) : "";
-    font("normal", 11, C.body);
-    y += block(lines("The worries you parked in Atode " + span + ". You can give this to someone you trust, or use it as notes at your next therapy appointment.", CW), M, y, 11, 1.45);
+    T.leaf("P", function () {
+      font("normal", 11, C.body);
+      y += block(lines("The worries you parked in Atode " + span + ". You can give this to someone you trust, or use it as notes at your next therapy appointment.", CW), M, y, 11, 1.45);
+    });
     y += 8;
 
-    // Summary cards
+    // Summary cards: a list of three, read card by card.
     var gap = 5, cw = (CW - 2 * gap) / 3, ch = 38;
     var topLabel = data.top.map(function (t) { return t.topic; }).join(" and ");
     var cards = [
@@ -644,38 +802,49 @@
         sub: data.top.length ? data.top[0].n + " of " + data.worries.length + " worries" + (data.top.length > 1 ? " each" : "") : "" },
       { fill: C.notes[2], label: "Reviewed", big: String(data.reviewed), sub: (data.worries.length - data.reviewed) + " still parked" }
     ];
+    T.open("L");
     cards.forEach(function (c, i) {
       var x = M + i * (cw + gap);
-      doc.setFillColor(c.fill); doc.roundedRect(x, y, cw, ch, 5, 5, "F");
-      font("semibold", 9, C.muted); doc.text(c.label, x + 5, y + 8);
-      if (c.big) { font("black", 30); doc.text(c.big, x + 5, y + 23); }
-      else {
-        var size = 15, tl;
-        do { font("black", size); tl = lines(c.theme, cw - 10); size -= 1; } while (tl.length > 2 && size > 10);
-        block(tl, x + 5, y + 11.5, size + 1, 1.1);
-      }
-      font("normal", 9, C.ink); doc.text(c.sub, x + 5, y + ch - 5);
+      fillBox(c.fill, x, y, cw, ch, 5);
+      T.open("LI"); T.open("LBody");
+      T.leaf("P", function () { font("semibold", 9, C.muted); doc.text(c.label, x + 5, y + 8); });
+      T.leaf("P", function () {
+        if (c.big) { font("black", 30); doc.text(c.big, x + 5, y + 23); }
+        else {
+          var size = 15, tl;
+          do { font("black", size); tl = lines(c.theme, cw - 10); size -= 1; } while (tl.length > 2 && size > 10);
+          block(tl, x + 5, y + 11.5, size + 1, 1.1);
+        }
+      });
+      if (c.sub) T.leaf("P", function () { font("normal", 9, C.ink); doc.text(c.sub, x + 5, y + ch - 5); });
+      T.close(); T.close();
     });
+    T.close();
     y += ch + 10;
 
-    // Themes
+    // Themes: a list, "Money 3". The bars are decoration.
     if (data.themes.length) {
       heading("Themes");
       var labelW = 46, barX = M + labelW, barW = CW - labelW - 14, max = data.themes[0].n;
+      T.open("L");
       data.themes.forEach(function (t) {
         ensure(9);
-        font("normal", 10.5); doc.text(t.topic, M, y + 4.2);
-        doc.setFillColor(C.stone); doc.roundedRect(barX, y, barW, 5.5, 2.75, 2.75, "F");
-        doc.setFillColor(C.yellow); doc.roundedRect(barX, y, Math.max(5.5, barW * t.n / max), 5.5, 2.75, 2.75, "F");
-        font("semibold", 10.5); doc.text(String(t.n), W - M, y + 4.2, { align: "right" });
+        T.open("LI"); T.open("LBody");
+        T.leaf("P", function () { font("normal", 10.5); doc.text(t.topic, M, y + 4.2); });
+        T.leaf("P", function () { font("semibold", 10.5); doc.text(String(t.n), W - M, y + 4.2, { align: "right" }); });
+        T.close(); T.close();
+        fillBox(C.stone, barX, y, barW, 5.5, 2.75);
+        fillBox(C.yellow, barX, y, Math.max(5.5, barW * t.n / max), 5.5, 2.75);
         y += 8.5;
       });
+      T.close();
       y += 5;
     }
 
-    // Each note, as a sticky note like the app
+    // Each note, as a sticky note like the app: a list item with its own heading.
     heading("Your notes");
     var pad = 6, inner = CW - 2 * pad;
+    T.open("L");
     data.worries.forEach(function (w, i) {
       var added = new Date(w.parkedAt);
       var meta = "Note " + (i + 1) + " • Added " + hmText(added) + ", " + dayText(added);
@@ -692,31 +861,40 @@
         + (rows.length ? 3 : 0) + pad;
       ensure(h + 5);
       var top = y;
-      doc.setFillColor(C.notes[i % 4]); doc.roundedRect(M, top, CW, h, 6, 6, "F");
+      fillBox(C.notes[i % 4], M, top, CW, h, 6);
       var cy = top + pad;
-      font("normal", 9, C.ink); doc.text(meta, M + pad, cy + 3);
+      T.open("LI"); T.open("LBody");
+      font("black", 16); // title first in reading order, then its details
+      T.leaf("H3", function () { block(titleL, M + pad, cy + 7, 16, 1.15); });
+      T.leaf("P", function () { font("normal", 9, C.ink); doc.text(meta, M + pad, cy + 3); });
       font("semibold", 8.5, C.ink);
       var sw = doc.getTextWidth(status) + 6;
-      doc.setFillColor(w.outcome ? C.ink : C.white);
-      doc.roundedRect(W - M - pad - sw, cy - 1, sw, 5.6, 2.8, 2.8, "F");
-      doc.setTextColor(w.outcome ? C.white : C.ink);
-      doc.text(status, W - M - pad - sw / 2, cy + 2.9, { align: "center" });
+      fillBox(w.outcome ? C.ink : C.white, W - M - pad - sw, cy - 1, sw, 5.6, 2.8);
+      T.leaf("P", function () {
+        font("semibold", 8.5, w.outcome ? C.white : C.ink);
+        doc.text(status, W - M - pad - sw / 2, cy + 2.9, { align: "center" });
+      });
       cy += 4 + 3;
-      font("black", 16); cy += block(titleL, M + pad, cy, 16, 1.15) + 2;
-      font("normal", 11, w.words ? C.ink : C.muted); cy += block(wordsL, M + pad, cy, 11, 1.4);
+      cy += titleL.length * lh(16, 1.15) + 2;
+      T.leaf("P", function () { font("normal", 11, w.words ? C.ink : C.muted); cy += block(wordsL, M + pad, cy, 11, 1.4); });
       if (rows.length) {
         cy += 3;
-        doc.setDrawColor(C.muted); doc.setLineWidth(0.15); doc.setLineDashPattern([1, 1], 0);
-        doc.line(M + pad, cy, W - M - pad, cy); doc.setLineDashPattern([], 0);
+        var lineY = cy;
+        T.artifact(function () {
+          doc.setDrawColor(C.muted); doc.setLineWidth(0.15); doc.setLineDashPattern([1, 1], 0);
+          doc.line(M + pad, lineY, W - M - pad, lineY); doc.setLineDashPattern([], 0);
+        });
         rows.forEach(function (r, k) {
           cy += 5;
-          font("semibold", 9.5, C.muted); doc.text(r[0], M + pad, cy);
+          T.leaf("H4", function () { font("semibold", 9.5, C.muted); doc.text(r[0], M + pad, cy); });
           cy += 1.5;
-          font("normal", 10.5, C.ink); cy += block(rowL[k], M + pad, cy, 10.5, 1.4);
+          T.leaf("P", function () { font("normal", 10.5, C.ink); cy += block(rowL[k], M + pad, cy, 10.5, 1.4); });
         });
       }
+      T.close(); T.close();
       y = top + h + 5;
     });
+    T.close();
 
     // Where to get help
     var helpL;
@@ -724,18 +902,20 @@
     var hh = 6 + 6 + helpL.length * lh(10, 1.4) + 6;
     ensure(hh + 4);
     y += 3;
-    doc.setFillColor(C.stone); doc.roundedRect(M, y, CW, hh, 6, 6, "F");
-    font("black", 12); doc.text("If you need help now", M + 6, y + 9);
-    font("normal", 10); block(helpL, M + 6, y + 12, 10, 1.4);
+    fillBox(C.stone, M, y, CW, hh, 6);
+    T.leaf("H2", function () { font("black", 12); doc.text("If you need help now", M + 6, y + 9); });
+    T.leaf("P", function () { font("normal", 10); block(helpL, M + 6, y + 12, 10, 1.4); });
 
-    // Footers
+    // Footers repeat on every page: artifacts.
     var pages = doc.getNumberOfPages();
     for (var p = 1; p <= pages; p++) {
       doc.setPage(p);
-      doc.setDrawColor(C.line); doc.setLineWidth(0.3); doc.line(M, H - 13, W - M, H - 13);
-      font("normal", 8.5, C.muted);
-      doc.text("Atode · Made on this device. Not a medical record.", M, H - 8);
-      doc.text("Page " + p + " of " + pages, W - M, H - 8, { align: "right" });
+      T.artifact(function () {
+        doc.setDrawColor(C.line); doc.setLineWidth(0.3); doc.line(M, H - 13, W - M, H - 13);
+        font("normal", 8.5, C.muted);
+        doc.text("Atode · Made on this device. Not a medical record.", M, H - 8);
+        doc.text("Page " + p + " of " + pages, W - M, H - 8, { align: "right" });
+      }, "page");
     }
     return doc;
   }

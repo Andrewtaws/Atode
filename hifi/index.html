@@ -16,8 +16,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Work+Sans:wght@400;600;700&display=swap">
-  <link rel="stylesheet" href="tokens.css?v=18">
-  <link rel="stylesheet" href="styles.css?v=18">
+  <link rel="stylesheet" href="tokens.css?v=20">
+  <link rel="stylesheet" href="styles.css?v=20">
 </head>
 <body>
   <!-- Loading screen, shown each time the app opens -->
@@ -32,7 +32,7 @@
     <!-- Onboarding: Figma 160:1956 (3 Nov 2026). Screens marked .onb. -->
     <!-- 1. Welcome (Figma 160:1957) -->
     <section class="screen onb" id="welcome" data-title="Welcome to Atode">
-      <header class="app-header">
+      <header class="app-header" role="banner">
         <img class="wordmark wordmark-top" src="assets/logo.svg" width="67" height="18" alt="" aria-hidden="true">
         <a class="help-pill" href="#help"><img src="assets/help-cross.svg" width="16" height="16" alt="">I need help now</a>
       </header>
@@ -72,7 +72,7 @@
 
     <!-- 2. How it works (Figma 160:1992) -->
     <section class="screen onb" id="how" data-title="How it works" hidden>
-      <header class="app-header">
+      <header class="app-header" role="banner">
         <img class="wordmark wordmark-top" src="assets/logo.svg" width="67" height="18" alt="" aria-hidden="true">
         <a class="help-pill" href="#help"><img src="assets/help-cross.svg" width="16" height="16" alt="">I need help now</a>
       </header>
@@ -117,7 +117,7 @@
 
     <!-- 3. Collection time (Figma 160:2036) -->
     <section class="screen onb" id="time" data-title="When should you collect your worries?" hidden>
-      <header class="app-header">
+      <header class="app-header" role="banner">
         <img class="wordmark wordmark-top" src="assets/logo.svg" width="67" height="18" alt="" aria-hidden="true">
         <a class="help-pill" href="#help"><img src="assets/help-cross.svg" width="16" height="16" alt="">I need help now</a>
       </header>
@@ -173,7 +173,7 @@
 
     <!-- 4. Add first worry (Figma 160:2077) -->
     <section class="screen onb" id="worry" data-title="What’s on your mind right now?" hidden>
-      <header class="app-header">
+      <header class="app-header" role="banner">
         <img class="wordmark wordmark-top" src="assets/logo.svg" width="67" height="18" alt="" aria-hidden="true">
         <a class="help-pill" href="#help"><img src="assets/help-cross.svg" width="16" height="16" alt="">I need help now</a>
       </header>
@@ -195,7 +195,7 @@
           </div>
           <div class="col">
             <p class="error" id="worry-error" data-error hidden>Pick the closest one, or add a few words.</p>
-            <div class="tiles" role="radiogroup" aria-labelledby="worry-q" aria-describedby="worry-hint">
+            <div class="tiles" data-error-group role="radiogroup" aria-labelledby="worry-q" aria-describedby="worry-hint">
               <label class="tile"><input type="radio" name="topic" value="My work"><span>My work</span></label>
               <label class="tile"><input type="radio" name="topic" value="Money"><span>Money</span></label>
               <label class="tile"><input type="radio" name="topic" value="Someone in my life"><span>Someone in my life</span></label>
@@ -217,7 +217,7 @@
 
     <!-- 5. Ticket created (Figma 160:2115) -->
     <section class="screen onb" id="ticket" data-title="That’s how Atode works" hidden>
-      <header class="app-header">
+      <header class="app-header" role="banner">
         <img class="wordmark wordmark-top" src="assets/logo.svg" width="67" height="18" alt="" aria-hidden="true">
         <a class="help-pill" href="#help"><img src="assets/help-cross.svg" width="16" height="16" alt="">I need help now</a>
       </header>
@@ -262,7 +262,7 @@
 
     <!-- 6. If in danger (Figma 160:2154). The pill shows here too, as in Figma; here it jumps to "Call 999". -->
     <section class="screen onb" id="help" data-title="You don't have to carry this alone" hidden>
-      <header class="app-header">
+      <header class="app-header" role="banner">
         <img class="wordmark wordmark-top" src="assets/logo.svg" width="67" height="18" alt="" aria-hidden="true">
         <a class="help-pill" href="#help" data-help-here><img src="assets/help-cross.svg" width="16" height="16" alt="">I need help now</a>
       </header>
@@ -311,7 +311,7 @@
 
     <!-- Home (Figma 150:1700, section 156:1955) -->
     <section class="screen" id="home" data-title="Welcome back" hidden>
-      <header class="app-header">
+      <header class="app-header" role="banner">
         <img class="wordmark wordmark-top" src="assets/logo.svg" width="67" height="18" alt="" aria-hidden="true">
         <a class="help-pill" href="#help"><img src="assets/help-cross.svg" width="16" height="16" alt="">I need help now</a>
       </header>
@@ -355,7 +355,7 @@
 
     <!-- Add a worry: Quick add (Figma 115:961). Home opens it directly; the detailed entry was removed. -->
     <section class="screen" id="quick" data-title="Quick add" hidden>
-      <header class="app-header">
+      <header class="app-header" role="banner">
         <img class="wordmark wordmark-top" src="assets/logo.svg" width="67" height="18" alt="" aria-hidden="true">
         <a class="help-pill" href="#help"><img src="assets/help-cross.svg" width="16" height="16" alt="">I need help now</a>
       </header>
@@ -378,8 +378,8 @@
             </div>
           </div>
           <div class="col">
-            <p class="error" data-error hidden>Pick the closest one, or add a few words.</p>
-            <div class="tiles" role="radiogroup" aria-labelledby="quick-q" aria-describedby="quick-hint">
+            <p class="error" id="quick-error" data-error hidden>Pick the closest one, or add a few words.</p>
+            <div class="tiles" data-error-group role="radiogroup" aria-labelledby="quick-q" aria-describedby="quick-hint">
               <label class="tile"><input type="radio" name="topic" value="My work"><span>My work</span></label>
               <label class="tile"><input type="radio" name="topic" value="Money"><span>Money</span></label>
               <label class="tile"><input type="radio" name="topic" value="Someone in my life"><span>Someone in my life</span></label>
@@ -401,7 +401,7 @@
 
     <!-- Review Notes: the sticky-note stack (Figma 150:1911) -->
     <section class="screen" id="review" data-title="Review notes" hidden>
-      <header class="app-header">
+      <header class="app-header" role="banner">
         <img class="wordmark wordmark-top" src="assets/logo.svg" width="67" height="18" alt="" aria-hidden="true">
         <a class="help-pill" href="#help"><img src="assets/help-cross.svg" width="16" height="16" alt="">I need help now</a>
       </header>
@@ -431,7 +431,7 @@
             </div>
             <!-- Figma 172:1209 -->
             <button type="button" class="btn btn-outline" data-report-open aria-haspopup="dialog">
-              Download or email report <img src="assets/download.svg" width="16" height="16" alt="">
+              Download or share report <img src="assets/download.svg" width="16" height="16" alt="">
             </button>
           </div>
           <div class="col">
@@ -448,7 +448,7 @@
 
     <!-- Review Note, step 1 of 2 (Figma 150:1653) -->
     <section class="screen" id="review-item" data-title="Does this still affect you?" hidden>
-      <header class="app-header">
+      <header class="app-header" role="banner">
         <img class="wordmark wordmark-top" src="assets/logo.svg" width="67" height="18" alt="" aria-hidden="true">
         <a class="help-pill" href="#help"><img src="assets/help-cross.svg" width="16" height="16" alt="">I need help now</a>
       </header>
@@ -486,7 +486,7 @@
 
     <!-- Review Note, step 2 of 2 (Figma 150:1766 and 150:1859) -->
     <section class="screen" id="review-act" data-title="What can be done about this worry?" hidden>
-      <header class="app-header">
+      <header class="app-header" role="banner">
         <img class="wordmark wordmark-top" src="assets/logo.svg" width="67" height="18" alt="" aria-hidden="true">
         <a class="help-pill" href="#help"><img src="assets/help-cross.svg" width="16" height="16" alt="">I need help now</a>
       </header>
@@ -509,9 +509,9 @@
             <p class="visually-hidden" data-review-words></p>
           </div>
           <div class="col">
-          <fieldset class="fieldset fieldset-tight">
+          <fieldset class="fieldset fieldset-tight" data-error-group>
             <legend><span class="section-heading">What can you do to help this thought?</span></legend>
-            <p class="error" data-error hidden>Pick the one that fits best.</p>
+            <p class="error" id="act-error" data-error hidden>Pick the one that fits best.</p>
             <div class="choices">
               <label class="choice"><input type="radio" name="outcome" value="action"><span>I can do something</span></label>
               <label class="choice"><input type="radio" name="outcome" value="letgo"><span>I can’t control this</span></label>
@@ -538,7 +538,7 @@
 
     <!-- Review worries 4. Saved (Figma 127:1407) -->
     <section class="screen" id="review-done" data-title="This has been updated" hidden>
-      <header class="app-header">
+      <header class="app-header" role="banner">
         <img class="wordmark wordmark-top" src="assets/logo.svg" width="67" height="18" alt="" aria-hidden="true">
         <a class="help-pill" href="#help"><img src="assets/help-cross.svg" width="16" height="16" alt="">I need help now</a>
       </header>
@@ -557,7 +557,7 @@
 
     <!-- Past note: a reviewed note, read only (not in Figma; uses the Review Note layout from 169:867) -->
     <section class="screen" id="past-note" data-title="Past note" hidden>
-      <header class="app-header">
+      <header class="app-header" role="banner">
         <img class="wordmark wordmark-top" src="assets/logo.svg" width="67" height="18" alt="" aria-hidden="true">
         <a class="help-pill" href="#help"><img src="assets/help-cross.svg" width="16" height="16" alt="">I need help now</a>
       </header>
@@ -617,6 +617,6 @@
 
   <div id="announcer" class="visually-hidden" aria-live="polite"></div>
   <noscript><p class="noscript">Atode needs JavaScript turned on.</p></noscript>
-  <script src="app.js?v=18"></script>
+  <script src="app.js?v=20"></script>
 </body>
 </html>

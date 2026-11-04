@@ -116,7 +116,15 @@ h1:focus { outline: none; }
   .screen:not(.onb) .page-head .wordmark { display: none; }
   .screen:not(.onb) .page-head h1 { padding-right: 178px; }
   #act-form .btn-inline { width: 100%; }
+  /* Set by fitPill() in app.js when the title can't fit beside the pill:
+     the pill takes its own row above the title (WCAG 1.4.10, 1.4.12). */
+  .screen.pill-row:not(.onb) .app-header { position: static; padding-top: calc(var(--space-3) + env(safe-area-inset-top)); margin-bottom: var(--space-4); }
+  .screen.pill-row:not(.onb) .content { padding-top: 0; }
+  .screen.pill-row:not(.onb) .page-head h1 { padding-right: 0; }
 }
+
+/* Very long words break rather than spill out of their box. */
+h1, .hero-title, .note-title, .question, .ticket-when, .sheet-title { overflow-wrap: break-word; }
 
 .content {
   flex: 1;
@@ -314,8 +322,11 @@ h1 {
 }
 .tint-cool { background: var(--color-surface-cool); }
 .tint-warm { background: var(--color-surface-warm); }
-.tint-card-top { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-2); }
-.tint-card-text { display: flex; flex-direction: column; gap: var(--space-2); min-width: 0; }
+/* Wraps so the picture drops below "Thought Note" when there isn't room
+   beside it (320px / 400% zoom), instead of covering the title. */
+.tint-card-top { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--space-2); }
+.tint-card-text { display: flex; flex-direction: column; gap: var(--space-2); flex: 1 1 0; min-width: min-content; max-width: 100%; }
+.tint-card-top .illus-thumb { margin-left: auto; }
 .hero-title {
   font-size: var(--text-hero);
   font-weight: var(--weight-black);
