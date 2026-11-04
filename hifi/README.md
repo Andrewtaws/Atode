@@ -18,12 +18,14 @@ It saves to its own storage (`atode.hifi.v1`), so testing one version doesn't af
 
 ## Worry report (PDF)
 
-Review Notes has a "Download or email report" button (Figma 172:1209). It opens the Download Report sheet (173:1331). Both buttons make a PDF on the device, in Atode's colours and the Inter font: worries added, the most common theme, a bar for each theme, then every note as a sticky note (when it was added, whether it's been reviewed, what was decided and the note added), and where to get help.
+Review Notes has a "Download or share report" button (Figma 172:1209 said "email"; renamed on 4 Nov to match the sheet, which has no email option). It opens the Download Report sheet (173:1331). Both buttons make a PDF on the device, in Atode's colours and the Inter font: worries added, the most common theme, a bar for each theme, then every note as a sticky note (when it was added, whether it's been reviewed, what was decided and the note added), and where to get help.
 
 - **Download to device** saves `atode-worry-report-YYYY-MM-DD.pdf`.
 - **Share my report** opens the device share sheet with the PDF attached, so it can go by Mail, Messages or any app. Where files can't be shared (most computers), it saves the PDF instead so it can be attached by hand. There's no server, so nothing is sent to Atode.
 
 jsPDF and the Inter font files are in `vendor/` and only load when a report is asked for.
+
+The PDF is tagged for screen readers (PDF/UA-1, checked with veraPDF 1.28): headings, paragraphs and lists are in a structure tree in reading order, and backgrounds, bars, rules and the running header and footer are marked as artifacts. jsPDF can't tag on its own, so `pdfTagger()` in `app.js` adds the marked content, structure tree, parent tree and XMP metadata. Anything new drawn in `buildReport()` needs wrapping in `T.leaf(...)` (text) or `T.artifact(...)` / `fillBox(...)` (decoration), or the file stops validating.
 
 ## Install it like an app
 
