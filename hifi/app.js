@@ -46,6 +46,65 @@
     setTimeout(function () { el.textContent = msg; }, 50);
   }
 
+  // Errors: shown, tied to their group with aria-describedby (so a screen
+  // reader reads it with the first option) and announced (WCAG 3.3.1, 4.1.3).
+  function showError(form, focusEl) {
+    var error = $("[data-error]", form);
+    var group = $("[data-error-group]", form);
+    error.hidden = false;
+    if (group) {
+      var ids = (group.getAttribute("aria-describedby") || "").split(" ").filter(Boolean);
+      if (ids.indexOf(error.id) === -1) ids.unshift(error.id);
+      group.setAttribute("aria-describedby", ids.join(" "));
+      group.setAttribute("aria-invalid", "true");
+    }
+    focusEl.focus();
+    announce(error.textContent);
+  }
+  function hideError(form) {
+    var error = $("[data-error]", form);
+    var group = $("[data-error-group]", form);
+    if (!error) return;
+    error.hidden = true;
+    if (group) {
+      var ids = (group.getAttribute("aria-describedby") || "").split(" ").filter(function (id) { return id && id !== error.id; });
+      if (ids.length) group.setAttribute("aria-describedby", ids.join(" ")); else group.removeAttribute("aria-describedby");
+      group.removeAttribute("aria-invalid");
+    }
+  }
+
+  // Phones, outside onboarding: the help pill sits in the title row (Figma
+  // 169:867). When the title can't fit beside it (320px / 400% zoom, larger
+  // text spacing, long titles), the pill takes its own row above the title
+  // instead of covering it (WCAG 1.4.10, 1.4.12).
+  function fitPill(screen) {
+    if (!screen || screen.hidden || screen.classList.contains("onb")) return;
+    screen.classList.remove("pill-row");
+    if (window.innerWidth >= 768) return;
+    var h1 = $("h1", screen), pill = $(".help-pill", screen);
+    if (!h1 || !pill) return;
+    h1.style.overflowWrap = "normal"; // measure whole words, not the break-word fallback
+    var p = pill.getBoundingClientRect();
+    var range = document.createRange();
+    range.selectNodeContents(h1);
+    var hit = Array.prototype.some.call(range.getClientRects(), function (t) {
+      return t.right > p.left - 4 && t.left < p.right && t.bottom > p.top && t.top < p.bottom;
+    });
+    if (hit || h1.scrollWidth > h1.clientWidth + 1) screen.classList.add("pill-row");
+    h1.style.overflowWrap = "";
+  }
+  function visibleScreen() {
+    for (var i = 0; i < SCREENS.length; i++) { var el = $("#" + SCREENS[i]); if (!el.hidden) return el; }
+    return null;
+  }
+  window.addEventListener("resize", function () { fitPill(visibleScreen()); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { fitPill(visibleScreen()); });
+  if (window.ResizeObserver) {
+    // The pill grows with text spacing or text size; refit when it does.
+    var pillObserver = new ResizeObserver(function () { fitPill(visibleScreen()); });
+    $all(".screen:not(.onb) .help-pill").forEach(function (el) { pillObserver.observe(el); });
+  }
+
   function currentWorry() {
     for (var i = 0; i < state.worries.length; i++) {
       if (state.worries[i].ticket === state.current) return state.worries[i];
@@ -107,7 +166,7 @@
         if (f.dataset.editing) { delete f.dataset.editing; fillParkForm(f, null); }
       });
     }
-    $all("[data-error]", screen).forEach(function (el) { el.hidden = true; });
+    $all("form", screen).forEach(hideError);
 
     // Page transition: the old screen fades out, then the new one eases in
     // (from the right going forward, from the left going back).
@@ -119,6 +178,7 @@
         el.hidden = s !== id;
         el.classList.remove("leave");
       });
+      fitPill(screen);
       if (outgoing) {
         screen.classList.remove("enter", "enter-back");
         void screen.offsetWidth; // restart the animation
@@ -218,17 +278,14 @@
   }
 
   $all(".park-form").forEach(function (form) {
-    var error = $("[data-error]", form);
-
-    form.addEventListener("change", function () { error.hidden = true; });
+    form.addEventListener("change", function () { hideError(form); });
 
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       var topicInput = $("input[name=topic]:checked", form);
       var text = $("[data-words]", form).value.trim();
       if (!topicInput && !text) {
-        error.hidden = false;
-        $("input[name=topic]", form).focus();
+        showError(form, $("input[name=topic]", form));
         return;
       }
       var topic = topicInput ? topicInput.value : "Something else";
@@ -420,7 +477,6 @@
         var li = document.createElement("li");
         var btn = noteCard("button", w, i, OUTCOMES[w.outcome] + (w.note ? " · Note added" : ""));
         btn.type = "button";
-        btn.setAttribute("aria-label", topicTitle(w.topic) + ". " + OUTCOMES[w.outcome] + (w.note ? ". Has a note." : "") + " Open");
         btn.addEventListener("click", function () {
           state.viewing = w.ticket;
           save();
@@ -459,15 +515,14 @@
   var actForm = $("#act-form");
   // The note and save button appear once a choice is made (Figma 150:1859).
   actForm.addEventListener("change", function (e) {
-    $("[data-error]", actForm).hidden = true;
+    hideError(actForm);
     if (e.target.name === "outcome") $("[data-act-more]", actForm).hidden = false;
   });
   actForm.addEventListener("submit", function (e) {
     e.preventDefault();
     var picked = $("input[name=outcome]:checked", actForm);
     if (!picked) {
-      $("[data-error]", actForm).hidden = false;
-      $("input[name=outcome]", actForm).focus();
+      showError(actForm, $("input[name=outcome]", actForm));
       return;
     }
     finishReview(picked.value, $("#review-note").value.trim());
@@ -589,6 +644,8 @@
     doc.addFileToVFS("Inter-Black.ttf", fonts.black); doc.addFont("Inter-Black.ttf", "Inter", "black");
     doc.setProperties({ title: "Atode worry report", subject: "Worries parked in Atode", creator: "Atode", author: "Atode" });
     if (doc.setLanguage) doc.setLanguage("en-GB");
+    // Show "Atode worry report" in the viewer's title bar, not the file name.
+    if (doc.viewerPreferences) doc.viewerPreferences({ DisplayDocTitle: true });
 
     var data = reportData();
     var W = 210, H = 297, M = 18, CW = W - 2 * M, FOOT = 18;
