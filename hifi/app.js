@@ -26,6 +26,7 @@
 
   function reset() {
     try { localStorage.removeItem(STORE_KEY); } catch (e) { /* ignore */ }
+    clearSkipFlag();
   }
 
   // "18:00" -> "6pm", "19:30" -> "7:30pm"
@@ -264,6 +265,10 @@
   timeForm.addEventListener("submit", function (e) {
     e.preventDefault();
     syncTimeForm();
+    // A new time starts the day afresh: notes already looked at, "Not today"
+    // or a reminder already sent today don't hold back the new one.
+    state.reviewedDay = state.skipDay = state.notifiedDay = null;
+    clearSkipFlag();
     save();
     // The switch is the soft ask; the browser's own prompt comes only now,
     // from this tap, and only if the reminder is on.
@@ -676,8 +681,10 @@
     if (!reminderDue(now) || state.notifiedDay === dayKey(now) || now - dueAt(now) > LATE_MS) return;
     state.notifiedDay = dayKey(now);
     save();
-    // Looking at Atode right now: the card on Home is enough.
-    if (document.visibilityState !== "visible") R.notify(reminderMessage(now));
+    // On time, it always sends, even with Atode on screen (people testing
+    // watch the screen). A late catch-up while Atode is on screen doesn't:
+    // the card on Home is enough.
+    if (document.visibilityState !== "visible" || now - dueAt(now) < 2 * 60 * 1000) R.notify(reminderMessage(now));
   }
 
   // A timer for the next worry time, plus a check each minute and on
@@ -711,6 +718,9 @@
   }
 
   // "Not today" tapped on a notification while Atode was closed.
+  function clearSkipFlag() {
+    if (window.caches) caches.delete("atode-flags").catch(function () {});
+  }
   function readSkipFlag() {
     if (!window.caches) return Promise.resolve();
     return caches.open("atode-flags").then(function (c) { return c.match("skip-day"); })

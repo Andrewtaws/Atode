@@ -34,7 +34,7 @@ At the worry time picked in onboarding, Atode invites people back to collect the
 **When it fires.** Only when the reminder switch is on, at least one note was parked before today's worry time, and the person hasn't opened Review Notes or tapped "Not today" yet today. A note parked after worry time waits for tomorrow. No notes waiting means no reminder: success is needing Atode less. A notification is never sent more than 2 hours late (too close to bed); Home shows a card instead.
 
 **How it reaches people.**
-- **Notification:** asked for once, when "Use 6pm" is tapped with the switch on (the switch is the soft ask, so the browser prompt never comes cold). Shown through a small service worker (`sw.js`, no caching). Tapping it opens Review Notes. "Not today" on the notification is remembered.
+- **Notification:** sent on time even with Atode on screen (a late catch-up while it is on screen shows only the card). Asked for once, when "Use 6pm" is tapped with the switch on (the switch is the soft ask, so the browser prompt never comes cold). Shown through a small service worker (`sw.js`, no caching). Tapping it opens Review Notes. "Not today" on the notification is remembered.
 - **Card on Home:** "Your notes are ready to collect", with "Look at my notes" and "Not today". Shows whenever Atode is opened after worry time with notes waiting, so it still works where notifications don't.
 - Home's "Review note time" card says "Reminder on", "Reminder on, in Atode only" (no permission) or "Reminder off", with "Get a notification too" while the browser hasn't been asked.
 
