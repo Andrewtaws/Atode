@@ -8,9 +8,10 @@
   var SCREENS = ["welcome", "how", "time", "worry", "ticket", "help", "home", "quick", "review", "review-item", "review-act", "review-done", "past-note"];
 
   var state = load();
+  var R = window.AtodeReminders; // reminders.js
 
   function load() {
-    var fallback = { time: "18:00", reminder: true, worries: [], ticketCount: 0, onboarded: false, current: null, refocus: null, reviewing: null, lastOutcome: null, tab: "today", viewing: null };
+    var fallback = { time: "18:00", reminder: true, worries: [], ticketCount: 0, onboarded: false, current: null, refocus: null, reviewing: null, lastOutcome: null, tab: "today", viewing: null, reviewedDay: null, skipDay: null, notifiedDay: null };
     try {
       var saved = JSON.parse(localStorage.getItem(STORE_KEY));
       return saved ? Object.assign(fallback, saved) : fallback;
@@ -115,9 +116,7 @@
   function renderTime() {
     $all("[data-time-label]").forEach(function (el) { el.textContent = timeLabel(state.time); });
     $all("[data-time-24]").forEach(function (el) { el.textContent = state.time; });
-    $all("[data-reminder-status]").forEach(function (el) {
-      el.textContent = state.reminder ? "Reminder on" : "Reminder off";
-    });
+    renderReminderStatus();
   }
 
   // Routing: one section per Figma frame, switched by the URL hash so the
@@ -130,6 +129,7 @@
   var LEAVE_MS = 180; // matches --motion-leave in tokens.css
 
   function show(id) {
+    if (id === "try-reminder") { tryReminder(); return; }
     if (id === "reset") {
       reset();
       // Load the page again without a hash. Changing only the hash and then
@@ -155,7 +155,8 @@
     document.title = screen.dataset.title + " · Atode";
 
     if (id === "ticket") renderTicket();
-    if (id === "review") renderReview();
+    if (id === "review") { renderReview(); markReviewedToday(); }
+    if (id === "home") renderNudge();
     if (id === "review-item" || id === "review-act") renderReviewItem(screen, id);
     if (id === "review-done") renderDone();
     if (id === "past-note") renderPastNote();
@@ -264,6 +265,9 @@
     e.preventDefault();
     syncTimeForm();
     save();
+    // The switch is the soft ask; the browser's own prompt comes only now,
+    // from this tap, and only if the reminder is on.
+    if (state.reminder) R.ask().then(function () { renderReminderStatus(); scheduleReminder(); });
     go("worry");
   });
 
@@ -574,6 +578,158 @@
     note.textContent = w.note || "You didn’t add a note to this one.";
     note.classList.toggle("is-empty", !w.note);
   }
+
+  // Worry time reminders (reminders.js has the copy).
+  // A static site has no server, so there is no true push. Instead:
+  // - while Atode is open (even in a background tab), a timer shows a
+  //   notification at worry time, through the service worker (sw.js);
+  // - whenever Atode is opened after worry time, Home shows a card instead.
+  // Nothing fires when no notes are waiting, after notes were looked at
+  // today, after "Not today", or more than 2 hours late (close to bed).
+
+  var LATE_MS = 2 * 60 * 60 * 1000;
+  var reminderTimer = null;
+  var tryNudge = false;
+
+  function pad2(n) { return String(n).padStart(2, "0"); }
+  function dayKey(d) { return d.getFullYear() + "-" + pad2(d.getMonth() + 1) + "-" + pad2(d.getDate()); }
+  function dueAt(d) {
+    var p = state.time.split(":"), t = new Date(d);
+    t.setHours(parseInt(p[0], 10), parseInt(p[1], 10), 0, 0);
+    return t;
+  }
+  // Notes parked before today's worry time. One parked at 9pm waits for tomorrow.
+  function dueNotes(now) {
+    var cut = dueAt(now).getTime();
+    return parkedWorries().filter(function (w) { return new Date(w.parkedAt).getTime() < cut; });
+  }
+  function reminderDue(now) {
+    var today = dayKey(now);
+    return state.reminder && state.onboarded && now >= dueAt(now) &&
+      state.reviewedDay !== today && state.skipDay !== today && dueNotes(now).length > 0;
+  }
+  function reminderMessage(now) {
+    var yesterdayDue = dueAt(now).getTime() - 864e5;
+    var carried = dueNotes(now).some(function (w) { return new Date(w.parkedAt).getTime() < yesterdayDue; });
+    return R.pick(now, timeLabel(state.time), carried);
+  }
+
+  function markReviewedToday() {
+    state.reviewedDay = dayKey(new Date());
+    tryNudge = false;
+    save();
+  }
+
+  function renderReminderStatus() {
+    var perm = R.permission();
+    var text = !state.reminder ? R.STATUS.off : perm === "granted" ? R.STATUS.on : R.STATUS.inApp;
+    $all("[data-reminder-status]").forEach(function (el) { el.textContent = text; });
+    var ask = $("[data-reminder-ask]");
+    ask.textContent = R.STATUS.ask;
+    ask.hidden = !(state.reminder && perm === "default");
+    // Onboarding: say why it's in-app only, once the browser has said no.
+    var why = $("[data-reminder-why]");
+    var reason = state.reminder && perm !== "granted" && perm !== "default" ? R.STATUS.why[perm] : "";
+    why.textContent = reason;
+    why.hidden = !reason;
+  }
+
+  function renderNudge() {
+    var now = new Date();
+    var box = $("[data-nudge]");
+    var t = timeLabel(state.time);
+    $("[data-nudge-title]", box).textContent = R.BANNER.title;
+    $("[data-nudge-body]", box).textContent = R.fill(R.BANNER.body, t);
+    $("[data-nudge-go]", box).textContent = R.BANNER.go;
+    $("[data-nudge-skip]", box).textContent = R.BANNER.skip;
+    box.hidden = !(tryNudge || reminderDue(now));
+  }
+
+  function skipToday() {
+    state.skipDay = dayKey(new Date());
+    tryNudge = false;
+    save();
+    renderNudge();
+  }
+
+  $("[data-nudge-skip]").addEventListener("click", function () {
+    skipToday();
+    $("#home h1").focus();
+    announce(R.fill(R.BANNER.skipped, timeLabel(state.time)));
+  });
+  $("[data-reminder-ask]").addEventListener("click", function () {
+    R.ask().then(function (perm) {
+      renderReminderStatus();
+      scheduleReminder();
+      announce(perm === "granted" ? "Notifications on." : R.STATUS.why[perm] || "");
+      if (perm !== "default") $("#home h1").focus();
+    });
+  });
+
+  function tick() {
+    var now = new Date();
+    if (current() === "home") {
+      var wasHidden = $("[data-nudge]").hidden;
+      renderNudge();
+      if (wasHidden && !$("[data-nudge]").hidden && document.visibilityState === "visible") announce(R.BANNER.title);
+    }
+    if (!reminderDue(now) || state.notifiedDay === dayKey(now) || now - dueAt(now) > LATE_MS) return;
+    state.notifiedDay = dayKey(now);
+    save();
+    // Looking at Atode right now: the card on Home is enough.
+    if (document.visibilityState !== "visible") R.notify(reminderMessage(now));
+  }
+
+  // A timer for the next worry time, plus a check each minute and on
+  // returning to the tab (background tabs slow timers down).
+  function scheduleReminder() {
+    clearTimeout(reminderTimer);
+    var now = new Date(), next = dueAt(now);
+    if (next <= now) next.setDate(next.getDate() + 1);
+    reminderTimer = setTimeout(function () { tick(); scheduleReminder(); }, next - now + 1000);
+  }
+
+  // For moderators: #try-reminder shows the Home card and, 5 seconds later
+  // (time to lock the phone or switch app), a notification.
+  function tryReminder() {
+    tryNudge = true;
+    history.replaceState(null, "", "#home");
+    show("home");
+    announce("Test reminder in 5 seconds.");
+    R.ask().then(function () {
+      renderReminderStatus();
+      setTimeout(function () { R.notify(reminderMessage(new Date())); }, 5000);
+    });
+  }
+
+  if (navigator.serviceWorker) {
+    navigator.serviceWorker.addEventListener("message", function (e) {
+      if (!e.data) return;
+      if (e.data.type === "atode-open-review") go("review");
+      if (e.data.type === "atode-skip-today") skipToday();
+    });
+  }
+
+  // "Not today" tapped on a notification while Atode was closed.
+  function readSkipFlag() {
+    if (!window.caches) return Promise.resolve();
+    return caches.open("atode-flags").then(function (c) { return c.match("skip-day"); })
+      .then(function (r) { return r && r.text(); })
+      .then(function (day) { if (day && day === dayKey(new Date()) && state.skipDay !== day) skipToday(); })
+      .catch(function () {});
+  }
+
+  R.register();
+  readSkipFlag();
+  scheduleReminder();
+  setInterval(tick, 60 * 1000);
+  document.addEventListener("visibilitychange", function () {
+    if (document.visibilityState === "visible") { readSkipFlag(); renderReminderStatus(); }
+    tick();
+  });
+  window.addEventListener("storage", function (e) {
+    if (e.key === STORE_KEY) { state = load(); renderTime(); if (current() === "home") renderNudge(); }
+  });
 
   // Download Report (Figma 172:1209 / 172:1270)
   // The PDF is made here, on the device, with jsPDF and the Inter font.

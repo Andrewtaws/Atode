@@ -16,8 +16,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Work+Sans:wght@400;600;700&display=swap">
-  <link rel="stylesheet" href="tokens.css?v=20">
-  <link rel="stylesheet" href="styles.css?v=20">
+  <link rel="stylesheet" href="tokens.css?v=21">
+  <link rel="stylesheet" href="styles.css?v=21">
 </head>
 <body>
   <!-- Loading screen, shown each time the app opens -->
@@ -160,8 +160,9 @@
               <div>
                 <label class="reminder-label" for="reminder" id="reminder-label">Remind me at <span data-time-label>6pm</span></label>
                 <p class="reminder-note" id="reminder-note">The reminder never shows your worries.</p>
+                <p class="reminder-note" id="reminder-why" data-reminder-why hidden></p>
               </div>
-              <input type="checkbox" role="switch" class="switch" id="reminder" checked aria-describedby="reminder-note">
+              <input type="checkbox" role="switch" class="switch" id="reminder" checked aria-describedby="reminder-note reminder-why">
             </div>
             <div class="push">
               <button type="submit" class="btn btn-primary"><span>Use <span data-time-label>6pm</span></span></button>
@@ -320,6 +321,15 @@
           <h1 tabindex="-1">Welcome Back</h1>
           <img class="wordmark" src="assets/logo.svg" width="67" height="18" alt="" aria-hidden="true">
         </div>
+        <!-- Worry time reminder, in the app. Shown after worry time while notes wait (reminders.js). -->
+        <section class="nudge" data-nudge aria-labelledby="nudge-title" hidden>
+          <h2 class="nudge-title" id="nudge-title" data-nudge-title>Your notes are ready to collect</h2>
+          <p class="nudge-body" data-nudge-body>It’s past 6pm. Look at them now, or leave them for tomorrow.</p>
+          <div class="nudge-actions">
+            <a class="btn btn-primary" href="#review" data-nudge-go>Look at my notes</a>
+            <button type="button" class="link" data-nudge-skip>Not today</button>
+          </div>
+        </section>
         <div class="intro">
           <p>Your worry time is <span data-time-label>6pm</span> today.</p>
           <p>Park a new worry below. Can’t make <span data-time-label>6pm</span>? Pick up your worries now.</p>
@@ -343,6 +353,7 @@
             <h2 class="eyebrow">Review note time</h2>
             <p class="schedule-time" data-time-24>18:00</p>
             <p class="schedule-status" data-reminder-status>Reminder on</p>
+            <button type="button" class="link link-sm schedule-ask" data-reminder-ask hidden>Get a notification too</button>
           </div>
           <a class="early-link" href="#review">
             <span>Review notes early</span>
@@ -617,6 +628,7 @@
 
   <div id="announcer" class="visually-hidden" aria-live="polite"></div>
   <noscript><p class="noscript">Atode needs JavaScript turned on.</p></noscript>
-  <script src="app.js?v=20"></script>
+  <script src="reminders.js?v=21"></script>
+  <script src="app.js?v=21"></script>
 </body>
 </html>
