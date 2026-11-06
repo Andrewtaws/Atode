@@ -27,6 +27,23 @@ jsPDF and the Inter font files are in `vendor/` and only load when a report is a
 
 The PDF is tagged for screen readers (PDF/UA-1, checked with veraPDF 1.28): headings, paragraphs and lists are in a structure tree in reading order, and backgrounds, bars, rules and the running header and footer are marked as artifacts. jsPDF can't tag on its own, so `pdfTagger()` in `app.js` adds the marked content, structure tree, parent tree and XMP metadata. Anything new drawn in `buildReport()` needs wrapping in `T.leaf(...)` (text) or `T.artifact(...)` / `fillBox(...)` (decoration), or the file stops validating.
 
+## Worry time reminders
+
+At the worry time picked in onboarding, Atode invites people back to collect their notes. The copy is in `reminders.js` and shown in full on the design system page (with a "Send a test reminder" button).
+
+**When it fires.** Only when the reminder switch is on, at least one note was parked before today's worry time, and the person hasn't opened Review Notes or tapped "Not today" yet today. A note parked after worry time waits for tomorrow. No notes waiting means no reminder: success is needing Atode less. A notification is never sent more than 2 hours late (too close to bed); Home shows a card instead.
+
+**How it reaches people.**
+- **Notification:** asked for once, when "Use 6pm" is tapped with the switch on (the switch is the soft ask, so the browser prompt never comes cold). Shown through a small service worker (`sw.js`, no caching). Tapping it opens Review Notes. "Not today" on the notification is remembered.
+- **Card on Home:** "Your notes are ready to collect", with "Look at my notes" and "Not today". Shows whenever Atode is opened after worry time with notes waiting, so it still works where notifications don't.
+- Home's "Review note time" card says "Reminder on", "Reminder on, in Atode only" (no permission) or "Reminder off", with "Get a notification too" while the browser hasn't been asked.
+
+**Copy rules.** An invitation, never an instruction, and always a way out. Never shows a worry, topic or count, and says "notes", not "worries", so a lock screen gives nothing away. No streaks, "missed" or catching up. No exclamation marks or emoji. Titles 34 characters or fewer. One message a day, in turn; notes waiting more than a day get "Your notes are still here / No catching up needed".
+
+**Limits (it's a static site, no server).** The browser can't wake a closed web app at a set time: the Notification Triggers API that would have done this was dropped, and Web Push needs a server to send from. So the notification only fires while Atode is open, including in a background tab or a backgrounded installed app, until the system closes it. If Atode is fully closed, the person sees the Home card next time they open it. On iPhone and iPad, notifications only work once Atode is added to the Home Screen (iOS 16.4+). Reliable reminders need either a small push server or the planned native app (Flutter `flutter_local_notifications` schedules them on the device, no server).
+
+**For testing:** add `#try-reminder` to the address. Home shows the card, and 5 seconds later a notification (time to lock the phone or switch app).
+
 ## Install it like an app
 
 - **Android (phone or tablet):** open the hi-fi link in Chrome, tap ⋮, then **Add to Home screen** (or **Install app**).
