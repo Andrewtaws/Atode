@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Work+Sans:wght@400;600;700&display=swap">
   <link rel="stylesheet" href="tokens.css?v=22">
-  <link rel="stylesheet" href="styles.css?v=22">
+  <link rel="stylesheet" href="styles.css?v=23">
 </head>
 <body>
   <!-- Loading screen, shown each time the app opens -->
@@ -322,12 +322,16 @@
           <img class="wordmark" src="assets/logo.svg" width="67" height="18" alt="" aria-hidden="true">
         </div>
         <!-- Worry time reminder, in the app. Shown after worry time while notes wait (reminders.js). -->
-        <section class="nudge" data-nudge aria-labelledby="nudge-title" hidden>
-          <h2 class="nudge-title" id="nudge-title" data-nudge-title>Your notes are ready to collect</h2>
-          <p class="nudge-body" data-nudge-body>It’s past 6pm. Look at them now, or leave them for tomorrow.</p>
-          <div class="nudge-actions">
-            <a class="btn btn-primary" href="#review" data-nudge-go>Look at my notes</a>
-            <button type="button" class="link" data-nudge-skip>Not today</button>
+        <!-- A sticky-note stack: one paper layer per waiting note, up to 3 (data-layers). The count is in the text. -->
+        <section class="nudge" data-nudge data-layers="1" aria-labelledby="nudge-title" hidden>
+          <div class="nudge-card">
+            <p class="nudge-count" data-nudge-count>1 note waiting</p>
+            <h2 class="nudge-title" id="nudge-title" data-nudge-title>Your notes are ready to collect</h2>
+            <p class="nudge-body" data-nudge-body>It’s past 6pm. Look at them now, or leave them for tomorrow.</p>
+            <div class="nudge-actions">
+              <a class="btn btn-primary" href="#review" data-nudge-go>Look at my notes</a>
+              <button type="button" class="link" data-nudge-skip>Not today</button>
+            </div>
           </div>
         </section>
         <div class="intro">
@@ -628,7 +632,7 @@
 
   <div id="announcer" class="visually-hidden" aria-live="polite"></div>
   <noscript><p class="noscript">Atode needs JavaScript turned on.</p></noscript>
-  <script src="reminders.js?v=22"></script>
-  <script src="app.js?v=23"></script>
+  <script src="reminders.js?v=23"></script>
+  <script src="app.js?v=24"></script>
 </body>
 </html>

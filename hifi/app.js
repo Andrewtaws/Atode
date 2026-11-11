@@ -647,6 +647,10 @@
     $("[data-nudge-body]", box).textContent = R.fill(R.BANNER.body, t);
     $("[data-nudge-go]", box).textContent = R.BANNER.go;
     $("[data-nudge-skip]", box).textContent = R.BANNER.skip;
+    // One paper layer per waiting note, capped at 3; the exact count is in the text.
+    var n = dueNotes(now).length;
+    box.setAttribute("data-layers", String(Math.min(Math.max(n, 1), 3)));
+    $("[data-nudge-count]", box).textContent = !n ? R.BANNER.countNone : n === 1 ? R.BANNER.countOne : R.BANNER.count.replace("{n}", n);
     box.hidden = !(tryNudge || reminderDue(now));
   }
 
