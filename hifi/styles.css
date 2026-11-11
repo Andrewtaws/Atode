@@ -630,21 +630,67 @@ h1 {
 /* "Get a notification too": 44px tap area without moving the card's layout. */
 .schedule-ask { align-self: flex-start; min-height: 44px; margin: -10px 0 -6px; text-align: left; }
 
-/* Worry time reminder on Home (no Figma frame yet). White card with an ink
-   edge, so the yellow button keeps its own edge against it. */
+/* Worry time reminder on Home: a stack of sticky notes in the Review Notes
+   style. The front note is yellow; one paper layer shows behind it for each
+   extra waiting note (data-layers 1 to 3, capped), peeking out underneath.
+   The layers are decoration only: the count is said in the text. */
 .nudge {
+  position: relative;
+  isolation: isolate;
+}
+.nudge[data-layers="2"] { padding-bottom: 14px; }
+.nudge[data-layers="3"] { padding-bottom: 28px; }
+.nudge::before,
+.nudge::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 0 0;
+  z-index: -1;
+  border-radius: var(--radius-note);
+  box-shadow: var(--shadow-note);
+  display: none;
+}
+.nudge[data-layers="2"]::before,
+.nudge[data-layers="3"]::before {
+  display: block;
+  inset: 12px 6px 0 6px;
+  background: var(--note-pink);
+  rotate: 1.5deg;
+}
+.nudge[data-layers="3"]::before { inset: 12px 6px 12px 6px; }
+.nudge[data-layers="3"]::after {
+  display: block;
+  z-index: -2;
+  inset: 24px 12px 0 12px;
+  background: var(--note-blue);
+  rotate: -1.5deg;
+}
+/* Wide cards: the same tilt would swing the corners too far. */
+@media (min-width: 768px) {
+  .nudge[data-layers="2"]::before, .nudge[data-layers="3"]::before { rotate: 0.6deg; }
+  .nudge[data-layers="3"]::after { rotate: -0.6deg; }
+}
+.nudge-card {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: var(--space-2);
   padding: var(--space-5);
-  background: var(--color-surface);
-  border: 2px solid var(--color-border-strong);
-  border-radius: var(--radius-xl);
+  background: var(--note-yellow);
+  border-radius: var(--radius-note);
+  box-shadow: var(--shadow-note);
+  color: var(--color-text);
 }
+.nudge-count { font-size: var(--text-sm); font-weight: var(--weight-semibold); line-height: 1.2; }
 .nudge-title { font-size: var(--text-h2); font-weight: var(--weight-black); line-height: 1.3; color: var(--color-text-heading); }
-.nudge-body { font-size: var(--text-md); line-height: var(--leading-body); color: var(--color-text-body); }
-.nudge-actions { display: flex; flex-direction: column; align-items: center; gap: var(--space-1); padding-top: var(--space-1); }
-.nudge-actions .link { min-height: 44px; padding: 0 var(--space-3); }
+.nudge-body { font-size: var(--text-md); line-height: var(--leading-body); color: var(--color-text); }
+.nudge-actions { display: flex; flex-direction: column; align-items: center; gap: var(--space-1); padding-top: var(--space-2); }
+/* Yellow button on a yellow note: an ink edge keeps it a clear button. */
+.nudge .btn-primary { border: 2px solid var(--color-border-strong); }
+.nudge-actions .link { min-height: 44px; padding: 0 var(--space-3); color: var(--color-text); }
+/* High contrast mode: paper colours drop out, so give the front note an edge. */
+@media (forced-colors: active) {
+  .nudge-card, .nudge::before, .nudge::after { border: 2px solid CanvasText; }
+}
 
 .early-link {
   display: flex;

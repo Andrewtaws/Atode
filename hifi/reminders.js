@@ -34,6 +34,9 @@
     body: "It’s past {time}. Look at them now, or leave them for tomorrow.",
     go: "Look at my notes",
     skip: "Not today",
+    count: "{n} notes waiting",
+    countOne: "1 note waiting",
+    countNone: "Your notes",
     skipped: "OK. We’ll keep them till {time} tomorrow."
   };
 
